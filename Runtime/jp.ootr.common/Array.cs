@@ -7,15 +7,22 @@ namespace jp.ootr.common
     {
         public const string PackageName = "jp.ootr.common.ArrayUtils";
 
+        
         public static T[] Remove<T>(this T[] array, int index)
+        {
+            return array.Remove(index, out var _1);
+        }
+        public static T[] Remove<T>(this T[] array, int index, out T item)
         {
             if (index < 0 || index >= array.Length)
             {
                 Console.Warn($"RemoveItemFromArray: Index out of range: {index}, array length: {array.Length}",
                     PackageName);
+                item = default;
                 return array;
             }
 
+            item = array[index];
             var tmpArray = new T[array.Length - 1];
             Array.Copy(array, 0, tmpArray, 0, index);
             Array.Copy(array, index + 1, tmpArray, index, array.Length - index - 1);
@@ -109,6 +116,11 @@ namespace jp.ootr.common
             return index != -1;
         }
 
+        public static T[] __Shift<T>(this T[] array)
+        {
+            return array.__Shift(out var _void);
+        }
+        
         /**
          * <summary>
          *     [DANGER]
@@ -137,6 +149,34 @@ namespace jp.ootr.common
             var tmpArray = new T[array.Length - 1];
             Array.Copy(array, 0, tmpArray, 0, array.Length - 1);
             return tmpArray;
+        }
+
+        /**
+         * <summary>
+         * removed: currentから削除された要素のcurrentのindex
+         * added: newArrayに追加された要素のnewArrayのindex
+         * </summary>
+         */
+        public static void Diff<T>(this T[] current, T[] newArray, out int[] removed, out int[] added)
+        {
+            removed = new int[newArray.Length];
+            var removedIndex = 0;
+            for (int i = 0; i < current.Length; i++)
+            {
+                if (newArray.Has(current[i])) continue;
+                removed[removedIndex++] = i;
+            }
+            
+            added = new int[current.Length];
+            var addedIndex = 0;
+            for (int i = 0; i < newArray.Length; i++)
+            {
+                if (current.Has(newArray[i])) continue;
+                added[addedIndex++] = i;
+            }
+            
+            removed = removed.Resize(removedIndex);
+            added = added.Resize(addedIndex);
         }
     }
 }

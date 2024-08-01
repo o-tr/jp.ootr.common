@@ -14,6 +14,11 @@ namespace jp.ootr.common
         {
             return "jp.ootr.common.BaseClass";
         }
+        
+        public virtual string GetDisplayName()
+        {
+            return GetClassName();
+        }
 
         protected virtual void ConsoleDebug(string message, string prefix = "")
         {

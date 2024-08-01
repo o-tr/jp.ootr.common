@@ -58,21 +58,23 @@ namespace jp.ootr.common
             return false;
         }
 
-        public static void ToListChildren(this Transform obj, bool adjustHeight = false, bool reverse = false)
+        public static void ToListChildren(this Transform obj,int gap = 0, int padding = 0, bool adjustHeight = false, bool reverse = false)
         {
-            float y = 0;
+            float width = obj.GetComponent<RectTransform>().rect.width - padding * 2;
+            float y = -padding;
             for (var i = 0; i < obj.childCount; i++)
             {
                 var item = obj.GetChild(reverse ? obj.childCount - i - 1 : i);
                 if (!item.gameObject.activeSelf) continue;
                 var rect = item.gameObject.GetComponent<RectTransform>();
-                rect.anchoredPosition = new Vector2(0, y);
-                y -= rect.rect.height;
+                rect.anchoredPosition = new Vector2(padding, y);
+                rect.sizeDelta = new Vector2(width, rect.sizeDelta.y);
+                y -= rect.rect.height + gap;
             }
 
             if (!adjustHeight) return;
             var rectTransform = obj.gameObject.GetComponent<RectTransform>();
-            rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, -y);
+            rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, -y - gap + padding);
         }
 
         public static void ToFillChildren(this Transform obj, FillDirection direction, int gap = 0, int padding = 0)
@@ -139,6 +141,21 @@ namespace jp.ootr.common
             slider.value = index;
             input.text = value;
             toggle.isOn = false;
+        }
+        
+        public static void Update(this VerticalLayoutGroup layoutGroup)
+        {
+            layoutGroup.CalculateLayoutInputVertical();
+            layoutGroup.CalculateLayoutInputHorizontal();
+            layoutGroup.SetLayoutVertical();
+            layoutGroup.SetLayoutHorizontal();
+        }
+        public static void Update(this HorizontalLayoutGroup layoutGroup)
+        {
+            layoutGroup.CalculateLayoutInputVertical();
+            layoutGroup.CalculateLayoutInputHorizontal();
+            layoutGroup.SetLayoutVertical();
+            layoutGroup.SetLayoutHorizontal();
         }
     }
 
