@@ -115,20 +115,39 @@ namespace jp.ootr.common
         private static void UIFillItemsHorizontal(Transform obj, int gap = 0, int padding = 0)
         {
             var activeItemCount = 0;
+            var flexibleCount = 0;
+            var width = new float[obj.childCount];
+            float fixedWidth = 0;
             foreach (Transform item in obj)
             {
                 if (!item.gameObject.activeSelf) continue;
+                var layoutElement = item.gameObject.GetComponent<LayoutElement>();
+                if (layoutElement != null && layoutElement.preferredWidth > 0)
+                {
+                    fixedWidth += layoutElement.preferredWidth;
+                    width[activeItemCount++] = layoutElement.preferredWidth;
+                    continue;
+                }
                 activeItemCount++;
+                flexibleCount++;
             }
-
+            
             var gapSpace = gap * (activeItemCount - 1);
-            var itemWidth = (obj.GetComponent<RectTransform>().rect.width - gapSpace - padding * 2) / activeItemCount;
+            var itemWidth = (obj.GetComponent<RectTransform>().rect.width - fixedWidth - gapSpace - padding * 2) / flexibleCount;
             float x = padding;
+            var index = 0;
             foreach (Transform item in obj)
             {
                 if (!item.gameObject.activeSelf) continue;
                 var rectTransform = item.gameObject.GetComponent<RectTransform>();
                 rectTransform.anchoredPosition = new Vector2(x, 0);
+                var fixedWidthValue = width[index++];
+                if (fixedWidthValue > 0)
+                {
+                    rectTransform.sizeDelta = new Vector2(fixedWidthValue, rectTransform.sizeDelta.y);
+                    x += fixedWidthValue + gap;
+                    continue;
+                }
                 rectTransform.sizeDelta = new Vector2(itemWidth, rectTransform.sizeDelta.y);
                 x += itemWidth + gap;
             }
@@ -137,21 +156,40 @@ namespace jp.ootr.common
         private static void UIFillItemsVertical(Transform obj, int gap = 0, int padding = 0)
         {
             var activeItemCount = 0;
+            var flexibleCount = 0;
+            var height = new float[obj.childCount];
+            float fixedHeight = 0;
             foreach (Transform item in obj)
             {
                 if (!item.gameObject.activeSelf) continue;
+                var layoutElement = item.gameObject.GetComponent<LayoutElement>();
+                if (layoutElement != null && layoutElement.preferredHeight > 0)
+                {
+                    fixedHeight += layoutElement.preferredHeight;
+                    height[activeItemCount++] = layoutElement.preferredHeight;
+                    continue;
+                }
                 activeItemCount++;
+                flexibleCount++;
             }
 
             var gapSpace = gap * (activeItemCount - 1);
-            var itemHeight = (obj.GetComponent<RectTransform>().rect.height - gapSpace - padding * 2) / activeItemCount;
+            var itemHeight = (obj.GetComponent<RectTransform>().rect.height - fixedHeight - gapSpace - padding * 2) / flexibleCount;
             float y = -padding;
+            var index = 0;
             foreach (Transform item in obj)
             {
                 if (!item.gameObject.activeSelf) continue;
                 var rectTransform = item.gameObject.GetComponent<RectTransform>();
                 rectTransform.anchoredPosition = new Vector2(0, y);
-                rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, itemHeight);
+                var fixedHeightValue = height[index++];
+                if (fixedHeightValue > 0)
+                {
+                    rectTransform.sizeDelta = new Vector2(fixedHeightValue, rectTransform.sizeDelta.y);
+                    y -= fixedHeightValue + gap;
+                    continue;
+                }
+                rectTransform.sizeDelta = new Vector2(itemHeight, rectTransform.sizeDelta.y);
                 y -= itemHeight + gap;
             }
         }
