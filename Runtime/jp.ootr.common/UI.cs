@@ -57,16 +57,8 @@ namespace jp.ootr.common
             index = -1;
             return false;
         }
-
-        public static void ToListChildren(this Transform obj,int gap = 0, int padding = 0, bool adjustParent = false, bool reverse = false, Direction direction = Direction.Vertical)
-        {
-            if (direction == Direction.Horizontal)
-                obj.UIListItemsHorizontal(gap, padding, adjustParent, reverse);
-            else
-                obj.UIListItemsVertical(gap, padding, adjustParent, reverse);
-        }
         
-        private static void UIListItemsHorizontal(this Transform obj, int gap = 0, int padding = 0, bool adjustWidth = false, bool reverse = false)
+        public static void ToListChildrenHorizontal(this Transform obj, int gap = 0, int padding = 0, bool adjustWidth = false, bool reverse = false)
         {
             float height = obj.GetComponent<RectTransform>().rect.height - padding * 2;
             float x = padding;
@@ -85,7 +77,7 @@ namespace jp.ootr.common
             rectTransform.sizeDelta = new Vector2(x - gap + padding, rectTransform.sizeDelta.y);
         }
 
-        private static void UIListItemsVertical(this Transform obj,int gap = 0, int padding = 0, bool adjustHeight = false, bool reverse = false)
+        public static void ToListChildrenVertical(this Transform obj,int gap = 0, int padding = 0, bool adjustHeight = false, bool reverse = false)
         {
             float width = obj.GetComponent<RectTransform>().rect.width - padding * 2;
             float y = -padding;
@@ -104,15 +96,7 @@ namespace jp.ootr.common
             rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, -y - gap + padding);
         }
 
-        public static void ToFillChildren(this Transform obj, Direction direction, int gap = 0, int padding = 0)
-        {
-            if (direction == Direction.Horizontal)
-                UIFillItemsHorizontal(obj, gap, padding);
-            else
-                UIFillItemsVertical(obj, gap, padding);
-        }
-
-        private static void UIFillItemsHorizontal(Transform obj, int gap = 0, int padding = 0)
+        public static void ToFillChildrenHorizontal(this Transform obj, int gap = 0, int padding = 0)
         {
             var activeItemCount = 0;
             var flexibleCount = 0;
@@ -153,7 +137,7 @@ namespace jp.ootr.common
             }
         }
 
-        private static void UIFillItemsVertical(Transform obj, int gap = 0, int padding = 0)
+        public static void ToFillChildrenVertical(this Transform obj, int gap = 0, int padding = 0)
         {
             var activeItemCount = 0;
             var flexibleCount = 0;
