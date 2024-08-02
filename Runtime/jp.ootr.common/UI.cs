@@ -82,7 +82,7 @@ namespace jp.ootr.common
 
             if (!adjustWidth) return;
             var rectTransform = obj.gameObject.GetComponent<RectTransform>();
-            rectTransform.sizeDelta = new Vector2(-x - gap + padding, rectTransform.sizeDelta.y);
+            rectTransform.sizeDelta = new Vector2(x - gap + padding, rectTransform.sizeDelta.y);
         }
 
         private static void UIListItemsVertical(this Transform obj,int gap = 0, int padding = 0, bool adjustHeight = false, bool reverse = false)
