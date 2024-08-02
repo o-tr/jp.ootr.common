@@ -58,7 +58,34 @@ namespace jp.ootr.common
             return false;
         }
 
-        public static void ToListChildren(this Transform obj,int gap = 0, int padding = 0, bool adjustHeight = false, bool reverse = false)
+        public static void ToListChildren(this Transform obj,int gap = 0, int padding = 0, bool adjustParent = false, bool reverse = false, Direction direction = Direction.Vertical)
+        {
+            if (direction == Direction.Horizontal)
+                obj.UIListItemsHorizontal(gap, padding, adjustParent, reverse);
+            else
+                obj.UIListItemsVertical(gap, padding, adjustParent, reverse);
+        }
+        
+        private static void UIListItemsHorizontal(this Transform obj, int gap = 0, int padding = 0, bool adjustWidth = false, bool reverse = false)
+        {
+            float height = obj.GetComponent<RectTransform>().rect.height - padding * 2;
+            float x = padding;
+            for (var i = 0; i < obj.childCount; i++)
+            {
+                var item = obj.GetChild(reverse ? obj.childCount - i - 1 : i);
+                if (!item.gameObject.activeSelf) continue;
+                var rect = item.gameObject.GetComponent<RectTransform>();
+                rect.anchoredPosition = new Vector2(x, padding);
+                rect.sizeDelta = new Vector2(rect.sizeDelta.x, height);
+                x += rect.rect.width + gap;
+            }
+
+            if (!adjustWidth) return;
+            var rectTransform = obj.gameObject.GetComponent<RectTransform>();
+            rectTransform.sizeDelta = new Vector2(-x - gap + padding, rectTransform.sizeDelta.y);
+        }
+
+        private static void UIListItemsVertical(this Transform obj,int gap = 0, int padding = 0, bool adjustHeight = false, bool reverse = false)
         {
             float width = obj.GetComponent<RectTransform>().rect.width - padding * 2;
             float y = -padding;
@@ -77,9 +104,9 @@ namespace jp.ootr.common
             rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, -y - gap + padding);
         }
 
-        public static void ToFillChildren(this Transform obj, FillDirection direction, int gap = 0, int padding = 0)
+        public static void ToFillChildren(this Transform obj, Direction direction, int gap = 0, int padding = 0)
         {
-            if (direction == FillDirection.Horizontal)
+            if (direction == Direction.Horizontal)
                 UIFillItemsHorizontal(obj, gap, padding);
             else
                 UIFillItemsVertical(obj, gap, padding);
@@ -159,7 +186,7 @@ namespace jp.ootr.common
         }
     }
 
-    public enum FillDirection
+    public enum Direction
     {
         Horizontal,
         Vertical
