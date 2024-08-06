@@ -115,7 +115,45 @@ namespace jp.ootr.common
             index = Array.IndexOf(array, item);
             return index != -1;
         }
+        
+        public static T[] Merge<T>(this T[] array, T[] items, bool unique = false)
+        {
+            var tmpArray = new T[array.Length + items.Length];
+            Array.Copy(array, 0, tmpArray, 0, array.Length);
+            Array.Copy(items, 0, tmpArray, array.Length, items.Length);
+            return unique ? tmpArray.Unique() : tmpArray;
+        }
+        
+        public static T[] Unique<T>(this T[] array)
+        {
+            var tmpArray = new T[array.Length];
+            var tmpIndex = 0;
+            
+            foreach (var item in array)
+            {
+                if (tmpArray.Has(item)) continue;
+                tmpArray[tmpIndex++] = item;
+            }
+            return tmpArray.Resize(tmpIndex);
+        }
 
+        public static int[] IntUnique(this int[] array)
+        {
+            Debug.Log("int Unique");
+            var tmpArray = new int[array.Length];
+            var tmpIndex = 0;
+            if (array.Has(0))
+            {
+                tmpIndex++;
+            }
+            foreach (var item in array)
+            {
+                if (tmpArray.Has(item)) continue;
+                tmpArray[tmpIndex++] = item;
+            }
+            return tmpArray.Resize(tmpIndex);
+        }
+        
         public static T[] __Shift<T>(this T[] array)
         {
             return array.__Shift(out var _void);
@@ -159,7 +197,7 @@ namespace jp.ootr.common
          */
         public static void Diff<T>(this T[] current, T[] newArray, out int[] removed, out int[] added)
         {
-            removed = new int[newArray.Length];
+            removed = new int[current.Length];
             var removedIndex = 0;
             for (int i = 0; i < current.Length; i++)
             {
@@ -167,7 +205,7 @@ namespace jp.ootr.common
                 removed[removedIndex++] = i;
             }
             
-            added = new int[current.Length];
+            added = new int[newArray.Length];
             var addedIndex = 0;
             for (int i = 0; i < newArray.Length; i++)
             {
