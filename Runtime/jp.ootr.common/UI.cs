@@ -61,27 +61,33 @@ namespace jp.ootr.common
         public static void ToListChildrenHorizontal(this Transform obj, int gap = 0, int padding = 0,
             bool adjustWidth = false, bool reverse = false)
         {
-            float height = obj.GetComponent<RectTransform>().rect.height - padding * 2;
+            var rectTransform = obj.gameObject.GetComponent<RectTransform>();
+            float height = rectTransform.rect.height - padding * 2;
             float x = padding;
             for (var i = 0; i < obj.childCount; i++)
             {
                 var item = obj.GetChild(reverse ? obj.childCount - i - 1 : i);
                 if (!item.gameObject.activeSelf) continue;
                 var rect = item.gameObject.GetComponent<RectTransform>();
-                rect.anchoredPosition = new Vector2(x, padding);
-                rect.sizeDelta = new Vector2(rect.sizeDelta.x, height);
+                rect.anchoredPosition = new Vector2(x, -padding);
+                float anchorHeight1 = rect.rect.height * (rect.anchorMax.y - rect.anchorMin.y);
+                rect.sizeDelta = new Vector2(rect.sizeDelta.x, height - anchorHeight1);
                 x += rect.rect.width + gap;
+                Debug.Log($"x: {x}, gap: {gap}, padding: {padding}, width: {rect.rect.width}");
             }
 
             if (!adjustWidth) return;
-            var rectTransform = obj.gameObject.GetComponent<RectTransform>();
-            rectTransform.sizeDelta = new Vector2(x - gap + padding, rectTransform.sizeDelta.y);
+            float anchorHeight = rectTransform.rect.height * (rectTransform.anchorMax.y - rectTransform.anchorMin.y);
+            float anchorWidth = rectTransform.rect.width * (rectTransform.anchorMax.x - rectTransform.anchorMin.x);
+            Debug.Log($"x: {x}, gap: {gap}, padding: {padding}, anchorWidth: {anchorWidth}");
+            rectTransform.sizeDelta = new Vector2(x - gap + padding - anchorWidth, rectTransform.rect.height - anchorHeight);
         }
 
         public static void ToListChildrenVertical(this Transform obj, int gap = 0, int padding = 0,
             bool adjustHeight = false, bool reverse = false)
         {
-            float width = obj.GetComponent<RectTransform>().rect.width - padding * 2;
+            var rectTransform = obj.gameObject.GetComponent<RectTransform>();
+            float width = rectTransform.rect.width - padding * 2;
             float y = -padding;
             for (var i = 0; i < obj.childCount; i++)
             {
@@ -89,13 +95,14 @@ namespace jp.ootr.common
                 if (!item.gameObject.activeSelf) continue;
                 var rect = item.gameObject.GetComponent<RectTransform>();
                 rect.anchoredPosition = new Vector2(padding, y);
-                rect.sizeDelta = new Vector2(width, rect.sizeDelta.y);
+                float anchorWidth1 = rect.rect.width * (rect.anchorMax.x - rect.anchorMin.x);
+                rect.sizeDelta = new Vector2(width - anchorWidth1, rect.sizeDelta.y);
                 y -= rect.rect.height + gap;
             }
 
             if (!adjustHeight) return;
-            var rectTransform = obj.gameObject.GetComponent<RectTransform>();
-            rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, -y - gap + padding);
+            float anchorWidth = rectTransform.rect.width * (rectTransform.anchorMax.x - rectTransform.anchorMin.x);
+            rectTransform.sizeDelta = new Vector2(rectTransform.rect.width - anchorWidth, -y - gap + padding);
         }
 
         public static void ToFillChildrenHorizontal(this Transform obj, int gap = 0, int padding = 0)
