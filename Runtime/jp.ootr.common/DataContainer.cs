@@ -13,6 +13,7 @@ namespace jp.ootr.common
                 list.TryGetValue(i, TokenType.String, out var value);
                 array[i] = value.String;
             }
+
             return array;
         }
     }

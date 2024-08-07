@@ -14,6 +14,7 @@ namespace jp.ootr.common
             {
                 components.AddRange(rootObject.GetComponentsInChildren<T>());
             }
+
             return components;
         }
     }

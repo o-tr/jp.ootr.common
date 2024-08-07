@@ -57,8 +57,9 @@ namespace jp.ootr.common
             index = -1;
             return false;
         }
-        
-        public static void ToListChildrenHorizontal(this Transform obj, int gap = 0, int padding = 0, bool adjustWidth = false, bool reverse = false)
+
+        public static void ToListChildrenHorizontal(this Transform obj, int gap = 0, int padding = 0,
+            bool adjustWidth = false, bool reverse = false)
         {
             float height = obj.GetComponent<RectTransform>().rect.height - padding * 2;
             float x = padding;
@@ -77,7 +78,8 @@ namespace jp.ootr.common
             rectTransform.sizeDelta = new Vector2(x - gap + padding, rectTransform.sizeDelta.y);
         }
 
-        public static void ToListChildrenVertical(this Transform obj,int gap = 0, int padding = 0, bool adjustHeight = false, bool reverse = false)
+        public static void ToListChildrenVertical(this Transform obj, int gap = 0, int padding = 0,
+            bool adjustHeight = false, bool reverse = false)
         {
             float width = obj.GetComponent<RectTransform>().rect.width - padding * 2;
             float y = -padding;
@@ -112,12 +114,14 @@ namespace jp.ootr.common
                     width[activeItemCount++] = layoutElement.preferredWidth;
                     continue;
                 }
+
                 activeItemCount++;
                 flexibleCount++;
             }
-            
+
             var gapSpace = gap * (activeItemCount - 1);
-            var itemWidth = (obj.GetComponent<RectTransform>().rect.width - fixedWidth - gapSpace - padding * 2) / flexibleCount;
+            var itemWidth = (obj.GetComponent<RectTransform>().rect.width - fixedWidth - gapSpace - padding * 2) /
+                            flexibleCount;
             float x = padding;
             var index = 0;
             foreach (Transform item in obj)
@@ -132,6 +136,7 @@ namespace jp.ootr.common
                     x += fixedWidthValue + gap;
                     continue;
                 }
+
                 rectTransform.sizeDelta = new Vector2(itemWidth, rectTransform.sizeDelta.y);
                 x += itemWidth + gap;
             }
@@ -153,12 +158,14 @@ namespace jp.ootr.common
                     height[activeItemCount++] = layoutElement.preferredHeight;
                     continue;
                 }
+
                 activeItemCount++;
                 flexibleCount++;
             }
 
             var gapSpace = gap * (activeItemCount - 1);
-            var itemHeight = (obj.GetComponent<RectTransform>().rect.height - fixedHeight - gapSpace - padding * 2) / flexibleCount;
+            var itemHeight = (obj.GetComponent<RectTransform>().rect.height - fixedHeight - gapSpace - padding * 2) /
+                             flexibleCount;
             float y = -padding;
             var index = 0;
             foreach (Transform item in obj)
@@ -173,6 +180,7 @@ namespace jp.ootr.common
                     y -= fixedHeightValue + gap;
                     continue;
                 }
+
                 rectTransform.sizeDelta = new Vector2(itemHeight, rectTransform.sizeDelta.y);
                 y -= itemHeight + gap;
             }
@@ -191,7 +199,7 @@ namespace jp.ootr.common
             input.text = value;
             toggle.isOn = false;
         }
-        
+
         public static void Update(this VerticalLayoutGroup layoutGroup)
         {
             layoutGroup.CalculateLayoutInputVertical();
@@ -199,6 +207,7 @@ namespace jp.ootr.common
             layoutGroup.SetLayoutVertical();
             layoutGroup.SetLayoutHorizontal();
         }
+
         public static void Update(this HorizontalLayoutGroup layoutGroup)
         {
             layoutGroup.CalculateLayoutInputVertical();

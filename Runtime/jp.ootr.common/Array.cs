@@ -7,11 +7,12 @@ namespace jp.ootr.common
     {
         public const string PackageName = "jp.ootr.common.ArrayUtils";
 
-        
+
         public static T[] Remove<T>(this T[] array, int index)
         {
             return array.Remove(index, out var _1);
         }
+
         public static T[] Remove<T>(this T[] array, int index, out T item)
         {
             if (index < 0 || index >= array.Length)
@@ -115,7 +116,7 @@ namespace jp.ootr.common
             index = Array.IndexOf(array, item);
             return index != -1;
         }
-        
+
         public static T[] Merge<T>(this T[] array, T[] items, bool unique = false)
         {
             var tmpArray = new T[array.Length + items.Length];
@@ -123,17 +124,18 @@ namespace jp.ootr.common
             Array.Copy(items, 0, tmpArray, array.Length, items.Length);
             return unique ? tmpArray.Unique() : tmpArray;
         }
-        
+
         public static T[] Unique<T>(this T[] array)
         {
             var tmpArray = new T[array.Length];
             var tmpIndex = 0;
-            
+
             foreach (var item in array)
             {
                 if (tmpArray.Has(item)) continue;
                 tmpArray[tmpIndex++] = item;
             }
+
             return tmpArray.Resize(tmpIndex);
         }
 
@@ -146,19 +148,21 @@ namespace jp.ootr.common
             {
                 tmpIndex++;
             }
+
             foreach (var item in array)
             {
                 if (tmpArray.Has(item)) continue;
                 tmpArray[tmpIndex++] = item;
             }
+
             return tmpArray.Resize(tmpIndex);
         }
-        
+
         public static T[] __Shift<T>(this T[] array)
         {
             return array.__Shift(out var _void);
         }
-        
+
         /**
          * <summary>
          *     [DANGER]
@@ -204,7 +208,7 @@ namespace jp.ootr.common
                 if (newArray.Has(current[i])) continue;
                 removed[removedIndex++] = i;
             }
-            
+
             added = new int[newArray.Length];
             var addedIndex = 0;
             for (int i = 0; i < newArray.Length; i++)
@@ -212,7 +216,7 @@ namespace jp.ootr.common
                 if (current.Has(newArray[i])) continue;
                 added[addedIndex++] = i;
             }
-            
+
             removed = removed.Resize(removedIndex);
             added = added.Resize(addedIndex);
         }
