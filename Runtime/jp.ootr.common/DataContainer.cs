@@ -60,9 +60,10 @@ namespace jp.ootr.common
         {
             if (token.TokenType != TokenType.DataDictionary) return false;
             var dict = token.DataDictionary;
+            var keys = dict.GetKeys().ToStringArray();
             for (var i = 0; i < dict.Count; i++)
             {
-                if (!dict.TryGetValue(i, TokenType.String, out var _1)) return false;
+                if (!dict.TryGetValue(keys[i], TokenType.String, out var _1)) return false;
             }
 
             return true;
