@@ -1,4 +1,5 @@
 ﻿using UdonSharp;
+using UnityEngine;
 using VRC.SDKBase;
 using VRC.Udon.Common;
 using VRC.Udon.Common.Enums;
@@ -9,6 +10,8 @@ namespace jp.ootr.common
     {
         protected readonly int SyncURLRetryCountLimit = 3;
         protected readonly float SyncURLRetryInterval = 0.5f;
+        
+        [SerializeField] LogLevel logLevel = LogLevel.Unspecified;
 
         public virtual string GetClassName()
         {
@@ -17,32 +20,33 @@ namespace jp.ootr.common
 
         public virtual string GetDisplayName()
         {
-            return GetClassName();
+            var names = GetClassName().Split(".");
+            return names.Length > 0 ? names[names.Length - 1] : GetClassName();
         }
 
-        protected virtual void ConsoleDebug(string message, string prefix = "")
+        protected virtual void ConsoleDebug(string message, string[] prefix = null)
         {
-            Console.Debug(message, GetClassName(), prefix);
+            if ((int)logLevel <= (int)LogLevel.Debug) Console.Debug(message, GetDisplayName(), prefix);
         }
 
-        protected virtual void ConsoleError(string message, string prefix = "")
+        protected virtual void ConsoleError(string message, string[] prefix = null)
         {
-            Console.Error(message, GetClassName(), prefix);
+            if ((int)logLevel <= (int)LogLevel.Error) Console.Error(message, GetDisplayName(), prefix);
         }
 
-        protected virtual void ConsoleWarn(string message, string prefix = "")
+        protected virtual void ConsoleWarn(string message, string[] prefix = null)
         {
-            Console.Warn(message, GetClassName(), prefix);
+            if ((int)logLevel <= (int)LogLevel.Warn) Console.Warn(message, GetDisplayName(), prefix);
         }
 
-        protected virtual void ConsoleLog(string message, string prefix = "")
+        protected virtual void ConsoleLog(string message, string[] prefix = null)
         {
-            Console.Log(message, GetClassName(), prefix);
+            if ((int)logLevel <= (int)LogLevel.Log) Console.Log(message, GetDisplayName(), prefix);
         }
 
-        protected virtual void ConsoleInfo(string message, string prefix = "")
+        protected virtual void ConsoleInfo(string message, string[] prefix = null)
         {
-            Console.Info(message, GetClassName(), prefix);
+            if ((int)logLevel <= (int)LogLevel.Info) Console.Info(message, GetDisplayName(), prefix);
         }
 
         protected virtual void Sync()

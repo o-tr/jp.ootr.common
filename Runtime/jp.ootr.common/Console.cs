@@ -4,31 +4,29 @@ namespace jp.ootr.common
     {
         public const string PackageName = "jp.ootr.common.Console";
 
-        public static void Error(string message, string packageName = PackageName, string prefix = "")
+        public static void Error(string message, string packageName = PackageName, string[] prefix = null)
         {
-            UnityEngine.Debug.LogError(
-                $"[<color=lime>{packageName}</color>]{prefix} [<color=red>Error</color>] {message}");
+            UnityEngine.Debug.LogError(LogBuilder.Build(LogLevel.Error, message, packageName, prefix));
         }
 
-        public static void Warn(string message, string packageName = PackageName, string prefix = "")
+        public static void Warn(string message, string packageName = PackageName, string[] prefix = null)
         {
-            UnityEngine.Debug.LogWarning(
-                $"[<color=lime>{packageName}</color>]{prefix} [<color=yellow>Warn</color>] {message}");
+            UnityEngine.Debug.LogWarning(LogBuilder.Build(LogLevel.Warn, message, packageName, prefix));
         }
 
-        public static void Log(string message, string packageName = PackageName, string prefix = "")
+        public static void Log(string message, string packageName = PackageName, string[] prefix = null)
         {
-            UnityEngine.Debug.Log($"[<color=lime>{packageName}</color>]{prefix} [<color=blue>Log</color>] {message}");
+            UnityEngine.Debug.Log(LogBuilder.Build(LogLevel.Log, message, packageName, prefix));
         }
 
-        public static void Info(string message, string packageName = PackageName, string prefix = "")
+        public static void Info(string message, string packageName = PackageName, string[] prefix = null)
         {
-            UnityEngine.Debug.Log($"[<color=lime>{packageName}</color>]{prefix} [<color=green>Info</color>] {message}");
+            UnityEngine.Debug.Log(LogBuilder.Build(LogLevel.Info, message, packageName, prefix));
         }
 
-        public static void Debug(string message, string packageName = PackageName, string prefix = "")
+        public static void Debug(string message, string packageName = PackageName, string[] prefix = null)
         {
-            UnityEngine.Debug.Log($"[<color=lime>{packageName}</color>]{prefix} [<color=gray>Debug</color>] {message}");
+            UnityEngine.Debug.Log(LogBuilder.Build(LogLevel.Debug, message, packageName, prefix));
         }
     }
 }
