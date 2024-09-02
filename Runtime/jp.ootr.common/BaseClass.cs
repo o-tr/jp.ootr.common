@@ -11,7 +11,7 @@ namespace jp.ootr.common
         protected readonly int SyncURLRetryCountLimit = 3;
         protected readonly float SyncURLRetryInterval = 0.5f;
         
-        [SerializeField] LogLevel logLevel = LogLevel.Unspecified;
+        [SerializeField] public LogLevel logLevel = LogLevel.Debug;
 
         public virtual string GetClassName()
         {

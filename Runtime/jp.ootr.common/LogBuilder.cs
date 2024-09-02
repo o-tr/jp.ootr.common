@@ -2,7 +2,6 @@
 {
     public enum LogLevel
     {
-        Unspecified = -1,
         Debug,
         Info,
         Log,
