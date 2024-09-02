@@ -8,10 +8,9 @@ namespace jp.ootr.common
 {
     public class BaseClass : UdonSharpBehaviour
     {
+        [SerializeField] public LogLevel logLevel = LogLevel.Debug;
         protected readonly int SyncURLRetryCountLimit = 3;
         protected readonly float SyncURLRetryInterval = 0.5f;
-        
-        [SerializeField] public LogLevel logLevel = LogLevel.Debug;
 
         public virtual string GetClassName()
         {

@@ -16,7 +16,7 @@ namespace jp.ootr.common
 
             return array;
         }
-        
+
         public static bool TryToStringArray(this DataToken token, out string[] array)
         {
             if (token.TokenType != TokenType.DataList)
@@ -24,8 +24,10 @@ namespace jp.ootr.common
                 array = null;
                 return false;
             }
+
             return token.DataList.TryToStringArray(out array);
         }
+
         public static bool TryToStringArray(this DataList list, out string[] array)
         {
             var length = list.Count;
@@ -37,34 +39,33 @@ namespace jp.ootr.common
                     array = null;
                     return false;
                 }
+
                 array[i] = value.String;
             }
 
             return true;
         }
-        
+
         public static bool IsStringArray(this DataToken token)
         {
             if (token.TokenType != TokenType.DataList) return false;
             var list = token.DataList;
             var length = list.Count;
             for (var i = 0; i < length; i++)
-            {
-                if (!list.TryGetValue(i, TokenType.String, out var _1)) return false;
-            }
+                if (!list.TryGetValue(i, TokenType.String, out var _1))
+                    return false;
 
             return true;
         }
-        
+
         public static bool IsStringDictionary(this DataToken token)
         {
             if (token.TokenType != TokenType.DataDictionary) return false;
             var dict = token.DataDictionary;
             var keys = dict.GetKeys().ToStringArray();
             for (var i = 0; i < dict.Count; i++)
-            {
-                if (!dict.TryGetValue(keys[i], TokenType.String, out var _1)) return false;
-            }
+                if (!dict.TryGetValue(keys[i], TokenType.String, out var _1))
+                    return false;
 
             return true;
         }

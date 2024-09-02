@@ -10,10 +10,7 @@ namespace jp.ootr.common
             var components = new List<T>();
             var scene = SceneManager.GetActiveScene();
             var rootObjects = scene.GetRootGameObjects();
-            foreach (var rootObject in rootObjects)
-            {
-                components.AddRange(rootObject.GetComponentsInChildren<T>());
-            }
+            foreach (var rootObject in rootObjects) components.AddRange(rootObject.GetComponentsInChildren<T>());
 
             return components;
         }

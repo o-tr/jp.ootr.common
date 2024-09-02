@@ -6,13 +6,13 @@
         Info,
         Log,
         Warn,
-        Error,
+        Error
     }
-    
+
     public static class LogBuilder
     {
-
-        public static string Build(LogLevel level, string message, string packageName = "jp.ootr.common.Console", string[] prefix = null)
+        public static string Build(LogLevel level, string message, string packageName = "jp.ootr.common.Console",
+            string[] prefix = null)
         {
             return $"[<color=lime>{packageName}</color>] {BuildPrefix(prefix)} [{GetLevelString(level)}] {message}";
         }
@@ -34,28 +34,19 @@
                     return "<color=gray>Debug</color>";
             }
         }
-        
+
         private static string BuildPrefix(string[] prefix)
         {
-            if (prefix == null || prefix.Length == 0)
-            {
-                return "";
-            }
+            if (prefix == null || prefix.Length == 0) return "";
 
             return string.Join(" ", prefix);
         }
-        
+
         public static string[] CombinePrefix(string[] prefix, string[] additional)
         {
-            if (prefix == null || prefix.Length == 0)
-            {
-                return additional;
-            }
+            if (prefix == null || prefix.Length == 0) return additional;
 
-            if (additional == null || additional.Length == 0)
-            {
-                return prefix;
-            }
+            if (additional == null || additional.Length == 0) return prefix;
 
             return prefix.Merge(additional);
         }

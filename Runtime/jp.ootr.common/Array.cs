@@ -144,10 +144,7 @@ namespace jp.ootr.common
             Debug.Log("int Unique");
             var tmpArray = new int[array.Length];
             var tmpIndex = 0;
-            if (array.Has(0))
-            {
-                tmpIndex++;
-            }
+            if (array.Has(0)) tmpIndex++;
 
             foreach (var item in array)
             {
@@ -195,15 +192,15 @@ namespace jp.ootr.common
 
         /**
          * <summary>
-         * removed: currentから削除された要素のcurrentのindex
-         * added: newArrayに追加された要素のnewArrayのindex
+         *     removed: currentから削除された要素のcurrentのindex
+         *     added: newArrayに追加された要素のnewArrayのindex
          * </summary>
          */
         public static void Diff<T>(this T[] current, T[] newArray, out int[] removed, out int[] added)
         {
             removed = new int[current.Length];
             var removedIndex = 0;
-            for (int i = 0; i < current.Length; i++)
+            for (var i = 0; i < current.Length; i++)
             {
                 if (newArray.Has(current[i])) continue;
                 removed[removedIndex++] = i;
@@ -211,7 +208,7 @@ namespace jp.ootr.common
 
             added = new int[newArray.Length];
             var addedIndex = 0;
-            for (int i = 0; i < newArray.Length; i++)
+            for (var i = 0; i < newArray.Length; i++)
             {
                 if (current.Has(newArray[i])) continue;
                 added[addedIndex++] = i;

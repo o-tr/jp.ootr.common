@@ -21,9 +21,9 @@ namespace jp.ootr.common
         {
             if (data1 == null || data2 == null || data1.Length != data2.Length)
                 return false;
-            for (int i = 0; i < sampleSize; i++)
+            for (var i = 0; i < sampleSize; i++)
             {
-                int x = Random.Range(0, data1.Length - 1);
+                var x = Random.Range(0, data1.Length - 1);
 
                 if (data1[x] != data2[x])
                     return false;
@@ -49,9 +49,9 @@ namespace jp.ootr.common
         {
             if (data == null) return true;
             var len = data.Length / 4;
-            for (int i = 0; i < sampleSize; i++)
+            for (var i = 0; i < sampleSize; i++)
             {
-                int x = Random.Range(0, len - 1);
+                var x = Random.Range(0, len - 1);
 
                 if (data[x * 4 + 3] != 0)
                     return false;

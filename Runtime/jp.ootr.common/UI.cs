@@ -62,7 +62,7 @@ namespace jp.ootr.common
             bool adjustWidth = false, bool reverse = false)
         {
             var rectTransform = obj.gameObject.GetComponent<RectTransform>();
-            float height = rectTransform.rect.height - padding * 2;
+            var height = rectTransform.rect.height - padding * 2;
             float x = padding;
             for (var i = 0; i < obj.childCount; i++)
             {
@@ -70,24 +70,25 @@ namespace jp.ootr.common
                 if (!item.gameObject.activeSelf) continue;
                 var rect = item.gameObject.GetComponent<RectTransform>();
                 rect.anchoredPosition = new Vector2(x, -padding);
-                float anchorHeight1 = rect.rect.height * (rect.anchorMax.y - rect.anchorMin.y);
+                var anchorHeight1 = rect.rect.height * (rect.anchorMax.y - rect.anchorMin.y);
                 rect.sizeDelta = new Vector2(rect.sizeDelta.x, height - anchorHeight1);
                 x += rect.rect.width + gap;
                 Debug.Log($"x: {x}, gap: {gap}, padding: {padding}, width: {rect.rect.width}");
             }
 
             if (!adjustWidth) return;
-            float anchorHeight = rectTransform.rect.height * (rectTransform.anchorMax.y - rectTransform.anchorMin.y);
-            float anchorWidth = rectTransform.rect.width * (rectTransform.anchorMax.x - rectTransform.anchorMin.x);
+            var anchorHeight = rectTransform.rect.height * (rectTransform.anchorMax.y - rectTransform.anchorMin.y);
+            var anchorWidth = rectTransform.rect.width * (rectTransform.anchorMax.x - rectTransform.anchorMin.x);
             Debug.Log($"x: {x}, gap: {gap}, padding: {padding}, anchorWidth: {anchorWidth}");
-            rectTransform.sizeDelta = new Vector2(x - gap + padding - anchorWidth, rectTransform.rect.height - anchorHeight);
+            rectTransform.sizeDelta =
+                new Vector2(x - gap + padding - anchorWidth, rectTransform.rect.height - anchorHeight);
         }
 
         public static void ToListChildrenVertical(this Transform obj, int gap = 0, int padding = 0,
             bool adjustHeight = false, bool reverse = false)
         {
             var rectTransform = obj.gameObject.GetComponent<RectTransform>();
-            float width = rectTransform.rect.width - padding * 2;
+            var width = rectTransform.rect.width - padding * 2;
             float y = -padding;
             for (var i = 0; i < obj.childCount; i++)
             {
@@ -95,13 +96,13 @@ namespace jp.ootr.common
                 if (!item.gameObject.activeSelf) continue;
                 var rect = item.gameObject.GetComponent<RectTransform>();
                 rect.anchoredPosition = new Vector2(padding, y);
-                float anchorWidth1 = rect.rect.width * (rect.anchorMax.x - rect.anchorMin.x);
+                var anchorWidth1 = rect.rect.width * (rect.anchorMax.x - rect.anchorMin.x);
                 rect.sizeDelta = new Vector2(width - anchorWidth1, rect.sizeDelta.y);
                 y -= rect.rect.height + gap;
             }
 
             if (!adjustHeight) return;
-            float anchorWidth = rectTransform.rect.width * (rectTransform.anchorMax.x - rectTransform.anchorMin.x);
+            var anchorWidth = rectTransform.rect.width * (rectTransform.anchorMax.x - rectTransform.anchorMin.x);
             rectTransform.sizeDelta = new Vector2(rectTransform.rect.width - anchorWidth, -y - gap + padding);
         }
 
