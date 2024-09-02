@@ -184,12 +184,12 @@ namespace jp.ootr.common
                 var fixedHeightValue = height[index++];
                 if (fixedHeightValue > 0)
                 {
-                    rectTransform.sizeDelta = new Vector2(fixedHeightValue, rectTransform.sizeDelta.y);
+                    rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x,fixedHeightValue);
                     y -= fixedHeightValue + gap;
                     continue;
                 }
 
-                rectTransform.sizeDelta = new Vector2(itemHeight, rectTransform.sizeDelta.y);
+                rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x,itemHeight);
                 y -= itemHeight + gap;
             }
         }
