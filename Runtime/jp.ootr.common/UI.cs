@@ -73,13 +73,11 @@ namespace jp.ootr.common
                 var anchorHeight1 = rect.rect.height * (rect.anchorMax.y - rect.anchorMin.y);
                 rect.sizeDelta = new Vector2(rect.sizeDelta.x, height - anchorHeight1);
                 x += rect.rect.width + gap;
-                Debug.Log($"x: {x}, gap: {gap}, padding: {padding}, width: {rect.rect.width}");
             }
 
             if (!adjustWidth) return;
             var anchorHeight = rectTransform.rect.height * (rectTransform.anchorMax.y - rectTransform.anchorMin.y);
             var anchorWidth = rectTransform.rect.width * (rectTransform.anchorMax.x - rectTransform.anchorMin.x);
-            Debug.Log($"x: {x}, gap: {gap}, padding: {padding}, anchorWidth: {anchorWidth}");
             rectTransform.sizeDelta =
                 new Vector2(x - gap + padding - anchorWidth, rectTransform.rect.height - anchorHeight);
         }

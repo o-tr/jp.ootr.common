@@ -39,7 +39,7 @@
         {
             if (prefix == null || prefix.Length == 0) return "";
 
-            return string.Join(" ", prefix);
+            return $"[{string.Join("] [", prefix)}]";
         }
 
         public static string[] CombinePrefix(string[] prefix, string[] additional)

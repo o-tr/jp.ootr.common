@@ -141,7 +141,6 @@ namespace jp.ootr.common
 
         public static int[] IntUnique(this int[] array)
         {
-            Debug.Log("int Unique");
             var tmpArray = new int[array.Length];
             var tmpIndex = 0;
             if (array.Has(0)) tmpIndex++;
