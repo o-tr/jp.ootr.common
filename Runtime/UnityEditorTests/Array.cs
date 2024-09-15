@@ -281,5 +281,34 @@ namespace jp.ootr.common.Tests.ArrayUtils
             array.AreEqual(new int[0]);
         }
     }
+    
+    public class PopTests
+    {
+        [Test]
+        public void Pop()
+        {
+            var array = new[] {1, 2, 3, 4, 5};
+            array = array.Pop();
+            array.AreEqual(new[] {1, 2, 3, 4});
+        }
+        
+        [Test]
+        public void PopWithOut()
+        {
+            var array = new[] {1, 2, 3, 4, 5};
+            array = array.Pop(out var item);
+            Assert.AreEqual(5, item);
+            array.AreEqual(new[] {1, 2, 3, 4});
+        }
+        
+        [Test]
+        public void PopWithZeroLength()
+        {
+            var array = new int[0];
+            array = array.Pop(out var _void, out var success);
+            Assert.IsFalse(success);
+            array.AreEqual(new int[0]);
+        }
+    }
 }
 #endif
