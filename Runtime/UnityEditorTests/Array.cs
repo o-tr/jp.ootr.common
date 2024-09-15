@@ -217,5 +217,40 @@ namespace jp.ootr.common.Tests.ArrayUtils
             array.AreEqual(new[] {1, 2, 3, 4, 5, 6, 7, 8});
         }
     }
+    
+    public class UniqueTests
+    {
+        [Test]
+        public void Unique()
+        {
+            var array = new[] {1, 2, 3, 4, 5};
+            array = array.Unique();
+            array.AreEqual(new[] {1, 2, 3, 4, 5});
+        }
+        
+        [Test]
+        public void UniqueWithZero()
+        {
+            var array = new[] {1, 2, 3, 4, 5, 0};
+            array = array.Unique();
+            array.AreEqual(new[] {1, 2, 3, 4, 5, 0});
+        }
+        
+        [Test]
+        public void UniqueWithZeroAndDuplicate()
+        {
+            var array = new[] {1, 2, 3, 4, 5, 0, 0, 0};
+            array = array.Unique();
+            array.AreEqual(new[] {1, 2, 3, 4, 5, 0});
+        }
+        
+        [Test]
+        public void UniqueWithZeroAndDuplicateAndNegative()
+        {
+            var array = new[] {1, 2, 3, 4, 5, 0, 0, 0, -1, -2, -3};
+            array = array.Unique();
+            array.AreEqual(new[] {1, 2, 3, 4, 5, 0, -1, -2, -3});
+        }
+    }
 }
 #endif
