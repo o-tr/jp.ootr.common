@@ -61,4 +61,39 @@ namespace jp.ootr.common.Tests.ArrayUtils
             array.AreEqual(new[] {1, 2, 3, 6, 7, 8, 5});
         }
     }
+    
+    public class ResizeTests
+    {
+        [Test]
+        public void Resize()
+        {
+            var array = new[] {1, 2, 3, 4, 5};
+            array = array.Resize(3);
+            array.AreEqual(new[] {1, 2, 3});
+        }
+        
+        [Test]
+        public void ResizeWithNegativeLength()
+        {
+            var array = new[] {1, 2, 3, 4, 5};
+            array = array.Resize(-2);
+            array.AreEqual(new[] {1, 2, 3});
+        }
+        
+        [Test]
+        public void ResizeWithZeroLength()
+        {
+            var array = new[] {1, 2, 3, 4, 5};
+            array = array.Resize(0);
+            array.AreEqual(new int[0]);
+        }
+        
+        [Test]
+        public void ResizeWithNegativeLengthAndZeroLengthArray()
+        {
+            var array = new[] {1, 2, 3, 4, 5};
+            array = array.Resize(-10);
+            array.AreEqual(new int[0]);
+        }
+    }
 }

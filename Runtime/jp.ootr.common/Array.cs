@@ -67,13 +67,20 @@ namespace jp.ootr.common
         public static T[] Resize<T>(this T[] array, int targetLength)
         {
             if (array.Length == targetLength) return array;
+            
+            if (targetLength < 0)
+            {
+                targetLength = array.Length + targetLength;
+            }
+            
             if (targetLength < 0)
             {
                 Console.Warn($"ResizeArray: Target length is less than 0: {targetLength}", PackageName);
-                return array;
+                return new T[0];
             }
 
             var tmpArray = new T[targetLength];
+            if (array.Length == 0) return tmpArray;
             Array.Copy(array, 0, tmpArray, 0, Mathf.Min(array.Length, targetLength));
             return tmpArray;
         }
