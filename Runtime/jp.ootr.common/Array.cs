@@ -245,7 +245,32 @@ namespace jp.ootr.common
             Array.Copy(array, 1, tmpArray, 0, array.Length - 1);
             return tmpArray;
         }
-
+        
+        public static T[] Pop<T>(this T[] array)
+        {
+            return array.Pop(out var _void, out var _void2);
+        }
+        
+        public static T[] Pop<T>(this T[] array, out T item)
+        {
+            return array.Pop(out item, out var _void);
+        }
+        
+        public static T[] Pop<T>(this T[] array, out T item, out bool success)
+        {
+            if (array.Length == 0)
+            {
+                item = default;
+                success = false;
+                return array;
+            }
+            item = array[array.Length - 1];
+            var tmpArray = new T[array.Length - 1];
+            Array.Copy(array, 0, tmpArray, 0, array.Length - 1);
+            success = true;
+            return tmpArray;
+        }
+        
         /**
          * <summary>
          *     [DANGER]
@@ -253,6 +278,7 @@ namespace jp.ootr.common
          *     必ず呼び出し元で確認を行ってください
          * </summary>
          */
+        [Obsolete("Use ArrayUtils.Pop instead")]
         public static T[] __Pop<T>(this T[] array, out T item)
         {
             item = array[array.Length - 1];
