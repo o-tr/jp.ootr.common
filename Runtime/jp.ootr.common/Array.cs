@@ -198,6 +198,33 @@ namespace jp.ootr.common
             return array.Unique();
         }
 
+        
+        public static T[] Shift<T>(this T[] array)
+        {
+            return array.Shift(out var _void, out var _void2);
+        }
+        
+        public static T[] Shift<T>(this T[] array, out T item)
+        {
+            return array.Shift(out item, out var _void);
+        }
+        
+        public static T[] Shift<T>(this T[] array, out T item, out bool success)
+        {
+            if (array.Length == 0)
+            {
+                item = default;
+                success = false;
+                return array;
+            }
+            item = array[0];
+            var tmpArray = new T[array.Length - 1];
+            Array.Copy(array, 1, tmpArray, 0, array.Length - 1);
+            success = true;
+            return tmpArray;
+        }
+        
+        [Obsolete("Use ArrayUtils.Shift instead")]
         public static T[] __Shift<T>(this T[] array)
         {
             return array.__Shift(out var _void);
@@ -210,6 +237,7 @@ namespace jp.ootr.common
          *     必ず呼び出し元で確認を行ってください
          * </summary>
          */
+        [Obsolete("Use ArrayUtils.Shift instead")]
         public static T[] __Shift<T>(this T[] array, out T item)
         {
             item = array[0];
