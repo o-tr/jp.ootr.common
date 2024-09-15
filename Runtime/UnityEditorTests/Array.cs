@@ -171,5 +171,32 @@ namespace jp.ootr.common.Tests.ArrayUtils
             array.AreEqual(new[] {1, 2, 3, 4, 5});
         }
     }
+    
+    public class HasTests
+    {
+        [Test]
+        public void Has()
+        {
+            var array = new[] {1, 2, 3, 4, 5};
+            Assert.IsTrue(array.Has(1));
+            Assert.IsTrue(array.Has(5));
+            Assert.IsFalse(array.Has(0));
+            Assert.IsFalse(array.Has(6));
+        }
+        
+        [Test]
+        public void HasWithOut()
+        {
+            var array = new[] {1, 2, 3, 4, 5};
+            Assert.IsTrue(array.Has(1, out var index));
+            Assert.AreEqual(0, index);
+            Assert.IsTrue(array.Has(5, out index));
+            Assert.AreEqual(4, index);
+            Assert.IsFalse(array.Has(0, out index));
+            Assert.AreEqual(-1, index);
+            Assert.IsFalse(array.Has(6, out index));
+            Assert.AreEqual(-1, index);
+        }
+    }
 }
 #endif
