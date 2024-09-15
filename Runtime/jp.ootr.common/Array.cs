@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 
 namespace jp.ootr.common
@@ -154,31 +155,47 @@ namespace jp.ootr.common
 
         public static T[] Unique<T>(this T[] array)
         {
-            var tmpArray = new T[array.Length];
-            var tmpIndex = 0;
-
-            foreach (var item in array)
+            if (typeof(T) == typeof(int))
             {
-                if (tmpArray.Has(item)) continue;
-                tmpArray[tmpIndex++] = item;
-            }
+                var result = new T[array.Length];
+                
+                var isZeroContained = false;
+                var tmpIndex = 0;
 
-            return tmpArray.Resize(tmpIndex);
+                foreach (var item in array)
+                {
+                    if (item.Equals(0) && !isZeroContained)
+                    {
+                        isZeroContained = true;
+                        result[tmpIndex++] =(T)(object) 0;
+                        continue;
+                    }
+
+                    if (result.Has(item)) continue;
+                    result[tmpIndex++] = item;
+                }
+
+                return result.Resize(tmpIndex);
+            }
+            {
+                
+                var result = new T[array.Length];
+                var tmpIndex = 0;
+
+                foreach (var item in array)
+                {
+                    if (result.Has(item)) continue;
+                    result[tmpIndex++] = item;
+                }
+
+                return result.Resize(tmpIndex);
+            }
         }
 
+        [Obsolete("Use ArrayUtils.Unique instead")]
         public static int[] IntUnique(this int[] array)
         {
-            var tmpArray = new int[array.Length];
-            var tmpIndex = 0;
-            if (array.Has(0)) tmpIndex++;
-
-            foreach (var item in array)
-            {
-                if (tmpArray.Has(item)) continue;
-                tmpArray[tmpIndex++] = item;
-            }
-
-            return tmpArray.Resize(tmpIndex);
+            return array.Unique();
         }
 
         public static T[] __Shift<T>(this T[] array)
