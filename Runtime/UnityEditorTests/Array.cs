@@ -310,5 +310,35 @@ namespace jp.ootr.common.Tests.ArrayUtils
             array.AreEqual(new int[0]);
         }
     }
+
+    public class DiffTests
+    {
+        [Test]
+        public void Diff()
+        {
+            var array = new[] {1, 2, 3, 4, 5};
+            array.Diff(new[] {1, 2, 3, 4, 5}, out var removed, out var added);
+            removed.AreEqual(new int[0]);
+            added.AreEqual(new int[0]);
+        }
+        
+        [Test]
+        public void DiffWithRemoved()
+        {
+            var array = new[] {1, 2, 3, 4, 5};
+            array.Diff(new[] {1, 2, 3, 4}, out var removed, out var added);
+            removed.AreEqual(new[] {4});
+            added.AreEqual(new int[0]);
+        }
+        
+        [Test]
+        public void DiffWithAdded()
+        {
+            var array = new[] {1, 2, 3, 4};
+            array.Diff(new[] {1, 2, 3, 4, 5}, out var removed, out var added);
+            removed.AreEqual(new int[0]);
+            added.AreEqual(new[] {4});
+        }
+    }
 }
 #endif
