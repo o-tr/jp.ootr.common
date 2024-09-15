@@ -45,6 +45,11 @@ namespace jp.ootr.common
 
         public static T[] Replace<T>(this T[] array, T[] items, int index)
         {
+            if (index < 0)
+            {
+                index = array.Length + index;
+            }
+            
             if (index < 0 || index >= array.Length)
             {
                 Console.Warn($"ReplaceItemWithArray: Index out of range: {index}, array length: {array.Length}",

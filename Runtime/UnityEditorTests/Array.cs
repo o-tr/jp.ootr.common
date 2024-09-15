@@ -41,4 +41,24 @@ namespace jp.ootr.common.Tests.ArrayUtils
             array.AreEqual(new[] {1, 2, 3, 4, 5, 6});
         }
     }
+
+    public class ReplaceTests
+    {
+        
+        [Test]
+        public void Replace()
+        {
+            var array = new[] {1, 2, 3, 4, 5};
+            array = array.Replace(new[] {6, 7, 8}, 2);
+            array.AreEqual(new[] {1, 2, 6, 7, 8, 4, 5});
+        }
+        
+        [Test]
+        public void ReplaceWithNegativeIndex()
+        {
+            var array = new[] {1, 2, 3, 4, 5};
+            array = array.Replace(new[] {6, 7, 8}, -2);
+            array.AreEqual(new[] {1, 2, 3, 6, 7, 8, 5});
+        }
+    }
 }
