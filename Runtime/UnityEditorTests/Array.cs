@@ -198,5 +198,24 @@ namespace jp.ootr.common.Tests.ArrayUtils
             Assert.AreEqual(-1, index);
         }
     }
+    
+    public class MergeTests
+    {
+        [Test]
+        public void Merge()
+        {
+            var array = new[] {1, 2, 3, 4, 5};
+            array = array.Merge(new[] {6, 7, 8});
+            array.AreEqual(new[] {1, 2, 3, 4, 5, 6, 7, 8});
+        }
+        
+        [Test]
+        public void MergeUnique()
+        {
+            var array = new[] {1, 2, 3, 4, 5};
+            array = array.Merge(new[] {6, 7, 8, 1, 2, 3}, true);
+            array.AreEqual(new[] {1, 2, 3, 4, 5, 6, 7, 8});
+        }
+    }
 }
 #endif
