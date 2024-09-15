@@ -30,4 +30,15 @@ namespace jp.ootr.common.Tests.ArrayUtils
         }
     }
     
+
+    public class AppendTests
+    {
+        [Test]
+        public void Append()
+        {
+            var array = new[] {1, 2, 3, 4, 5};
+            array = array.Append(6);
+            array.AreEqual(new[] {1, 2, 3, 4, 5, 6});
+        }
+    }
 }
