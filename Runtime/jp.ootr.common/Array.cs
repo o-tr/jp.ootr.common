@@ -15,6 +15,11 @@ namespace jp.ootr.common
 
         public static T[] Remove<T>(this T[] array, int index, out T item)
         {
+            if (index < 0)
+            {
+                index = array.Length + index;
+            }
+            
             if (index < 0 || index >= array.Length)
             {
                 Console.Warn($"RemoveItemFromArray: Index out of range: {index}, array length: {array.Length}",
