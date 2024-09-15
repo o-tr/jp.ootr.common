@@ -252,5 +252,34 @@ namespace jp.ootr.common.Tests.ArrayUtils
             array.AreEqual(new[] {1, 2, 3, 4, 5, 0, -1, -2, -3});
         }
     }
+
+    public class ShiftTests
+    {
+        [Test]
+        public void Shift()
+        {
+            var array = new[] {1, 2, 3, 4, 5};
+            array = array.Shift();
+            array.AreEqual(new[] {2, 3, 4, 5});
+        }
+        
+        [Test]
+        public void ShiftWithOut()
+        {
+            var array = new[] {1, 2, 3, 4, 5};
+            array = array.Shift(out var item);
+            Assert.AreEqual(1, item);
+            array.AreEqual(new[] {2, 3, 4, 5});
+        }
+        
+        [Test]
+        public void ShiftWithZeroLength()
+        {
+            var array = new int[0];
+            array = array.Shift(out var _void, out var success);
+            Assert.IsFalse(success);
+            array.AreEqual(new int[0]);
+        }
+    }
 }
 #endif
