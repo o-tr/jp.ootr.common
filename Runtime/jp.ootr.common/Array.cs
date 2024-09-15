@@ -88,6 +88,11 @@ namespace jp.ootr.common
 
         public static T[] Insert<T>(this T[] array, T item, int index)
         {
+            if (index < 0)
+            {
+                index = array.Length + index;
+            }
+            
             if (index < 0 || index > array.Length)
             {
                 Console.Warn($"InsertItemToArray: Index out of range: {index}, array length: {array.Length}",
@@ -109,6 +114,11 @@ namespace jp.ootr.common
 
         public static T[] Insert<T>(this T[] array, T[] items, int index, int itemsLength)
         {
+            if (index < 0)
+            {
+                index = array.Length + index;
+            }
+            
             if (index < 0 || index > array.Length)
             {
                 Console.Warn($"InsertArrayToArray: Index out of range: {index}, array length: {array.Length}",

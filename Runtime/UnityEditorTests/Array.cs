@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using NUnit.Framework;
 
 namespace jp.ootr.common.Tests.ArrayUtils
@@ -30,7 +31,6 @@ namespace jp.ootr.common.Tests.ArrayUtils
         }
     }
     
-
     public class AppendTests
     {
         [Test]
@@ -96,4 +96,80 @@ namespace jp.ootr.common.Tests.ArrayUtils
             array.AreEqual(new int[0]);
         }
     }
+    
+    public class InsertTests
+    {
+        [Test]
+        public void Insert()
+        {
+            var array = new[] {1, 2, 3, 4, 5};
+            array = array.Insert(6,2);
+            array.AreEqual(new[] {1, 2, 6, 3, 4, 5});
+        }
+        
+        [Test]
+        public void InsertAtLastOfArray()
+        {
+            var array = new[] {1, 2, 3, 4, 5};
+            array = array.Insert(2, 5);
+            array.AreEqual(new[] {1, 2, 3, 4, 5, 2});
+        }
+        
+        [Test]
+        public void InsertOutOfRange()
+        {
+            var array = new[] {1, 2, 3, 4, 5};
+            array = array.Insert(6, 10);
+            array.AreEqual(new[] {1, 2, 3, 4, 5});
+        }
+        
+        [Test]
+        public void InsertWithNegativeIndex()
+        {
+            var array = new[] {1, 2, 3, 4, 5};
+            array = array.Insert(6, -2);
+            array.AreEqual(new[] {1, 2, 3, 6, 4, 5});
+        }
+        
+        [Test]
+        public void InsertArray()
+        {
+            var array = new[] {1, 2, 3, 4, 5};
+            array = array.Insert(new[] {6, 7, 8}, 2);
+            array.AreEqual(new[] {1, 2, 6, 7, 8, 3, 4, 5});
+        }
+        
+        [Test]
+        public void InsertArrayWithNegativeIndex()
+        {
+            var array = new[] {1, 2, 3, 4, 5};
+            array = array.Insert(new[] {6, 7, 8}, -2);
+            array.AreEqual(new[] {1, 2, 3, 6, 7, 8, 4, 5});
+        }
+        
+        [Test]
+        public void InsertArrayOutOfRange()
+        {
+            var array = new[] {1, 2, 3, 4, 5};
+            array = array.Insert(new[] {6, 7, 8}, 10);
+            array.AreEqual(new[] {1, 2, 3, 4, 5});
+        }
+        
+        [Test]
+        public void InsertArrayAtLastOfArray()
+        {
+            var array = new[] {1, 2, 3, 4, 5};
+            array = array.Insert(new[] {6, 7, 8}, 5);
+            array.AreEqual(new[] {1, 2, 3, 4, 5, 6, 7, 8});
+        }
+        
+        [Test]
+        public void InsertArrayWithNegativeIndexAndOutOfRange()
+        {
+            var array = new[] {1, 2, 3, 4, 5};
+            array = array.Insert(new[] {6, 7, 8}, -10);
+            array.AreEqual(new[] {1, 2, 3, 4, 5});
+        }
+    }
 }
+#endif
