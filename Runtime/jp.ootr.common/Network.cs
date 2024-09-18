@@ -6,7 +6,7 @@ namespace jp.ootr.common
     {
         public static bool IsInsecureUrl(this string url)
         {
-            return url.StartsWith("http://");
+            return !url.StartsWith("https://");
         }
 
         public static bool IsInsecureUrl(this VRCUrl url)
