@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#if UNITY_EDITOR
+using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
 namespace jp.ootr.common
@@ -16,3 +17,4 @@ namespace jp.ootr.common
         }
     }
 }
+#endif
