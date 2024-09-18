@@ -14,6 +14,7 @@ namespace jp.ootr.common
 
         public static Texture2D Copy(this Texture2D texture, bool flipHorizontal = false, bool flipVertical = false)
         {
+            if (texture == null) return null;
             var tmpTexture = new RenderTexture(texture.width, texture.height, 0, RenderTextureFormat.ARGB32,
                 RenderTextureReadWrite.Default);
             tmpTexture.Create();
@@ -23,11 +24,15 @@ namespace jp.ootr.common
             readableText.ReadPixels(new Rect(0, 0, tmpTexture.width, tmpTexture.height), 0, 0);
             readableText.Apply();
             tmpTexture.Release();
+            Object.Destroy(tmpTexture);
             return readableText;
         }
 
         public static bool Similar(this Texture2D texture1, Texture2D texture2, float sampleRate = 0.5f)
         {
+            if (texture1 == null || texture2 == null || texture1.width != texture2.width ||
+                texture1.height != texture2.height)
+                return false;
             Random.InitState(Time.deltaTime.GetHashCode());
             var sampleSize = (int)(texture1.width * texture1.height * sampleRate);
 
