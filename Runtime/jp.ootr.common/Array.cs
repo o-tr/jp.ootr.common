@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 
 namespace jp.ootr.common
@@ -15,6 +16,11 @@ namespace jp.ootr.common
 
         public static T[] Remove<T>(this T[] array, int index, out T item)
         {
+            if (index < 0)
+            {
+                index = array.Length + index;
+            }
+            
             if (index < 0 || index >= array.Length)
             {
                 Console.Warn($"RemoveItemFromArray: Index out of range: {index}, array length: {array.Length}",
@@ -40,6 +46,11 @@ namespace jp.ootr.common
 
         public static T[] Replace<T>(this T[] array, T[] items, int index)
         {
+            if (index < 0)
+            {
+                index = array.Length + index;
+            }
+            
             if (index < 0 || index >= array.Length)
             {
                 Console.Warn($"ReplaceItemWithArray: Index out of range: {index}, array length: {array.Length}",
@@ -57,13 +68,20 @@ namespace jp.ootr.common
         public static T[] Resize<T>(this T[] array, int targetLength)
         {
             if (array.Length == targetLength) return array;
+            
+            if (targetLength < 0)
+            {
+                targetLength = array.Length + targetLength;
+            }
+            
             if (targetLength < 0)
             {
                 Console.Warn($"ResizeArray: Target length is less than 0: {targetLength}", PackageName);
-                return array;
+                return new T[0];
             }
 
             var tmpArray = new T[targetLength];
+            if (array.Length == 0) return tmpArray;
             Array.Copy(array, 0, tmpArray, 0, Mathf.Min(array.Length, targetLength));
             return tmpArray;
         }
@@ -71,6 +89,11 @@ namespace jp.ootr.common
 
         public static T[] Insert<T>(this T[] array, T item, int index)
         {
+            if (index < 0)
+            {
+                index = array.Length + index;
+            }
+            
             if (index < 0 || index > array.Length)
             {
                 Console.Warn($"InsertItemToArray: Index out of range: {index}, array length: {array.Length}",
@@ -92,6 +115,11 @@ namespace jp.ootr.common
 
         public static T[] Insert<T>(this T[] array, T[] items, int index, int itemsLength)
         {
+            if (index < 0)
+            {
+                index = array.Length + index;
+            }
+            
             if (index < 0 || index > array.Length)
             {
                 Console.Warn($"InsertArrayToArray: Index out of range: {index}, array length: {array.Length}",
@@ -127,33 +155,76 @@ namespace jp.ootr.common
 
         public static T[] Unique<T>(this T[] array)
         {
-            var tmpArray = new T[array.Length];
-            var tmpIndex = 0;
-
-            foreach (var item in array)
+            if (typeof(T) == typeof(int))
             {
-                if (tmpArray.Has(item)) continue;
-                tmpArray[tmpIndex++] = item;
-            }
+                var result = new T[array.Length];
+                
+                var isZeroContained = false;
+                var tmpIndex = 0;
 
-            return tmpArray.Resize(tmpIndex);
+                foreach (var item in array)
+                {
+                    if (item.Equals(0) && !isZeroContained)
+                    {
+                        isZeroContained = true;
+                        result[tmpIndex++] =(T)(object) 0;
+                        continue;
+                    }
+
+                    if (result.Has(item)) continue;
+                    result[tmpIndex++] = item;
+                }
+
+                return result.Resize(tmpIndex);
+            }
+            {
+                
+                var result = new T[array.Length];
+                var tmpIndex = 0;
+
+                foreach (var item in array)
+                {
+                    if (result.Has(item)) continue;
+                    result[tmpIndex++] = item;
+                }
+
+                return result.Resize(tmpIndex);
+            }
         }
 
+        [Obsolete("Use ArrayUtils.Unique instead")]
         public static int[] IntUnique(this int[] array)
         {
-            var tmpArray = new int[array.Length];
-            var tmpIndex = 0;
-            if (array.Has(0)) tmpIndex++;
-
-            foreach (var item in array)
-            {
-                if (tmpArray.Has(item)) continue;
-                tmpArray[tmpIndex++] = item;
-            }
-
-            return tmpArray.Resize(tmpIndex);
+            return array.Unique();
         }
 
+        
+        public static T[] Shift<T>(this T[] array)
+        {
+            return array.Shift(out var _void, out var _void2);
+        }
+        
+        public static T[] Shift<T>(this T[] array, out T item)
+        {
+            return array.Shift(out item, out var _void);
+        }
+        
+        public static T[] Shift<T>(this T[] array, out T item, out bool success)
+        {
+            if (array.Length == 0)
+            {
+                item = default;
+                success = false;
+                return array;
+            }
+            item = array[0];
+            var tmpArray = new T[array.Length - 1];
+            Array.Copy(array, 1, tmpArray, 0, array.Length - 1);
+            success = true;
+            return tmpArray;
+        }
+        
+        [Obsolete("Use ArrayUtils.Shift instead")]
         public static T[] __Shift<T>(this T[] array)
         {
             return array.__Shift(out var _void);
@@ -166,6 +237,7 @@ namespace jp.ootr.common
          *     必ず呼び出し元で確認を行ってください
          * </summary>
          */
+        [Obsolete("Use ArrayUtils.Shift instead")]
         public static T[] __Shift<T>(this T[] array, out T item)
         {
             item = array[0];
@@ -173,7 +245,32 @@ namespace jp.ootr.common
             Array.Copy(array, 1, tmpArray, 0, array.Length - 1);
             return tmpArray;
         }
-
+        
+        public static T[] Pop<T>(this T[] array)
+        {
+            return array.Pop(out var _void, out var _void2);
+        }
+        
+        public static T[] Pop<T>(this T[] array, out T item)
+        {
+            return array.Pop(out item, out var _void);
+        }
+        
+        public static T[] Pop<T>(this T[] array, out T item, out bool success)
+        {
+            if (array.Length == 0)
+            {
+                item = default;
+                success = false;
+                return array;
+            }
+            item = array[array.Length - 1];
+            var tmpArray = new T[array.Length - 1];
+            Array.Copy(array, 0, tmpArray, 0, array.Length - 1);
+            success = true;
+            return tmpArray;
+        }
+        
         /**
          * <summary>
          *     [DANGER]
@@ -181,6 +278,7 @@ namespace jp.ootr.common
          *     必ず呼び出し元で確認を行ってください
          * </summary>
          */
+        [Obsolete("Use ArrayUtils.Pop instead")]
         public static T[] __Pop<T>(this T[] array, out T item)
         {
             item = array[array.Length - 1];

@@ -6,6 +6,8 @@ namespace jp.ootr.common
     {
         public static bool Similar(this byte[] data1, byte[] data2, float sampleRate = 0.5f)
         {
+            if (data1 == null || data2 == null || data1.Length != data2.Length)
+                return false;
             Random.InitState((int)Time.deltaTime);
             var sampleSize = (int)(data1.Length * sampleRate);
 
@@ -34,6 +36,7 @@ namespace jp.ootr.common
 
         public static bool MayBlank(this byte[] data, float sampleRate = 0.5f)
         {
+            if (data == null) return true;
             Random.InitState((int)Time.deltaTime);
             var sampleSize = (int)(data.Length * sampleRate);
 
