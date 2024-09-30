@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: de6aec06fe0d4cca933e051256ee8f05, type: 3}
-  m_Name: ColorColorPreset
+  m_Name: ColorPresetTransparent
   m_EditorClassIdentifier: 
   colors:
-  - {r: 0.16078432, g: 0.15294118, b: 0.2, a: 1}
-  - {r: 0.24313726, g: 0.23529412, b: 0.30588236, a: 1}
-  - {r: 0.41568628, g: 0.3764706, b: 0.49411765, a: 1}
+  - {r: 0.16078432, g: 0.15294118, b: 0.2, a: 0}
+  - {r: 0.24313726, g: 0.23529412, b: 0.30588236, a: 0}
+  - {r: 0.41568628, g: 0.3764706, b: 0.49411765, a: 0}
   - {r: 0.5882353, g: 1, b: 0.62352943, a: 1}
   - {r: 1, g: 0.5882353, b: 0.5882353, a: 1}
   - {r: 1, g: 1, b: 1, a: 1}

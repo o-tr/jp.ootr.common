@@ -26,6 +26,11 @@ namespace jp.ootr.common.Editor
             Root.AddToClassList("root");
             InfoBlock = new VisualElement();
             InfoBlock.AddToClassList("infoBlock");
+            UtilitiesBlock = new Foldout()
+            {
+                text = "Utilities",
+                value = false
+            };
         }
         
         public override VisualElement CreateInspectorGUI()
@@ -73,12 +78,6 @@ namespace jp.ootr.common.Editor
 
         private void ShowUtilities()
         {
-            UtilitiesBlock = new Foldout()
-            {
-                text = "Utilities",
-                value = false
-            };
-
             {
                 var colorPresetApplier = new Button(() =>
                 {

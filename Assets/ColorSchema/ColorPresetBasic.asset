@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de6aec06fe0d4cca933e051256ee8f05, type: 3}
+  m_Name: ColorPresetBasic
+  m_EditorClassIdentifier: 
+  colors:
+  - {r: 0.16078432, g: 0.15294118, b: 0.2, a: 1}
+  - {r: 0.24313726, g: 0.23529412, b: 0.30588236, a: 1}
+  - {r: 0.41568628, g: 0.3764706, b: 0.49411765, a: 1}
+  - {r: 0.5882353, g: 1, b: 0.62352943, a: 1}
+  - {r: 1, g: 0.5882353, b: 0.5882353, a: 1}
+  - {r: 1, g: 1, b: 1, a: 1}
+  - {r: 1, g: 1, b: 1, a: 0.5019608}
+  names:
+  - PrimaryBackground
+  - SecondaryBackground
+  - TertiaryBackground
+  - SuccessColor
+  - ErrorColor
+  - PrimaryText
+  - PlaceholderText
