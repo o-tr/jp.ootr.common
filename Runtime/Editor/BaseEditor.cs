@@ -32,6 +32,7 @@ namespace jp.ootr.common.Editor
         {
             Root.Clear();
             ShowScriptName();
+            Root.Add(ShowLogLevelPicker());
             
             Root.Add(InfoBlock);
             
@@ -58,6 +59,16 @@ namespace jp.ootr.common.Editor
         protected virtual string GetScriptName()
         {
             return "";
+        }
+        
+        private VisualElement ShowLogLevelPicker()
+        {
+            var picker = new EnumField("Log Level", LogLevel.Info)
+            {
+                label = "Log Level",
+                bindingPath = nameof(BaseClass.logLevel)
+            };
+            return picker;
         }
 
         private void ShowUtilities()
