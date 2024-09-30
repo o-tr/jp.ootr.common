@@ -15,6 +15,7 @@ namespace jp.ootr.common.Editor
 
         protected VisualElement Root;
         protected VisualElement InfoBlock;
+        protected VisualElement UtilitiesBlock;
         
         [SerializeField] private StyleSheet styleSheet;
         
@@ -35,6 +36,8 @@ namespace jp.ootr.common.Editor
             Root.Add(InfoBlock);
             
             Root.Add(GetLayout());
+            
+            ShowUtilities();
             
             ShowDebug();
             return Root;
@@ -57,6 +60,27 @@ namespace jp.ootr.common.Editor
             return "";
         }
 
+        private void ShowUtilities()
+        {
+            UtilitiesBlock = new Foldout()
+            {
+                text = "Utilities",
+                value = false
+            };
+
+            {
+                var colorPresetApplier = new Button(() =>
+                {
+                    ColorPresetApplier.ShowWindowWithTarget(target as BaseClass);
+                })
+                {
+                    text = "ColorPresetApplier"
+                };
+                UtilitiesBlock.Add(colorPresetApplier);
+            }
+            Root.Add(UtilitiesBlock);
+        }
+        
         private void ShowDebug()
         {
             var foldout = new Foldout()
