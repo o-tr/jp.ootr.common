@@ -1,4 +1,5 @@
-﻿using jp.ootr.common.ColorSchema;
+﻿#if UNITY_EDITOR
+using jp.ootr.common.ColorSchema;
 using UnityEditor;
 
 namespace jp.ootr.common.Editor
@@ -21,3 +22,4 @@ namespace jp.ootr.common.Editor
         }
     }
 }
+#endif
