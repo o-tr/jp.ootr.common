@@ -2,7 +2,10 @@
   "name": "jp.ootr.common",
   "references": [
     "UdonSharp.Runtime",
-    "VRC.Udon"
+    "VRC.Udon",
+    "Unity.TextMeshPro",
+    "UnityEngine.UI",
+    "UnityEditor.SerializedObject"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],
