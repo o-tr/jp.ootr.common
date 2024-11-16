@@ -1,5 +1,6 @@
 ﻿#if UNITY_EDITOR
 using jp.ootr.common.ColorSchema;
+using jp.ootr.common.Localization;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
@@ -113,14 +114,22 @@ namespace jp.ootr.common.Editor
             
             var classes = ComponentUtils.GetAllComponents<BaseClass>();
             
-            foreach (var c in classes) BaseClassUtils.ApplyColorSchemas(c);
+            foreach (var c in classes)
+            {
+                ColorSchemaUtils.ApplyColorSchemas(c);
+                LocalizationUtils.SetLocalizationReferences(c);
+            }
         }
         
         private static void OnPlayModeStateChanged(PlayModeStateChange state)
         {
             var classes = ComponentUtils.GetAllComponents<BaseClass>();
             
-            foreach (var c in classes) BaseClassUtils.ApplyColorSchemas(c);
+            foreach (var c in classes)
+            {
+                ColorSchemaUtils.ApplyColorSchemas(c);
+                LocalizationUtils.SetLocalizationReferences(c);
+            }
         }
     }
 
@@ -132,7 +141,11 @@ namespace jp.ootr.common.Editor
         {
             var classes = ComponentUtils.GetAllComponents<BaseClass>();
             
-            foreach (var c in classes) BaseClassUtils.ApplyColorSchemas(c);
+            foreach (var c in classes)
+            {
+                ColorSchemaUtils.ApplyColorSchemas(c);
+                LocalizationUtils.SetLocalizationReferences(c);
+            }
             
             return true;
         }
@@ -146,11 +159,15 @@ namespace jp.ootr.common.Editor
         {
             var classes = ComponentUtils.GetAllComponents<BaseClass>();
             
-            foreach (var c in classes) BaseClassUtils.DestroyColorAppliers(c);
+            foreach (var c in classes)
+            {
+                ColorSchemaUtils.DestroyColorAppliers(c);
+                LocalizationUtils.DestroyLocalizations(c);
+            }
         }
     }
 
-    public static class BaseClassUtils
+    public static class ColorSchemaUtils
     {
         public static void ApplyColorSchemas(BaseClass target)
         {
@@ -173,8 +190,37 @@ namespace jp.ootr.common.Editor
         public static Color GetColor(this BaseClass target, string schemaName)
         {
             if (target == null) return Color.white;
-            if (!target.colorSchemeNames.Has(schemaName, out var index)) return Color.white;
-            return target.colorSchemes[index];
+            if (!target.colorSchemaNames.Has(schemaName, out var index)) return Color.white;
+            return target.colorSchemas[index];
+        }
+    }
+    
+    public static class LocalizationUtils
+    {
+        public static void SetLocalizationReferences(BaseClass target)
+        {
+            var targets = target.GetComponentsInChildren<LocalizationApplierTextMeshPro>(true);
+            var baseClassSo = new SerializedObject(target);
+            baseClassSo.Update();
+            // var localizationTargetKeys = baseClassSo.FindProperty(nameof(BaseClass.localizationTargetKeys));
+            // var localizationTargets = baseClassSo.FindProperty(nameof(BaseClass.localizationTargets));
+            // localizationTargetKeys.arraySize = targets.Length;
+            // localizationTargets.arraySize = targets.Length;
+            // for (var i = 0; i < targets.Length; i++)
+            // {
+            //     localizationTargetKeys.GetArrayElementAtIndex(i).stringValue = targets[i].TextKey;
+            //     localizationTargets.GetArrayElementAtIndex(i).objectReferenceValue = targets[i].TextMeshProUGUI;
+            // }
+            // baseClassSo.ApplyModifiedProperties();
+        }
+        
+        public static void DestroyLocalizations(BaseClass target)
+        {
+            var appliers = target.GetComponentsInChildren<LocalizationApplierTextMeshPro>(true);
+            foreach (var applier in appliers)
+            {
+                Object.DestroyImmediate(applier);
+            }
         }
     }
 }

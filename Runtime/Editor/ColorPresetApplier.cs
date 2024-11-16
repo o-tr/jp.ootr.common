@@ -118,8 +118,8 @@ namespace jp.ootr.common.Editor
         private VisualElement GeneratePreview(BaseClass baseClass)
         {
             var so = new SerializedObject(baseClass);
-            var colors = so.FindProperty(nameof(BaseClass.colorSchemes));
-            var names = so.FindProperty(nameof(BaseClass.colorSchemeNames));
+            var colors = so.FindProperty(nameof(BaseClass.colorSchemas));
+            var names = so.FindProperty(nameof(BaseClass.colorSchemaNames));
             var schemaName = new string[colors.arraySize];
             var color = new Color[colors.arraySize];
             for (var i = 0; i < colors.arraySize; i++)
@@ -152,8 +152,8 @@ namespace jp.ootr.common.Editor
         private void ApplyColorPreset(ColorPreset preset)
         {
             var so = new SerializedObject(_target);
-            var colors = so.FindProperty(nameof(BaseClass.colorSchemes));
-            var names = so.FindProperty(nameof(BaseClass.colorSchemeNames));
+            var colors = so.FindProperty(nameof(BaseClass.colorSchemas));
+            var names = so.FindProperty(nameof(BaseClass.colorSchemaNames));
             colors.arraySize = preset.colors.Length;
             names.arraySize = preset.names.Length;
             for (var i = 0; i < preset.colors.Length; i++)
@@ -162,7 +162,7 @@ namespace jp.ootr.common.Editor
                 names.GetArrayElementAtIndex(i).stringValue = preset.names[i];
             }
             so.ApplyModifiedProperties();
-            BaseClassUtils.ApplyColorSchemas(_target);
+            ColorSchemaUtils.ApplyColorSchemas(_target);
         }
     }
 }
