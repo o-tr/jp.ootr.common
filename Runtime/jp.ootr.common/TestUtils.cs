@@ -10,10 +10,7 @@ namespace jp.ootr.common
             Assert.IsNotNull(array);
             Assert.IsNotNull(target);
             Assert.AreEqual(array.Length, target.Length);
-            for (int i = 0; i < array.Length; i++)
-            {
-                Assert.AreEqual(array[i],target[i]);
-            }
+            for (var i = 0; i < array.Length; i++) Assert.AreEqual(array[i], target[i]);
         }
     }
 }

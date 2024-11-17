@@ -1,8 +1,8 @@
-﻿#if UNITY_EDITOR
+﻿using UnityEngine;
+using UnityEngine.UI;
+#if UNITY_EDITOR
 using UnityEditor;
 #endif
-using UnityEngine;
-using UnityEngine.UI;
 
 namespace jp.ootr.common.ColorSchema
 {

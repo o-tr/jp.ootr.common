@@ -14,7 +14,7 @@ namespace jp.ootr.common.Tests.StringUtils
             Assert.AreEqual("b", result[1]);
             Assert.AreEqual("c", result[2]);
         }
-        
+
         [Test]
         public void SplitWithEmptyString()
         {
@@ -24,7 +24,7 @@ namespace jp.ootr.common.Tests.StringUtils
             Assert.AreEqual("", result[0]);
         }
     }
-    
+
     public static class IsNullOrEmptyTests
     {
         [Test]
