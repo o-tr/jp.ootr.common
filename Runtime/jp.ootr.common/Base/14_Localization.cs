@@ -11,6 +11,12 @@ namespace jp.ootr.common.Base
         [SerializeField] internal string[] localizationTargetKeys;
         [SerializeField] internal TextMeshProUGUI[] localizationTargets;
 
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            UpdateLocalization();
+        }
+
         protected override void OnLangChanged(Localization.Language language)
         {
             base.OnLangChanged(language);
