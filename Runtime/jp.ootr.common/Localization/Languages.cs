@@ -4,7 +4,7 @@
     {
         En,
         Fr,
-        ES,
+        Es,
         It,
         Ko,
         De,

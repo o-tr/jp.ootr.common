@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using VRC.SDKBase;
 
 namespace jp.ootr.common
 {
@@ -14,7 +15,7 @@ namespace jp.ootr.common
         {
             for (var i = 0; i < toggles.Length; i++)
             {
-                if (toggles[i] == null) continue;
+                if (!Utilities.IsValid(toggles[i])) continue;
                 if (!toggles[i].isOn) continue;
                 toggles[i].isOn = false;
                 index = i;
@@ -29,7 +30,7 @@ namespace jp.ootr.common
         {
             foreach (var button in buttons)
             {
-                if (button == null) continue;
+                if (!Utilities.IsValid(button)) continue;
                 var toggle = button.transform.Find("__IDENTIFIER").GetComponent<Toggle>();
                 if (!toggle.isOn) continue;
                 toggle.isOn = false;
@@ -46,10 +47,10 @@ namespace jp.ootr.common
             for (var i = 0; i < identifiers.Length; i++)
             {
                 var identifier = identifiers[i];
-                if (identifier == null) continue;
+                if (!Utilities.IsValid(identifier)) continue;
                 if (!identifier.isOn) continue;
                 identifier.isOn = false;
-                if (indexes[i] == null) continue;
+                if (!Utilities.IsValid(indexes[i])) continue;
                 index = (int)indexes[i].value;
                 return true;
             }
@@ -114,7 +115,7 @@ namespace jp.ootr.common
             {
                 if (!item.gameObject.activeSelf) continue;
                 var layoutElement = item.gameObject.GetComponent<LayoutElement>();
-                if (layoutElement != null && layoutElement.preferredWidth > 0)
+                if (Utilities.IsValid(layoutElement) && layoutElement.preferredWidth > 0)
                 {
                     fixedWidth += layoutElement.preferredWidth;
                     width[activeItemCount++] = layoutElement.preferredWidth;
@@ -158,7 +159,7 @@ namespace jp.ootr.common
             {
                 if (!item.gameObject.activeSelf) continue;
                 var layoutElement = item.gameObject.GetComponent<LayoutElement>();
-                if (layoutElement != null && layoutElement.preferredHeight > 0)
+                if (Utilities.IsValid(layoutElement) && layoutElement.preferredHeight > 0)
                 {
                     fixedHeight += layoutElement.preferredHeight;
                     height[activeItemCount++] = layoutElement.preferredHeight;

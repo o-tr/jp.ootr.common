@@ -15,7 +15,7 @@ namespace jp.ootr.common.Localization
                 case "fr":
                     return Language.Fr;
                 case "es":
-                    return Language.ES;
+                    return Language.Es;
                 case "it":
                     return Language.It;
                 case "ko":
@@ -54,7 +54,7 @@ namespace jp.ootr.common.Localization
                     return "en";
                 case Language.Fr:
                     return "fr";
-                case Language.ES:
+                case Language.Es:
                     return "es";
                 case Language.It:
                     return "it";

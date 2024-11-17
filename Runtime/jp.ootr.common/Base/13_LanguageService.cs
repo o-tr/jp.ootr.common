@@ -5,7 +5,8 @@ namespace jp.ootr.common.Base
 {
     
     public class BaseClass__LanguageService : BaseClass__Sync {
-        [SerializeField] protected Localization.Language defaultLanguage = Localization.Language.En;
+        [SerializeField] internal Localization.Language defaultLanguage = Localization.Language.En;
+        [SerializeField] internal Localization.Language[] supportedLanguages = new Localization.Language[0];
         private Localization.Language _currentLanguage = Localization.Language.En;
 
         private void OnEnable()

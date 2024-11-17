@@ -8,13 +8,13 @@ namespace jp.ootr.common
         public static Texture2D Copy(this Texture texture, bool flipHorizontal = false, bool flipVertical = false)
         {
             var tmpTexture = (Texture2D)texture;
-            if (tmpTexture == null) return null;
+            if (!Utilities.IsValid(tmpTexture)) return null;
             return tmpTexture.Copy(flipHorizontal, flipVertical);
         }
 
         public static Texture2D Copy(this Texture2D texture, bool flipHorizontal = false, bool flipVertical = false)
         {
-            if (texture == null) return null;
+            if (!Utilities.IsValid(texture)) return null;
             var tmpTexture = new RenderTexture(texture.width, texture.height, 0, RenderTextureFormat.ARGB32,
                 RenderTextureReadWrite.Default);
             tmpTexture.Create();
@@ -30,7 +30,7 @@ namespace jp.ootr.common
 
         public static bool Similar(this Texture2D texture1, Texture2D texture2, float sampleRate = 0.5f)
         {
-            if (texture1 == null || texture2 == null || texture1.width != texture2.width ||
+            if (!Utilities.IsValid(texture1) || !Utilities.IsValid(texture2) || texture1.width != texture2.width ||
                 texture1.height != texture2.height)
                 return false;
             Random.InitState(Time.deltaTime.GetHashCode());
@@ -46,7 +46,7 @@ namespace jp.ootr.common
 
         private static bool SimilarInternal(Texture2D texture1, Texture2D texture2, int sampleSize)
         {
-            if (texture1 == null || texture2 == null || texture1.width != texture2.width ||
+            if (!Utilities.IsValid(texture1) || !Utilities.IsValid(texture2) || texture1.width != texture2.width ||
                 texture1.height != texture2.height)
                 return false;
             for (var i = 0; i < sampleSize; i++)

@@ -1,4 +1,6 @@
-﻿namespace jp.ootr.common
+﻿using VRC.SDKBase;
+
+namespace jp.ootr.common
 {
     public enum LogLevel
     {
@@ -37,16 +39,16 @@
 
         private static string BuildPrefix(string[] prefix)
         {
-            if (prefix == null || prefix.Length == 0) return "";
+            if (!Utilities.IsValid(prefix) || prefix.Length == 0) return "";
 
             return $"[{string.Join("] [", prefix)}]";
         }
 
         public static string[] CombinePrefix(string[] prefix, string[] additional)
         {
-            if (prefix == null || prefix.Length == 0) return additional;
+            if (!Utilities.IsValid(prefix) || prefix.Length == 0) return additional;
 
-            if (additional == null || additional.Length == 0) return prefix;
+            if (!Utilities.IsValid(additional) || additional.Length == 0) return prefix;
 
             return prefix.Merge(additional);
         }

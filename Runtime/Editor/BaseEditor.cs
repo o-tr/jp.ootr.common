@@ -202,16 +202,16 @@ namespace jp.ootr.common.Editor
             var targets = target.GetComponentsInChildren<LocalizationApplierTextMeshPro>(true);
             var baseClassSo = new SerializedObject(target);
             baseClassSo.Update();
-            // var localizationTargetKeys = baseClassSo.FindProperty(nameof(BaseClass.localizationTargetKeys));
-            // var localizationTargets = baseClassSo.FindProperty(nameof(BaseClass.localizationTargets));
-            // localizationTargetKeys.arraySize = targets.Length;
-            // localizationTargets.arraySize = targets.Length;
-            // for (var i = 0; i < targets.Length; i++)
-            // {
-            //     localizationTargetKeys.GetArrayElementAtIndex(i).stringValue = targets[i].TextKey;
-            //     localizationTargets.GetArrayElementAtIndex(i).objectReferenceValue = targets[i].TextMeshProUGUI;
-            // }
-            // baseClassSo.ApplyModifiedProperties();
+            var localizationTargetKeys = baseClassSo.FindProperty(nameof(BaseClass.localizationTargetKeys));
+            var localizationTargets = baseClassSo.FindProperty(nameof(BaseClass.localizationTargets));
+            localizationTargetKeys.arraySize = targets.Length;
+            localizationTargets.arraySize = targets.Length;
+            for (var i = 0; i < targets.Length; i++)
+            {
+                localizationTargetKeys.GetArrayElementAtIndex(i).stringValue = targets[i].TextKey;
+                localizationTargets.GetArrayElementAtIndex(i).objectReferenceValue = targets[i].TextMeshProUGUI;
+            }
+            baseClassSo.ApplyModifiedProperties();
         }
         
         public static void DestroyLocalizations(BaseClass target)

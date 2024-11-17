@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using VRC.SDKBase;
 
 namespace jp.ootr.common
 {
@@ -6,7 +7,7 @@ namespace jp.ootr.common
     {
         public static bool Similar(this byte[] data1, byte[] data2, float sampleRate = 0.5f)
         {
-            if (data1 == null || data2 == null || data1.Length != data2.Length)
+            if (!Utilities.IsValid(data1) || !Utilities.IsValid(data2) || data1.Length != data2.Length)
                 return false;
             Random.InitState((int)Time.deltaTime);
             var sampleSize = (int)(data1.Length * sampleRate);
@@ -21,7 +22,7 @@ namespace jp.ootr.common
 
         private static bool SimilarInternal(byte[] data1, byte[] data2, int sampleSize)
         {
-            if (data1 == null || data2 == null || data1.Length != data2.Length)
+            if (!Utilities.IsValid(data1) || !Utilities.IsValid(data2) || data1.Length != data2.Length)
                 return false;
             for (var i = 0; i < sampleSize; i++)
             {
@@ -36,7 +37,7 @@ namespace jp.ootr.common
 
         public static bool MayBlank(this byte[] data, float sampleRate = 0.5f)
         {
-            if (data == null) return true;
+            if (!Utilities.IsValid(data)) return true;
             Random.InitState((int)Time.deltaTime);
             var sampleSize = (int)(data.Length * sampleRate);
 
@@ -50,7 +51,7 @@ namespace jp.ootr.common
 
         private static bool MayBlankInternal(byte[] data, int sampleSize)
         {
-            if (data == null) return true;
+            if (!Utilities.IsValid(data)) return true;
             var len = data.Length / 4;
             for (var i = 0; i < sampleSize; i++)
             {
