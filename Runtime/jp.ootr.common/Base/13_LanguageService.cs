@@ -1,18 +1,13 @@
-using UnityEngine;
 using jp.ootr.common.Localization;
+using UnityEngine;
 
 namespace jp.ootr.common.Base
 {
-    
-    public class BaseClass__LanguageService : BaseClass__Sync {
+    public class BaseClass__LanguageService : BaseClass__Sync
+    {
         [SerializeField] internal Localization.Language defaultLanguage = Localization.Language.En;
         [SerializeField] internal Localization.Language[] supportedLanguages = new Localization.Language[0];
         private Localization.Language _currentLanguage = Localization.Language.En;
-
-        private void OnEnable()
-        {
-            _currentLanguage = LanguageUtils.GetCurrentLanguage();
-        }
 
         protected Localization.Language CurrentLanguage
         {
@@ -23,6 +18,11 @@ namespace jp.ootr.common.Base
                 _currentLanguage = value;
                 OnLangChanged(value);
             }
+        }
+
+        private void OnEnable()
+        {
+            _currentLanguage = LanguageUtils.GetCurrentLanguage();
         }
 
         public override void OnLanguageChanged(string language)

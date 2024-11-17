@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 
 namespace jp.ootr.common.Tests.DateTimeUtils
 {
@@ -7,7 +8,7 @@ namespace jp.ootr.common.Tests.DateTimeUtils
         [Test]
         public static void ToUnixTime()
         {
-            var dt = new System.DateTime(2021, 1, 1, 0, 0, 0, System.DateTimeKind.Utc);
+            var dt = new DateTime(2021, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             Assert.AreEqual(1609459200, dt.ToUnixTime());
         }
     }

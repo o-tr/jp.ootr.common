@@ -6,7 +6,5 @@ namespace jp.ootr.common
     {
         protected readonly int SyncURLRetryCountLimit = 3;
         protected readonly float SyncURLRetryInterval = 0.5f;
-        
-
     }
 }

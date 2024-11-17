@@ -2,7 +2,7 @@
 
 namespace jp.ootr.common.ColorSchema
 {
-    interface IColorSchemaApplier
+    internal interface IColorSchemaApplier
     {
         string SchemaName { get; }
         void ApplyColor(Color color);

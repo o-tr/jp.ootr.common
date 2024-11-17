@@ -1,21 +1,21 @@
-.root{
+.root {
     margin: 0 16px;
     display: flex;
     flex-direction: column;
 }
 
-.scriptName{
+.scriptName {
     font-size: 24px;
     -unity-font-style: bold;
     padding: 16px 0;
     -unity-text-align: middle-center;
 }
 
-.container>*{
+.container > * {
     padding-bottom: 8px;
 }
 
-.row{
+.row {
     display: flex;
     flex-direction: row;
     justify-content: space-between;

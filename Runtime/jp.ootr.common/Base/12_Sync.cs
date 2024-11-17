@@ -4,7 +4,8 @@ using VRC.Udon.Common.Enums;
 
 namespace jp.ootr.common.Base
 {
-    public class BaseClass__Sync : BaseClass__Log {
+    public class BaseClass__Sync : BaseClass__Log
+    {
         protected virtual void Sync()
         {
             if (!Networking.IsOwner(gameObject)) Networking.SetOwner(Networking.LocalPlayer, gameObject);

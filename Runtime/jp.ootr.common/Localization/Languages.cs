@@ -16,6 +16,6 @@
         ZhHk,
         He,
         Tok,
-        Uk,
+        Uk
     }
 }

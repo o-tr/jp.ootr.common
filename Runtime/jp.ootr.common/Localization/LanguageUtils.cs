@@ -45,7 +45,7 @@ namespace jp.ootr.common.Localization
                     return Language.En;
             }
         }
-        
+
         public static string ToStr(this Language lang)
         {
             switch (lang)

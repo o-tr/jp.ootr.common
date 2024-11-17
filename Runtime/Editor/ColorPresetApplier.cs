@@ -11,39 +11,39 @@ namespace jp.ootr.common.Editor
         [SerializeField] private StyleSheet baseStyleSheet;
         private BaseClass _target;
         private ObjectField _targetField;
-        
+
         public void CreateGUI()
         {
             var root = new VisualElement();
             root.styleSheets.Add(baseStyleSheet);
             root.AddToClassList("root");
-            
+
             root.Add(GetTargetPicker());
-            
+
             root.Add(GetColorPresetPicker());
             rootVisualElement.Add(root);
         }
-        
+
         [MenuItem("Tools/ootr/ColorPresetApplier")]
         public static void ShowWindow()
         {
             GetWindow();
         }
-        
+
         public static void ShowWindowWithTarget(BaseClass target)
         {
             var wnd = GetWindow();
             wnd._target = target;
             wnd._targetField.value = target;
         }
-        
+
         private static ColorPresetApplier GetWindow()
         {
             var window = GetWindow<ColorPresetApplier>();
             window.titleContent = new GUIContent("ColorPresetApplier");
             return window;
         }
-        
+
         private VisualElement GetTargetPicker()
         {
             var root = new VisualElement();
@@ -63,20 +63,17 @@ namespace jp.ootr.common.Editor
             });
             root.Add(_targetField);
             root.Add(preview);
-            if (_target != null)
-            {
-                preview.Add(GeneratePreview(_target));
-            }
+            if (_target != null) preview.Add(GeneratePreview(_target));
             return root;
         }
-        
+
         private VisualElement GetColorPresetPicker()
         {
             var root = new VisualElement();
             var presetField = new ObjectField
             {
                 label = "Color Preset",
-                objectType = typeof(ColorPreset),
+                objectType = typeof(ColorPreset)
             };
             var preview = new VisualElement();
             presetField.RegisterValueChangedCallback(evt =>
@@ -88,7 +85,7 @@ namespace jp.ootr.common.Editor
             });
             root.Add(presetField);
             root.Add(preview);
-            
+
             var applyButton = new Button { text = "Apply" };
             applyButton.SetEnabled(false);
             presetField.RegisterValueChangedCallback(evt =>
@@ -111,7 +108,7 @@ namespace jp.ootr.common.Editor
                 ApplyColorPreset(preset);
             };
             root.Add(applyButton);
-            
+
             return root;
         }
 
@@ -127,9 +124,10 @@ namespace jp.ootr.common.Editor
                 schemaName[i] = names.GetArrayElementAtIndex(i).stringValue;
                 color[i] = colors.GetArrayElementAtIndex(i).colorValue;
             }
+
             return GeneratePreview(schemaName, color);
         }
-        
+
         private VisualElement GeneratePreview(string[] schemaName, Color[] colors)
         {
             var root = new VisualElement();
@@ -146,9 +144,10 @@ namespace jp.ootr.common.Editor
                 row.Add(colorBox);
                 root.Add(row);
             }
+
             return root;
         }
-        
+
         private void ApplyColorPreset(ColorPreset preset)
         {
             var so = new SerializedObject(_target);
@@ -161,6 +160,7 @@ namespace jp.ootr.common.Editor
                 colors.GetArrayElementAtIndex(i).colorValue = preset.colors[i];
                 names.GetArrayElementAtIndex(i).stringValue = preset.names[i];
             }
+
             so.ApplyModifiedProperties();
             ColorSchemaUtils.ApplyColorSchemas(_target);
         }
