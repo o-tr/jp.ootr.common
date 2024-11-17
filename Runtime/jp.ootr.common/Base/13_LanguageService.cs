@@ -20,7 +20,7 @@ namespace jp.ootr.common.Base
             }
         }
 
-        private void OnEnable()
+        protected virtual void OnEnable()
         {
             _currentLanguage = LanguageUtils.GetCurrentLanguage();
         }
