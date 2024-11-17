@@ -1,3 +1,4 @@
+using jp.ootr.common.Localization;
 using TMPro;
 using UnityEngine;
 
@@ -10,7 +11,7 @@ namespace jp.ootr.common.Base
         [SerializeField] internal string[] localizationTargetKeys;
         [SerializeField] internal TextMeshProUGUI[] localizationTargets;
 
-        protected override void OnLangChanged(Language language)
+        protected override void OnLangChanged(Localization.Language language)
         {
             base.OnLangChanged(language);
             UpdateLocalization();
