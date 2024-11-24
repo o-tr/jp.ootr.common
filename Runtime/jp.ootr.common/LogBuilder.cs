@@ -1,4 +1,5 @@
-﻿using VRC.SDKBase;
+﻿using JetBrains.Annotations;
+using VRC.SDKBase;
 
 namespace jp.ootr.common
 {
@@ -14,7 +15,7 @@ namespace jp.ootr.common
     public static class LogBuilder
     {
         public static string Build(LogLevel level, string message, string packageName = "jp.ootr.common.Console",
-            string[] prefix = null)
+            [CanBeNull] string[] prefix = null)
         {
             return $"[<color=lime>{packageName}</color>] {BuildPrefix(prefix)} [{GetLevelString(level)}] {message}";
         }
@@ -37,14 +38,14 @@ namespace jp.ootr.common
             }
         }
 
-        private static string BuildPrefix(string[] prefix)
+        private static string BuildPrefix([CanBeNull] string[] prefix)
         {
             if (!Utilities.IsValid(prefix) || prefix.Length == 0) return "";
 
             return $"[{string.Join("] [", prefix)}]";
         }
 
-        public static string[] CombinePrefix(string[] prefix, string[] additional)
+        public static string[] CombinePrefix([CanBeNull] string[] prefix, [CanBeNull] string[] additional)
         {
             if (!Utilities.IsValid(prefix) || prefix.Length == 0) return additional;
 

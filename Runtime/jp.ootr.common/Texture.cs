@@ -1,20 +1,21 @@
-﻿using UnityEngine;
+﻿using JetBrains.Annotations;
+using UnityEngine;
 using VRC.SDKBase;
 
 namespace jp.ootr.common
 {
     public static class TextureUtils
     {
-        public static Texture2D Copy(this Texture texture, bool flipHorizontal = false, bool flipVertical = false)
+        public static Texture2D Copy([CanBeNull]this Texture texture, bool flipHorizontal = false, bool flipVertical = false)
         {
             var tmpTexture = (Texture2D)texture;
-            if (!Utilities.IsValid(tmpTexture)) return null;
+            if (texture == null) return null;
             return tmpTexture.Copy(flipHorizontal, flipVertical);
         }
 
-        public static Texture2D Copy(this Texture2D texture, bool flipHorizontal = false, bool flipVertical = false)
+        public static Texture2D Copy([CanBeNull]this Texture2D texture, bool flipHorizontal = false, bool flipVertical = false)
         {
-            if (!Utilities.IsValid(texture)) return null;
+            if (texture == null) return null;
             var tmpTexture = new RenderTexture(texture.width, texture.height, 0, RenderTextureFormat.ARGB32,
                 RenderTextureReadWrite.Default);
             tmpTexture.Create();
@@ -28,9 +29,9 @@ namespace jp.ootr.common
             return readableText;
         }
 
-        public static bool Similar(this Texture2D texture1, Texture2D texture2, float sampleRate = 0.5f)
+        public static bool Similar([CanBeNull]this Texture2D texture1, [CanBeNull]Texture2D texture2, float sampleRate = 0.5f)
         {
-            if (!Utilities.IsValid(texture1) || !Utilities.IsValid(texture2) || texture1.width != texture2.width ||
+            if (texture1 == null || texture2 == null || texture1.width != texture2.width ||
                 texture1.height != texture2.height)
                 return false;
             Random.InitState(Time.deltaTime.GetHashCode());
@@ -46,7 +47,7 @@ namespace jp.ootr.common
 
         private static bool SimilarInternal(Texture2D texture1, Texture2D texture2, int sampleSize)
         {
-            if (!Utilities.IsValid(texture1) || !Utilities.IsValid(texture2) || texture1.width != texture2.width ||
+            if (texture1 == null || texture2 == null || texture1.width != texture2.width ||
                 texture1.height != texture2.height)
                 return false;
             for (var i = 0; i < sampleSize; i++)

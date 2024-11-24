@@ -1,10 +1,11 @@
-﻿using VRC.SDK3.Data;
+﻿using JetBrains.Annotations;
+using VRC.SDK3.Data;
 
 namespace jp.ootr.common
 {
     public static class DataContainerUtils
     {
-        public static string[] ToStringArray(this DataList list)
+        public static string[] ToStringArray([NotNull]this DataList list)
         {
             var length = list.Count;
             var array = new string[length];
@@ -28,7 +29,7 @@ namespace jp.ootr.common
             return token.DataList.TryToStringArray(out array);
         }
 
-        public static bool TryToStringArray(this DataList list, out string[] array)
+        public static bool TryToStringArray([NotNull]this DataList list, out string[] array)
         {
             var length = list.Count;
             array = new string[length];

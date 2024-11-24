@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UI;
 using VRC.SDKBase;
@@ -6,16 +7,21 @@ namespace jp.ootr.common
 {
     public static class UI
     {
-        public static bool HasChecked(this Toggle[] toggles)
+        public static bool HasChecked([CanBeNull][ItemCanBeNull]this Toggle[] toggles)
         {
             return toggles.HasChecked(out var tmp);
         }
 
-        public static bool HasChecked(this Toggle[] toggles, out int index)
+        public static bool HasChecked([CanBeNull][ItemCanBeNull]this Toggle[] toggles, out int index)
         {
+            if (toggles == null)
+            {
+                index = -1;
+                return false;
+            }
             for (var i = 0; i < toggles.Length; i++)
             {
-                if (!Utilities.IsValid(toggles[i])) continue;
+                if (toggles[i]== null) continue;
                 if (!toggles[i].isOn) continue;
                 toggles[i].isOn = false;
                 index = i;
@@ -26,11 +32,16 @@ namespace jp.ootr.common
             return false;
         }
 
-        public static bool HasChecked(this GameObject[] buttons, out int index)
+        public static bool HasChecked([CanBeNull][ItemCanBeNull]this GameObject[] buttons, out int index)
         {
+            if (buttons == null)
+            {
+                index = -1;
+                return false;
+            }
             foreach (var button in buttons)
             {
-                if (!Utilities.IsValid(button)) continue;
+                if (button == null) continue;
                 var toggle = button.transform.Find("__IDENTIFIER").GetComponent<Toggle>();
                 if (!toggle.isOn) continue;
                 toggle.isOn = false;
@@ -42,15 +53,20 @@ namespace jp.ootr.common
             return false;
         }
 
-        public static bool HasChecked(this Toggle[] identifiers, Slider[] indexes, out int index)
+        public static bool HasChecked([CanBeNull][ItemCanBeNull]this Toggle[] identifiers, [CanBeNull][ItemCanBeNull]Slider[] indexes, out int index)
         {
+            if (identifiers == null || indexes == null)
+            {
+                index = -1;
+                return false;
+            }
             for (var i = 0; i < identifiers.Length; i++)
             {
                 var identifier = identifiers[i];
-                if (!Utilities.IsValid(identifier)) continue;
+                if (identifier == null) continue;
                 if (!identifier.isOn) continue;
                 identifier.isOn = false;
-                if (!Utilities.IsValid(indexes[i])) continue;
+                if (indexes[i]==null) continue;
                 index = (int)indexes[i].value;
                 return true;
             }
@@ -59,16 +75,17 @@ namespace jp.ootr.common
             return false;
         }
 
-        public static void ToListChildrenHorizontal(this Transform obj, int gap = 0, int padding = 0,
+        public static void ToListChildrenHorizontal([CanBeNull]this Transform obj, int gap = 0, int padding = 0,
             bool adjustWidth = false, bool reverse = false)
         {
+            if (obj == null) return;
             var rectTransform = obj.gameObject.GetComponent<RectTransform>();
             var height = rectTransform.rect.height - padding * 2;
             float x = padding;
             for (var i = 0; i < obj.childCount; i++)
             {
                 var item = obj.GetChild(reverse ? obj.childCount - i - 1 : i);
-                if (!item.gameObject.activeSelf) continue;
+                if (item == null || !item.gameObject.activeSelf) continue;
                 var rect = item.gameObject.GetComponent<RectTransform>();
                 rect.anchoredPosition = new Vector2(x, -padding);
                 var anchorHeight1 = rect.rect.height * (rect.anchorMax.y - rect.anchorMin.y);
@@ -83,16 +100,17 @@ namespace jp.ootr.common
                 new Vector2(x - gap + padding - anchorWidth, rectTransform.rect.height - anchorHeight);
         }
 
-        public static void ToListChildrenVertical(this Transform obj, int gap = 0, int padding = 0,
+        public static void ToListChildrenVertical([CanBeNull]this Transform obj, int gap = 0, int padding = 0,
             bool adjustHeight = false, bool reverse = false)
         {
+            if (obj == null) return;
             var rectTransform = obj.gameObject.GetComponent<RectTransform>();
             var width = rectTransform.rect.width - padding * 2;
             float y = -padding;
             for (var i = 0; i < obj.childCount; i++)
             {
                 var item = obj.GetChild(reverse ? obj.childCount - i - 1 : i);
-                if (!item.gameObject.activeSelf) continue;
+                if (item == null || !item.gameObject.activeSelf) continue;
                 var rect = item.gameObject.GetComponent<RectTransform>();
                 rect.anchoredPosition = new Vector2(padding, y);
                 var anchorWidth1 = rect.rect.width * (rect.anchorMax.x - rect.anchorMin.x);
@@ -105,17 +123,18 @@ namespace jp.ootr.common
             rectTransform.sizeDelta = new Vector2(rectTransform.rect.width - anchorWidth, -y - gap + padding);
         }
 
-        public static void ToFillChildrenHorizontal(this Transform obj, int gap = 0, int padding = 0)
+        public static void ToFillChildrenHorizontal([CanBeNull]this Transform obj, int gap = 0, int padding = 0)
         {
+            if (obj == null) return;
             var activeItemCount = 0;
             var flexibleCount = 0;
             var width = new float[obj.childCount];
             float fixedWidth = 0;
             foreach (Transform item in obj)
             {
-                if (!item.gameObject.activeSelf) continue;
+                if (item == null || !item.gameObject.activeSelf) continue;
                 var layoutElement = item.gameObject.GetComponent<LayoutElement>();
-                if (Utilities.IsValid(layoutElement) && layoutElement.preferredWidth > 0)
+                if (layoutElement != null && layoutElement.preferredWidth > 0)
                 {
                     fixedWidth += layoutElement.preferredWidth;
                     width[activeItemCount++] = layoutElement.preferredWidth;
@@ -149,8 +168,9 @@ namespace jp.ootr.common
             }
         }
 
-        public static void ToFillChildrenVertical(this Transform obj, int gap = 0, int padding = 0)
+        public static void ToFillChildrenVertical([CanBeNull]this Transform obj, int gap = 0, int padding = 0)
         {
+            if (obj == null) return;
             var activeItemCount = 0;
             var flexibleCount = 0;
             var height = new float[obj.childCount];
@@ -159,7 +179,7 @@ namespace jp.ootr.common
             {
                 if (!item.gameObject.activeSelf) continue;
                 var layoutElement = item.gameObject.GetComponent<LayoutElement>();
-                if (Utilities.IsValid(layoutElement) && layoutElement.preferredHeight > 0)
+                if (layoutElement != null && layoutElement.preferredHeight > 0)
                 {
                     fixedHeight += layoutElement.preferredHeight;
                     height[activeItemCount++] = layoutElement.preferredHeight;
@@ -193,9 +213,18 @@ namespace jp.ootr.common
             }
         }
 
-        public static void CreateButton(int index, string value, GameObject original, out GameObject button,
+        public static void CreateButton(int index, [CanBeNull]string value, [CanBeNull]GameObject original, out GameObject button,
             out Animator animator, out InputField input, out Slider slider, out Toggle toggle)
         {
+            if (original == null)
+            {
+                button = null;
+                animator = null;
+                input = null;
+                slider = null;
+                toggle = null;
+                return;
+            }
             button = Object.Instantiate(original, original.transform.parent);
             button.SetActive(true);
             animator = button.GetComponent<Animator>();
@@ -207,16 +236,18 @@ namespace jp.ootr.common
             toggle.isOn = false;
         }
 
-        public static void Update(this VerticalLayoutGroup layoutGroup)
+        public static void Update([CanBeNull]this VerticalLayoutGroup layoutGroup)
         {
+            if (layoutGroup == null) return;
             layoutGroup.CalculateLayoutInputVertical();
             layoutGroup.CalculateLayoutInputHorizontal();
             layoutGroup.SetLayoutVertical();
             layoutGroup.SetLayoutHorizontal();
         }
 
-        public static void Update(this HorizontalLayoutGroup layoutGroup)
+        public static void Update([CanBeNull]this HorizontalLayoutGroup layoutGroup)
         {
+            if (layoutGroup == null) return;
             layoutGroup.CalculateLayoutInputVertical();
             layoutGroup.CalculateLayoutInputHorizontal();
             layoutGroup.SetLayoutVertical();
