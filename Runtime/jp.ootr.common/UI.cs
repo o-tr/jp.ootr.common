@@ -237,20 +237,10 @@ namespace jp.ootr.common
             input = button.transform.Find("__VALUE").GetComponent<InputField>();
             slider = button.transform.Find("__INDEX").GetComponent<Slider>();
             toggle = button.transform.Find("__IDENTIFIER").GetComponent<Toggle>();
-            if (animator == null || input == null || slider == null || toggle == null)
-            {
-                Object.Destroy(button);
-                button = null;
-                animator = null;
-                input = null;
-                slider = null;
-                toggle = null;
-                return;
-            }
-
-            slider.value = index;
-            input.text = value;
-            toggle.isOn = false;
+            
+            if (slider != null) slider.value = index;
+            if (input != null) input.text = value;
+            if (toggle != null) toggle.isOn = false;
         }
 
         public static void Update([CanBeNull] this VerticalLayoutGroup layoutGroup)
