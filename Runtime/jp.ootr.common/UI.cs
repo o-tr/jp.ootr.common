@@ -1,27 +1,27 @@
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UI;
-using VRC.SDKBase;
 
 namespace jp.ootr.common
 {
     public static class UI
     {
-        public static bool HasChecked([CanBeNull][ItemCanBeNull]this Toggle[] toggles)
+        public static bool HasChecked([CanBeNull] [ItemCanBeNull] this Toggle[] toggles)
         {
             return toggles.HasChecked(out var tmp);
         }
 
-        public static bool HasChecked([CanBeNull][ItemCanBeNull]this Toggle[] toggles, out int index)
+        public static bool HasChecked([CanBeNull] [ItemCanBeNull] this Toggle[] toggles, out int index)
         {
             if (toggles == null)
             {
                 index = -1;
                 return false;
             }
+
             for (var i = 0; i < toggles.Length; i++)
             {
-                if (toggles[i]== null) continue;
+                if (toggles[i] == null) continue;
                 if (!toggles[i].isOn) continue;
                 toggles[i].isOn = false;
                 index = i;
@@ -32,13 +32,14 @@ namespace jp.ootr.common
             return false;
         }
 
-        public static bool HasChecked([CanBeNull][ItemCanBeNull]this GameObject[] buttons, out int index)
+        public static bool HasChecked([CanBeNull] [ItemCanBeNull] this GameObject[] buttons, out int index)
         {
             if (buttons == null)
             {
                 index = -1;
                 return false;
             }
+
             foreach (var button in buttons)
             {
                 if (button == null) continue;
@@ -53,20 +54,22 @@ namespace jp.ootr.common
             return false;
         }
 
-        public static bool HasChecked([CanBeNull][ItemCanBeNull]this Toggle[] identifiers, [CanBeNull][ItemCanBeNull]Slider[] indexes, out int index)
+        public static bool HasChecked([CanBeNull] [ItemCanBeNull] this Toggle[] identifiers,
+            [CanBeNull] [ItemCanBeNull] Slider[] indexes, out int index)
         {
             if (identifiers == null || indexes == null)
             {
                 index = -1;
                 return false;
             }
+
             for (var i = 0; i < identifiers.Length; i++)
             {
                 var identifier = identifiers[i];
                 if (identifier == null) continue;
                 if (!identifier.isOn) continue;
                 identifier.isOn = false;
-                if (indexes[i]==null) continue;
+                if (indexes[i] == null) continue;
                 index = (int)indexes[i].value;
                 return true;
             }
@@ -75,7 +78,7 @@ namespace jp.ootr.common
             return false;
         }
 
-        public static void ToListChildrenHorizontal([CanBeNull]this Transform obj, int gap = 0, int padding = 0,
+        public static void ToListChildrenHorizontal([CanBeNull] this Transform obj, int gap = 0, int padding = 0,
             bool adjustWidth = false, bool reverse = false)
         {
             if (obj == null) return;
@@ -100,7 +103,7 @@ namespace jp.ootr.common
                 new Vector2(x - gap + padding - anchorWidth, rectTransform.rect.height - anchorHeight);
         }
 
-        public static void ToListChildrenVertical([CanBeNull]this Transform obj, int gap = 0, int padding = 0,
+        public static void ToListChildrenVertical([CanBeNull] this Transform obj, int gap = 0, int padding = 0,
             bool adjustHeight = false, bool reverse = false)
         {
             if (obj == null) return;
@@ -123,7 +126,7 @@ namespace jp.ootr.common
             rectTransform.sizeDelta = new Vector2(rectTransform.rect.width - anchorWidth, -y - gap + padding);
         }
 
-        public static void ToFillChildrenHorizontal([CanBeNull]this Transform obj, int gap = 0, int padding = 0)
+        public static void ToFillChildrenHorizontal([CanBeNull] this Transform obj, int gap = 0, int padding = 0)
         {
             if (obj == null) return;
             var activeItemCount = 0;
@@ -168,7 +171,7 @@ namespace jp.ootr.common
             }
         }
 
-        public static void ToFillChildrenVertical([CanBeNull]this Transform obj, int gap = 0, int padding = 0)
+        public static void ToFillChildrenVertical([CanBeNull] this Transform obj, int gap = 0, int padding = 0)
         {
             if (obj == null) return;
             var activeItemCount = 0;
@@ -213,8 +216,10 @@ namespace jp.ootr.common
             }
         }
 
-        public static void CreateButton(int index, [CanBeNull]string value, [CanBeNull]GameObject original, [CanBeNull]out GameObject button,
-            [CanBeNull]out Animator animator, [CanBeNull]out InputField input, [CanBeNull]out Slider slider, [CanBeNull]out Toggle toggle)
+        public static void CreateButton(int index, [CanBeNull] string value, [CanBeNull] GameObject original,
+            [CanBeNull] out GameObject button,
+            [CanBeNull] out Animator animator, [CanBeNull] out InputField input, [CanBeNull] out Slider slider,
+            [CanBeNull] out Toggle toggle)
         {
             if (original == null)
             {
@@ -225,6 +230,7 @@ namespace jp.ootr.common
                 toggle = null;
                 return;
             }
+
             button = Object.Instantiate(original, original.transform.parent);
             button.SetActive(true);
             animator = button.GetComponent<Animator>();
@@ -241,12 +247,13 @@ namespace jp.ootr.common
                 toggle = null;
                 return;
             }
+
             slider.value = index;
             input.text = value;
             toggle.isOn = false;
         }
 
-        public static void Update([CanBeNull]this VerticalLayoutGroup layoutGroup)
+        public static void Update([CanBeNull] this VerticalLayoutGroup layoutGroup)
         {
             if (layoutGroup == null) return;
             layoutGroup.CalculateLayoutInputVertical();
@@ -255,7 +262,7 @@ namespace jp.ootr.common
             layoutGroup.SetLayoutHorizontal();
         }
 
-        public static void Update([CanBeNull]this HorizontalLayoutGroup layoutGroup)
+        public static void Update([CanBeNull] this HorizontalLayoutGroup layoutGroup)
         {
             if (layoutGroup == null) return;
             layoutGroup.CalculateLayoutInputVertical();

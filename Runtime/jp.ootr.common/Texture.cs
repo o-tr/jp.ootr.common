@@ -7,14 +7,16 @@ namespace jp.ootr.common
     public static class TextureUtils
     {
         [CanBeNull]
-        public static Texture2D Copy([CanBeNull]this Texture texture, bool flipHorizontal = false, bool flipVertical = false)
+        public static Texture2D Copy([CanBeNull] this Texture texture, bool flipHorizontal = false,
+            bool flipVertical = false)
         {
             var tmpTexture = (Texture2D)texture;
             return tmpTexture.Copy(flipHorizontal, flipVertical);
         }
 
         [CanBeNull]
-        public static Texture2D Copy([CanBeNull]this Texture2D texture, bool flipHorizontal = false, bool flipVertical = false)
+        public static Texture2D Copy([CanBeNull] this Texture2D texture, bool flipHorizontal = false,
+            bool flipVertical = false)
         {
             if (texture == null) return null;
             var tmpTexture = new RenderTexture(texture.width, texture.height, 0, RenderTextureFormat.ARGB32,
@@ -30,7 +32,8 @@ namespace jp.ootr.common
             return readableText;
         }
 
-        public static bool Similar([CanBeNull]this Texture2D texture1, [CanBeNull]Texture2D texture2, float sampleRate = 0.5f)
+        public static bool Similar([CanBeNull] this Texture2D texture1, [CanBeNull] Texture2D texture2,
+            float sampleRate = 0.5f)
         {
             if (texture1 == null || texture2 == null || texture1.width != texture2.width ||
                 texture1.height != texture2.height)
@@ -41,12 +44,13 @@ namespace jp.ootr.common
             return SimilarInternal(texture1, texture2, sampleSize);
         }
 
-        public static bool Similar([CanBeNull]this Texture2D texture1, [CanBeNull]Texture2D texture2, int sampleSize)
+        public static bool Similar([CanBeNull] this Texture2D texture1, [CanBeNull] Texture2D texture2, int sampleSize)
         {
             return SimilarInternal(texture1, texture2, sampleSize);
         }
 
-        private static bool SimilarInternal([CanBeNull]Texture2D texture1, [CanBeNull]Texture2D texture2, int sampleSize)
+        private static bool SimilarInternal([CanBeNull] Texture2D texture1, [CanBeNull] Texture2D texture2,
+            int sampleSize)
         {
             if (texture1 == null || texture2 == null || texture1.width != texture2.width ||
                 texture1.height != texture2.height)

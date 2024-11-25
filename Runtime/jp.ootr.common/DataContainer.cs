@@ -6,7 +6,7 @@ namespace jp.ootr.common
     public static class DataContainerUtils
     {
         [NotNull]
-        public static string[] ToStringArray([NotNull]this DataList list)
+        public static string[] ToStringArray([NotNull] this DataList list)
         {
             var length = list.Count;
             var array = new string[length];
@@ -19,7 +19,7 @@ namespace jp.ootr.common
             return array;
         }
 
-        public static bool TryToStringArray(this DataToken token, [CanBeNull]out string[] array)
+        public static bool TryToStringArray(this DataToken token, [CanBeNull] out string[] array)
         {
             if (token.TokenType != TokenType.DataList)
             {
@@ -30,7 +30,7 @@ namespace jp.ootr.common
             return token.DataList.TryToStringArray(out array);
         }
 
-        public static bool TryToStringArray([NotNull]this DataList list, [CanBeNull]out string[] array)
+        public static bool TryToStringArray([NotNull] this DataList list, [CanBeNull] out string[] array)
         {
             var length = list.Count;
             array = new string[length];

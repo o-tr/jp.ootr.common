@@ -7,10 +7,10 @@ namespace jp.ootr.common.Base
 {
     public class BaseClass__Localization : BaseClass__LanguageService
     {
-        [ItemCanBeNull][SerializeField] internal string[] localizationKeys;
-        [ItemCanBeNull][SerializeField] internal string[] localizationValues;
-        [ItemCanBeNull][SerializeField] internal string[] localizationTargetKeys;
-        [ItemCanBeNull][SerializeField] internal TextMeshProUGUI[] localizationTargets;
+        [ItemCanBeNull] [SerializeField] internal string[] localizationKeys;
+        [ItemCanBeNull] [SerializeField] internal string[] localizationValues;
+        [ItemCanBeNull] [SerializeField] internal string[] localizationTargetKeys;
+        [ItemCanBeNull] [SerializeField] internal TextMeshProUGUI[] localizationTargets;
 
         protected override void OnEnable()
         {
@@ -39,7 +39,7 @@ namespace jp.ootr.common.Base
         }
 
         [CanBeNull]
-        protected string GetLocalizedString([CanBeNull]string key)
+        protected string GetLocalizedString([CanBeNull] string key)
         {
             if (localizationKeys.Has($"{CurrentLanguage.ToStr()}.{key}", out var index))
                 return localizationValues[index];

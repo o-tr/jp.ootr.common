@@ -28,13 +28,13 @@ namespace jp.ootr.common
             if (url == null) return false;
             return IsValidUrl(url.ToString());
         }
-        
+
         public static bool IsValidLocalUrl([CanBeNull] this string url)
         {
             if (url == null) return false;
             return url.StartsWith("file://");
         }
-        
+
         public static bool IsValidLocalUrl([CanBeNull] this VRCUrl url)
         {
             if (url == null) return false;
@@ -67,8 +67,10 @@ namespace jp.ootr.common
                     strings[i] = "";
                     continue;
                 }
+
                 strings[i] = urls[i].ToString();
             }
+
             return strings;
         }
     }

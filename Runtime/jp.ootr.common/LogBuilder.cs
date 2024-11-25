@@ -14,7 +14,8 @@ namespace jp.ootr.common
 
     public static class LogBuilder
     {
-        public static string Build(LogLevel level, [CanBeNull] string message, string packageName = "jp.ootr.common.Console",
+        public static string Build(LogLevel level, [CanBeNull] string message,
+            string packageName = "jp.ootr.common.Console",
             [CanBeNull] string[] prefix = null)
         {
             return $"[<color=lime>{packageName}</color>] {BuildPrefix(prefix)} [{GetLevelString(level)}] {message}";
