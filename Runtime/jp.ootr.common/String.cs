@@ -5,13 +5,15 @@ namespace jp.ootr.common
 {
     public static class String
     {
-        public static string[] Split([CanBeNull]this string str, int sliceCount)
+        [NotNull]
+        public static string[] Split([CanBeNull] this string str, int sliceCount)
         {
             if (sliceCount <= 0)
             {
                 Console.Warn($"SplitString: Slice count is less than 0: {sliceCount}");
                 return new string[0];
             }
+
             if (str == null)
             {
                 Console.Warn("SplitString: String is null");

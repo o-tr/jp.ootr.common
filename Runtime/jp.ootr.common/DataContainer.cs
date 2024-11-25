@@ -5,7 +5,8 @@ namespace jp.ootr.common
 {
     public static class DataContainerUtils
     {
-        public static string[] ToStringArray([NotNull]this DataList list)
+        [NotNull]
+        public static string[] ToStringArray([NotNull] this DataList list)
         {
             var length = list.Count;
             var array = new string[length];
@@ -18,7 +19,7 @@ namespace jp.ootr.common
             return array;
         }
 
-        public static bool TryToStringArray(this DataToken token, out string[] array)
+        public static bool TryToStringArray(this DataToken token, [CanBeNull] out string[] array)
         {
             if (token.TokenType != TokenType.DataList)
             {
@@ -29,7 +30,7 @@ namespace jp.ootr.common
             return token.DataList.TryToStringArray(out array);
         }
 
-        public static bool TryToStringArray([NotNull]this DataList list, out string[] array)
+        public static bool TryToStringArray([NotNull] this DataList list, [CanBeNull] out string[] array)
         {
             var length = list.Count;
             array = new string[length];
@@ -53,7 +54,7 @@ namespace jp.ootr.common
             var list = token.DataList;
             var length = list.Count;
             for (var i = 0; i < length; i++)
-                if (!list.TryGetValue(i, TokenType.String, out var _1))
+                if (!list.TryGetValue(i, TokenType.String, out var void1))
                     return false;
 
             return true;
@@ -65,7 +66,7 @@ namespace jp.ootr.common
             var dict = token.DataDictionary;
             var keys = dict.GetKeys().ToStringArray();
             for (var i = 0; i < dict.Count; i++)
-                if (!dict.TryGetValue(keys[i], TokenType.String, out var _1))
+                if (!dict.TryGetValue(keys[i], TokenType.String, out var void1))
                     return false;
 
             return true;

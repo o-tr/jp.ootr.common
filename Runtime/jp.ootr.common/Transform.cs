@@ -5,7 +5,8 @@ namespace jp.ootr.common
 {
     public static class TransformUtils
     {
-        public static Transform[] GetChildren([CanBeNull]this Transform transform)
+        [NotNull]
+        public static Transform[] GetChildren([CanBeNull] this Transform transform)
         {
             if (transform == null) return new Transform[0];
             var children = new Transform[transform.childCount];
@@ -14,7 +15,7 @@ namespace jp.ootr.common
             return children;
         }
 
-        public static void ClearChildren([CanBeNull]this Transform transform)
+        public static void ClearChildren([CanBeNull] this Transform transform)
         {
             if (transform == null) return;
             var list = new GameObject[transform.childCount];

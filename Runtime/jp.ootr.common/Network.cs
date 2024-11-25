@@ -29,6 +29,18 @@ namespace jp.ootr.common
             return IsValidUrl(url.ToString());
         }
 
+        public static bool IsValidLocalUrl([CanBeNull] this string url)
+        {
+            if (url == null) return false;
+            return url.StartsWith("file://");
+        }
+
+        public static bool IsValidLocalUrl([CanBeNull] this VRCUrl url)
+        {
+            if (url == null) return false;
+            return IsValidLocalUrl(url.ToString());
+        }
+
         [CanBeNull]
         public static VRCUrl FindVrcUrlByUrl([CanBeNull] [ItemCanBeNull] VRCUrl[] vrcUrls, [CanBeNull] string url)
         {
@@ -43,6 +55,7 @@ namespace jp.ootr.common
             return null;
         }
 
+        [NotNull]
         public static string[] ToStrings([CanBeNull] [ItemCanBeNull] this VRCUrl[] urls)
         {
             if (urls == null) return new string[0];
@@ -54,8 +67,10 @@ namespace jp.ootr.common
                     strings[i] = "";
                     continue;
                 }
+
                 strings[i] = urls[i].ToString();
             }
+
             return strings;
         }
     }

@@ -1,6 +1,5 @@
 ﻿using JetBrains.Annotations;
 using UnityEngine;
-using VRC.SDKBase;
 
 namespace jp.ootr.common
 {
@@ -8,7 +7,7 @@ namespace jp.ootr.common
     {
         public static bool Similar([CanBeNull] this byte[] data1, [CanBeNull] byte[] data2, float sampleRate = 0.5f)
         {
-            if (data1==null || data2==null || data1.Length != data2.Length)
+            if (data1 == null || data2 == null || data1.Length != data2.Length)
                 return false;
             Random.InitState((int)Time.deltaTime);
             var sampleSize = (int)(data1.Length * sampleRate);
@@ -23,7 +22,7 @@ namespace jp.ootr.common
 
         private static bool SimilarInternal([CanBeNull] byte[] data1, [CanBeNull] byte[] data2, int sampleSize)
         {
-            if (data1==null || data2==null || data1.Length != data2.Length)
+            if (data1 == null || data2 == null || data1.Length != data2.Length)
                 return false;
             for (var i = 0; i < sampleSize; i++)
             {
@@ -38,7 +37,7 @@ namespace jp.ootr.common
 
         public static bool MayBlank([CanBeNull] this byte[] data, float sampleRate = 0.5f)
         {
-            if (data==null) return true;
+            if (data == null) return true;
             Random.InitState((int)Time.deltaTime);
             var sampleSize = (int)(data.Length * sampleRate);
 

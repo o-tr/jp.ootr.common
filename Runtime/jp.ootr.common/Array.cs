@@ -9,12 +9,14 @@ namespace jp.ootr.common
         public const string PackageName = "jp.ootr.common.ArrayUtils";
 
 
+        [NotNull]
         public static T[] Remove<T>([NotNull] this T[] array, int index)
         {
-            return array.Remove(index, out var _1);
+            return array.Remove(index, out var void1);
         }
 
-        public static T[] Remove<T>([NotNull] this T[] array, int index, [CanBeNull]out T item)
+        [NotNull]
+        public static T[] Remove<T>([NotNull] this T[] array, int index, [CanBeNull] out T item)
         {
             if (index < 0) index = array.Length + index;
 
@@ -33,7 +35,8 @@ namespace jp.ootr.common
             return tmpArray;
         }
 
-        public static T[] Append<T>([NotNull]this T[] array, [CanBeNull]T item)
+        [NotNull]
+        public static T[] Append<T>([NotNull] this T[] array, [CanBeNull] T item)
         {
             var tmpArray = new T[array.Length + 1];
             array.CopyTo(tmpArray, 0);
@@ -41,7 +44,8 @@ namespace jp.ootr.common
             return tmpArray;
         }
 
-        public static T[] Replace<T>([NotNull]this T[] array, [NotNull]T[] items, int index)
+        [NotNull]
+        public static T[] Replace<T>([NotNull] this T[] array, [NotNull] T[] items, int index)
         {
             if (index < 0) index = array.Length + index;
 
@@ -59,7 +63,8 @@ namespace jp.ootr.common
             return tmpArray;
         }
 
-        public static T[] Resize<T>([NotNull]this T[] array, int targetLength)
+        [NotNull]
+        public static T[] Resize<T>([NotNull] this T[] array, int targetLength)
         {
             if (array.Length == targetLength) return array;
 
@@ -77,8 +82,8 @@ namespace jp.ootr.common
             return tmpArray;
         }
 
-
-        public static T[] Insert<T>([NotNull]this T[] array, [CanBeNull]T item, int index)
+        [NotNull]
+        public static T[] Insert<T>([NotNull] this T[] array, [CanBeNull] T item, int index)
         {
             if (index < 0) index = array.Length + index;
 
@@ -96,12 +101,14 @@ namespace jp.ootr.common
             return tmpArray;
         }
 
-        public static T[] Insert<T>([NotNull]this T[] array, [NotNull]T[] items, int index)
+        [NotNull]
+        public static T[] Insert<T>([NotNull] this T[] array, [NotNull] T[] items, int index)
         {
             return array.Insert(items, index, items.Length);
         }
 
-        public static T[] Insert<T>([NotNull]this T[] array, [NotNull]T[] items, int index, int itemsLength)
+        [NotNull]
+        public static T[] Insert<T>([NotNull] this T[] array, [NotNull] T[] items, int index, int itemsLength)
         {
             if (index < 0) index = array.Length + index;
 
@@ -119,18 +126,19 @@ namespace jp.ootr.common
             return tmpArray;
         }
 
-        public static bool Has<T>([NotNull]this T[] array, [CanBeNull]T item)
+        public static bool Has<T>([NotNull] this T[] array, [CanBeNull] T item)
         {
-            return array.Has(item, out var tmp);
+            return array.Has(item, out var void1);
         }
 
-        public static bool Has<T>([NotNull]this T[] array, [CanBeNull]T item, out int index)
+        public static bool Has<T>([NotNull] this T[] array, [CanBeNull] T item, out int index)
         {
             index = Array.IndexOf(array, item);
             return index != -1;
         }
 
-        public static T[] Merge<T>([NotNull]this T[] array, [NotNull]T[] items, bool unique = false)
+        [NotNull]
+        public static T[] Merge<T>([NotNull] this T[] array, [NotNull] T[] items, bool unique = false)
         {
             var tmpArray = new T[array.Length + items.Length];
             Array.Copy(array, 0, tmpArray, 0, array.Length);
@@ -138,7 +146,8 @@ namespace jp.ootr.common
             return unique ? tmpArray.Unique() : tmpArray;
         }
 
-        public static T[] Unique<T>([NotNull]this T[] array)
+        [NotNull]
+        public static T[] Unique<T>([NotNull] this T[] array)
         {
             if (typeof(T) == typeof(int))
             {
@@ -178,23 +187,26 @@ namespace jp.ootr.common
         }
 
         [Obsolete("Use ArrayUtils.Unique instead")]
-        public static int[] IntUnique([NotNull]this int[] array)
+        [NotNull]
+        public static int[] IntUnique([NotNull] this int[] array)
         {
             return array.Unique();
         }
 
-
-        public static T[] Shift<T>([NotNull]this T[] array)
+        [NotNull]
+        public static T[] Shift<T>([NotNull] this T[] array)
         {
-            return array.Shift(out var _void, out var _void2);
+            return array.Shift(out var void1, out var void2);
         }
 
-        public static T[] Shift<T>([NotNull]this T[] array, [CanBeNull]out T item)
+        [NotNull]
+        public static T[] Shift<T>([NotNull] this T[] array, [CanBeNull] out T item)
         {
-            return array.Shift(out item, out var _void);
+            return array.Shift(out item, out var void1);
         }
 
-        public static T[] Shift<T>([NotNull]this T[] array, [CanBeNull]out T item, out bool success)
+        [NotNull]
+        public static T[] Shift<T>([NotNull] this T[] array, [CanBeNull] out T item, out bool success)
         {
             if (array.Length == 0)
             {
@@ -211,9 +223,10 @@ namespace jp.ootr.common
         }
 
         [Obsolete("Use ArrayUtils.Shift instead")]
-        public static T[] __Shift<T>([NotNull]this T[] array)
+        [NotNull]
+        public static T[] __Shift<T>([NotNull] this T[] array)
         {
-            return array.__Shift(out var _void);
+            return array.__Shift(out var void1);
         }
 
         /**
@@ -224,7 +237,8 @@ namespace jp.ootr.common
          * </summary>
          */
         [Obsolete("Use ArrayUtils.Shift instead")]
-        public static T[] __Shift<T>([NotNull]this T[] array, [CanBeNull]out T item)
+        [NotNull]
+        public static T[] __Shift<T>([NotNull] this T[] array, [CanBeNull] out T item)
         {
             item = array[0];
             var tmpArray = new T[array.Length - 1];
@@ -232,17 +246,20 @@ namespace jp.ootr.common
             return tmpArray;
         }
 
-        public static T[] Pop<T>([NotNull]this T[] array)
+        [NotNull]
+        public static T[] Pop<T>([NotNull] this T[] array)
         {
-            return array.Pop(out var _void, out var _void2);
+            return array.Pop(out var void1, out var void2);
         }
 
-        public static T[] Pop<T>([NotNull]this T[] array, [CanBeNull]out T item)
+        [NotNull]
+        public static T[] Pop<T>([NotNull] this T[] array, [CanBeNull] out T item)
         {
-            return array.Pop(out item, out var _void);
+            return array.Pop(out item, out var void1);
         }
 
-        public static T[] Pop<T>([NotNull]this T[] array, [CanBeNull]out T item, out bool success)
+        [NotNull]
+        public static T[] Pop<T>([NotNull] this T[] array, [CanBeNull] out T item, out bool success)
         {
             if (array.Length == 0)
             {
@@ -266,7 +283,8 @@ namespace jp.ootr.common
          * </summary>
          */
         [Obsolete("Use ArrayUtils.Pop instead")]
-        public static T[] __Pop<T>([NotNull]this T[] array, [CanBeNull]out T item)
+        [NotNull]
+        public static T[] __Pop<T>([NotNull] this T[] array, [CanBeNull] out T item)
         {
             item = array[array.Length - 1];
             var tmpArray = new T[array.Length - 1];
@@ -280,7 +298,8 @@ namespace jp.ootr.common
          *     added: newArrayに追加された要素のnewArrayのindex
          * </summary>
          */
-        public static void Diff<T>([NotNull]this T[] current, [NotNull]T[] newArray, out int[] removed, out int[] added)
+        public static void Diff<T>([NotNull] this T[] current, [NotNull] T[] newArray, out int[] removed,
+            out int[] added)
         {
             removed = new int[current.Length];
             var removedIndex = 0;
@@ -300,6 +319,16 @@ namespace jp.ootr.common
 
             removed = removed.Resize(removedIndex);
             added = added.Resize(addedIndex);
+        }
+
+        [NotNull]
+        [ItemCanBeNull]
+        public static T[] Unshift<T>([NotNull] this T[] array, [CanBeNull] T item)
+        {
+            var tmpArray = new T[array.Length + 1];
+            tmpArray[0] = item;
+            Array.Copy(array, 0, tmpArray, 1, array.Length);
+            return tmpArray;
         }
     }
 }
