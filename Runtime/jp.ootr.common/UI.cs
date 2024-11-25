@@ -237,7 +237,7 @@ namespace jp.ootr.common
             input = button.transform.Find("__VALUE").GetComponent<InputField>();
             slider = button.transform.Find("__INDEX").GetComponent<Slider>();
             toggle = button.transform.Find("__IDENTIFIER").GetComponent<Toggle>();
-            
+
             if (slider != null) slider.value = index;
             if (input != null) input.text = value;
             if (toggle != null) toggle.isOn = false;

@@ -13,6 +13,7 @@ namespace jp.ootr.common.Base
                 ConsoleDebug($"SetOwner: {Networking.LocalPlayer}");
                 Networking.SetOwner(Networking.LocalPlayer, gameObject);
             }
+
             RequestSerialization();
             //HACK: UnityのプレイモードではOnPostSerializationが発火しないため手動で呼び出す必要がある
 #if UNITY_EDITOR
