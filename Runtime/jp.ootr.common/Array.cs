@@ -320,5 +320,14 @@ namespace jp.ootr.common
             removed = removed.Resize(removedIndex);
             added = added.Resize(addedIndex);
         }
+        
+        [NotNull]
+        public static T[] Unshift<T>([NotNull] this T[] array, [CanBeNull] T item)
+        {
+            var tmpArray = new T[array.Length + 1];
+            tmpArray[0] = item;
+            Array.Copy(array, 0, tmpArray, 1, array.Length);
+            return tmpArray;
+        }
     }
 }

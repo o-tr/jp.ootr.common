@@ -8,7 +8,11 @@ namespace jp.ootr.common.Base
     {
         protected virtual void Sync()
         {
-            if (!Networking.IsOwner(gameObject)) Networking.SetOwner(Networking.LocalPlayer, gameObject);
+            if (!Networking.IsOwner(gameObject))
+            {
+                ConsoleDebug($"SetOwner: {Networking.LocalPlayer}");
+                Networking.SetOwner(Networking.LocalPlayer, gameObject);
+            }
             RequestSerialization();
             //HACK: UnityのプレイモードではOnPostSerializationが発火しないため手動で呼び出す必要がある
 #if UNITY_EDITOR
