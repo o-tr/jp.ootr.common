@@ -213,8 +213,8 @@ namespace jp.ootr.common
             }
         }
 
-        public static void CreateButton(int index, [CanBeNull]string value, [CanBeNull]GameObject original, out GameObject button,
-            out Animator animator, out InputField input, out Slider slider, out Toggle toggle)
+        public static void CreateButton(int index, [CanBeNull]string value, [CanBeNull]GameObject original, [CanBeNull]out GameObject button,
+            [CanBeNull]out Animator animator, [CanBeNull]out InputField input, [CanBeNull]out Slider slider, [CanBeNull]out Toggle toggle)
         {
             if (original == null)
             {
@@ -231,6 +231,16 @@ namespace jp.ootr.common
             input = button.transform.Find("__VALUE").GetComponent<InputField>();
             slider = button.transform.Find("__INDEX").GetComponent<Slider>();
             toggle = button.transform.Find("__IDENTIFIER").GetComponent<Toggle>();
+            if (animator == null || input == null || slider == null || toggle == null)
+            {
+                Object.Destroy(button);
+                button = null;
+                animator = null;
+                input = null;
+                slider = null;
+                toggle = null;
+                return;
+            }
             slider.value = index;
             input.text = value;
             toggle.isOn = false;

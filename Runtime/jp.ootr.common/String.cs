@@ -5,6 +5,7 @@ namespace jp.ootr.common
 {
     public static class String
     {
+        [NotNull]
         public static string[] Split([CanBeNull]this string str, int sliceCount)
         {
             if (sliceCount <= 0)

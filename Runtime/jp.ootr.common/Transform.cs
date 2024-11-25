@@ -5,6 +5,7 @@ namespace jp.ootr.common
 {
     public static class TransformUtils
     {
+        [NotNull]
         public static Transform[] GetChildren([CanBeNull]this Transform transform)
         {
             if (transform == null) return new Transform[0];

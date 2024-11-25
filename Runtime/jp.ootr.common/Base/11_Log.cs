@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using UnityEngine;
 
 namespace jp.ootr.common.Base
@@ -17,27 +18,27 @@ namespace jp.ootr.common.Base
             return names.Length > 0 ? names[names.Length - 1] : GetClassName();
         }
 
-        protected virtual void ConsoleDebug(string message, string[] prefix = null)
+        protected virtual void ConsoleDebug([CanBeNull]string message, [CanBeNull]string[] prefix = null)
         {
             if ((int)logLevel <= (int)LogLevel.Debug) Console.Debug(message, GetDisplayName(), prefix);
         }
 
-        protected virtual void ConsoleError(string message, string[] prefix = null)
+        protected virtual void ConsoleError([CanBeNull]string message, [CanBeNull]string[] prefix = null)
         {
             if ((int)logLevel <= (int)LogLevel.Error) Console.Error(message, GetDisplayName(), prefix);
         }
 
-        protected virtual void ConsoleWarn(string message, string[] prefix = null)
+        protected virtual void ConsoleWarn([CanBeNull]string message, [CanBeNull]string[] prefix = null)
         {
             if ((int)logLevel <= (int)LogLevel.Warn) Console.Warn(message, GetDisplayName(), prefix);
         }
 
-        protected virtual void ConsoleLog(string message, string[] prefix = null)
+        protected virtual void ConsoleLog([CanBeNull]string message, [CanBeNull]string[] prefix = null)
         {
             if ((int)logLevel <= (int)LogLevel.Log) Console.Log(message, GetDisplayName(), prefix);
         }
 
-        protected virtual void ConsoleInfo(string message, string[] prefix = null)
+        protected virtual void ConsoleInfo([CanBeNull]string message, [CanBeNull]string[] prefix = null)
         {
             if ((int)logLevel <= (int)LogLevel.Info) Console.Info(message, GetDisplayName(), prefix);
         }
