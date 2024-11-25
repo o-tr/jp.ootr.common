@@ -54,7 +54,7 @@ namespace jp.ootr.common
             var list = token.DataList;
             var length = list.Count;
             for (var i = 0; i < length; i++)
-                if (!list.TryGetValue(i, TokenType.String, out var _1))
+                if (!list.TryGetValue(i, TokenType.String, out var void1))
                     return false;
 
             return true;
@@ -66,7 +66,7 @@ namespace jp.ootr.common
             var dict = token.DataDictionary;
             var keys = dict.GetKeys().ToStringArray();
             for (var i = 0; i < dict.Count; i++)
-                if (!dict.TryGetValue(keys[i], TokenType.String, out var _1))
+                if (!dict.TryGetValue(keys[i], TokenType.String, out var void1))
                     return false;
 
             return true;

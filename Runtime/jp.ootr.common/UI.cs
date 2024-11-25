@@ -8,7 +8,7 @@ namespace jp.ootr.common
     {
         public static bool HasChecked([CanBeNull] [ItemCanBeNull] this Toggle[] toggles)
         {
-            return toggles.HasChecked(out var tmp);
+            return toggles.HasChecked(out var void1);
         }
 
         public static bool HasChecked([CanBeNull] [ItemCanBeNull] this Toggle[] toggles, out int index)

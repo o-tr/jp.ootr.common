@@ -12,7 +12,7 @@ namespace jp.ootr.common
         [NotNull]
         public static T[] Remove<T>([NotNull] this T[] array, int index)
         {
-            return array.Remove(index, out var _1);
+            return array.Remove(index, out var void1);
         }
 
         [NotNull]
@@ -128,7 +128,7 @@ namespace jp.ootr.common
 
         public static bool Has<T>([NotNull] this T[] array, [CanBeNull] T item)
         {
-            return array.Has(item, out var tmp);
+            return array.Has(item, out var void1);
         }
 
         public static bool Has<T>([NotNull] this T[] array, [CanBeNull] T item, out int index)
@@ -226,7 +226,7 @@ namespace jp.ootr.common
         [NotNull]
         public static T[] __Shift<T>([NotNull] this T[] array)
         {
-            return array.__Shift(out var _void);
+            return array.__Shift(out var void1);
         }
 
         /**
@@ -249,13 +249,13 @@ namespace jp.ootr.common
         [NotNull]
         public static T[] Pop<T>([NotNull] this T[] array)
         {
-            return array.Pop(out var _void, out var _void2);
+            return array.Pop(out var void1, out var void2);
         }
 
         [NotNull]
         public static T[] Pop<T>([NotNull] this T[] array, [CanBeNull] out T item)
         {
-            return array.Pop(out item, out var _void);
+            return array.Pop(out item, out var void1);
         }
 
         [NotNull]
