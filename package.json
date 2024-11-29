@@ -1,7 +1,7 @@
 ﻿{
   "name": "jp.ootr.common",
   "displayName": "ootr's common utils",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "license": "MIT",
   "unity": "2022.3",
   "description": "Common utilities for ootr's projects",

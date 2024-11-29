@@ -173,6 +173,7 @@ namespace jp.ootr.common.Editor
     {
         public static void ApplyColorSchemas(BaseClass target)
         {
+            if (target.colorSchemas.Length == 0 || target.colorSchemaNames.Length == 0) return;
             var appliers = target.GetComponentsInChildren<ColorSchemaApplierBase>(true);
             foreach (var applier in appliers) applier.ApplyColor(target.GetColor(applier.SchemaName));
         }

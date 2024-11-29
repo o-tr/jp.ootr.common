@@ -330,5 +330,31 @@ namespace jp.ootr.common
             Array.Copy(array, 0, tmpArray, 1, array.Length);
             return tmpArray;
         }
+        
+        [NotNull][ItemCanBeNull]
+        public static T[] Shuffle<T>([NotNull][ItemCanBeNull]this T[] array)
+        {
+            var tmpArray = new T[array.Length];
+            array.CopyTo(tmpArray, 0);
+            for (var i = 0; i < tmpArray.Length; i++)
+            {
+                var tmp = tmpArray[i];
+                var randomIndex = UnityEngine.Random.Range(0, tmpArray.Length);
+                tmpArray[i] = tmpArray[randomIndex];
+                tmpArray[randomIndex] = tmp;
+            }
+            return tmpArray;
+        }
+        
+        public static void ShuffleThis<T>([NotNull][ItemCanBeNull]this T[] array)
+        {
+            for (var i = 0; i < array.Length; i++)
+            {
+                var tmp = array[i];
+                var randomIndex = UnityEngine.Random.Range(0, array.Length);
+                array[i] = array[randomIndex];
+                array[randomIndex] = tmp;
+            }
+        }
     }
 }
