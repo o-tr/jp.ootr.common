@@ -125,6 +125,7 @@ namespace jp.ootr.common.Editor
 
         private static void OnPlayModeStateChanged(PlayModeStateChange state)
         {
+            if (state != PlayModeStateChange.EnteredEditMode) return;
             var classes = ComponentUtils.GetAllComponents<BaseClass>();
 
             foreach (var c in classes)
