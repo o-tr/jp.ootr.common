@@ -125,7 +125,6 @@ namespace jp.ootr.common.Editor
 
         private static void OnPlayModeStateChanged(PlayModeStateChange state)
         {
-            if (state != PlayModeStateChange.EnteredEditMode) return;
             var classes = ComponentUtils.GetAllComponents<BaseClass>();
 
             foreach (var c in classes)
@@ -136,11 +135,11 @@ namespace jp.ootr.common.Editor
         }
     }
 
-    public class BuildCallback : UnityEditor.Editor, IVRCSDKBuildRequestedCallback
+    public class UnityBuildCallback : IProcessSceneWithReport
     {
         public int callbackOrder => 0;
 
-        public bool OnBuildRequested(VRCSDKRequestedBuildType requestedBuildType)
+        public void OnProcessScene(Scene scene, BuildReport report)
         {
             var classes = ComponentUtils.GetAllComponents<BaseClass>();
 
@@ -148,15 +147,9 @@ namespace jp.ootr.common.Editor
             {
                 ColorSchemaUtils.ApplyColorSchemas(c);
                 LocalizationUtils.SetLocalizationReferences(c);
-            }
-
-            foreach (var c in classes)
-            {
                 ColorSchemaUtils.DestroyColorAppliers(c);
                 LocalizationUtils.DestroyLocalizations(c);
             }
-
-            return true;
         }
     }
 
