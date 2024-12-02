@@ -149,23 +149,13 @@ namespace jp.ootr.common.Editor
                 LocalizationUtils.SetLocalizationReferences(c);
             }
 
-            return true;
-        }
-    }
-
-    public class UnityBuildCallback : IProcessSceneWithReport
-    {
-        public int callbackOrder => 0;
-
-        public void OnProcessScene(Scene scene, BuildReport report)
-        {
-            var classes = ComponentUtils.GetAllComponents<BaseClass>();
-
             foreach (var c in classes)
             {
                 ColorSchemaUtils.DestroyColorAppliers(c);
                 LocalizationUtils.DestroyLocalizations(c);
             }
+
+            return true;
         }
     }
 
