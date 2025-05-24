@@ -356,5 +356,24 @@ namespace jp.ootr.common
                 array[randomIndex] = tmp;
             }
         }
+
+        public static T[] Slice<T>([NotNull] this T[] array, int start, int length)
+        {
+            if (start < 0) start = array.Length + start;
+            if (length < 0) length = array.Length + length;
+
+            if (start < 0 || start >= array.Length)
+            {
+                Console.Warn($"SliceArray: Start index out of range: {start}, array length: {array.Length}",
+                    PackageName);
+                return new T[0];
+            }
+
+            if (length <= 0) return new T[0];
+
+            var tmpArray = new T[Mathf.Min(length, array.Length - start)];
+            Array.Copy(array, start, tmpArray, 0, tmpArray.Length);
+            return tmpArray;
+        }
     }
 }
