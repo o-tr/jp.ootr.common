@@ -1,20 +1,93 @@
 name: 'release'
+
 on:
-  push:
-    branches-ignore:
-      - "**"
-    tags:
-      - "v*"
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Release Type'
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+        default: 'patch'
+
+permissions:
+  contents: write
+  actions: write
 
 jobs:
-  release:
+  # Manual trigger only: bump semantic version based on tags and create a release
+  create-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
     steps:
-      - uses: actions/checkout@v2
-      - run: zip -r release.zip ./*
-      - uses: softprops/action-gh-release@v1
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
-          draft: true
+          fetch-depth: 0
+          persist-credentials: true
+          ref: master
+
+      - name: Configure Git
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+
+      - name: Calculate new version from latest tag
+        id: version
+        env:
+          RELEASE_TYPE: ${{ github.event.inputs.release_type }}
+        run: |
+          set -e
+          # fetch tags
+          git fetch --tags
+          # get latest tag (fallback to v0.0.0 if none)
+          latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          echo "Latest tag: $latest_tag"
+          current_version=${latest_tag#v}
+          echo "Current version: $current_version"
+
+          IFS='.' read -r major minor patch <<< "$current_version"
+          major=${major:-0}
+          minor=${minor:-0}
+          patch=${patch:-0}
+
+          if [ "$RELEASE_TYPE" = "major" ]; then
+            new_version="$((major+1)).0.0"
+          elif [ "$RELEASE_TYPE" = "minor" ]; then
+            new_version="$major.$((minor+1)).0"
+          else
+            new_version="$major.$minor.$((patch+1))"
+          fi
+
+          echo "New version: $new_version"
+          echo "new_version=$new_version" >> $GITHUB_OUTPUT
+
+      - name: Create zip artifact
+        run: |
+          set -e
+          # create release zip of repository content (exclude .git by using ./*)
+          zip -r release.zip ./*
+
+      - name: Create and push tag
+        run: |
+          set -e
+          TAG_NAME=v${{ steps.version.outputs.new_version }}
+          git tag -a "$TAG_NAME" -m "Release $TAG_NAME"
+          git push origin "$TAG_NAME"
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.version.outputs.new_version }}
+          name: Release v${{ steps.version.outputs.new_version }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
           files: |
             release.zip
         env:
