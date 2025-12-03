@@ -67,6 +67,21 @@ jobs:
           echo "New version: $new_version"
           echo "new_version=$new_version" >> $GITHUB_OUTPUT
 
+      - name: Update package.json version
+        run: |
+          set -e
+          NEW_VERSION=${{ steps.version.outputs.new_version }}
+          jq --arg version "$NEW_VERSION" '.version = $version' package.json > package.json.tmp
+          mv package.json.tmp package.json
+          echo "Updated package.json version to $NEW_VERSION"
+
+      - name: Commit and push changes
+        run: |
+          set -e
+          git add package.json
+          git commit -m "Bump version to v${{ steps.version.outputs.new_version }}"
+          git push origin master
+
       - name: Create zip artifact
         run: |
           set -e
