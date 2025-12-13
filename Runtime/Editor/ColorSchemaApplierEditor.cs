@@ -247,6 +247,26 @@ namespace jp.ootr.common.Editor
                 _selectedIndex = selectedIndex;
             }
 
+            private void OnEnable()
+            {
+                Selection.selectionChanged += OnSelectionChanged;
+            }
+
+            private void OnDisable()
+            {
+                Selection.selectionChanged -= OnSelectionChanged;
+            }
+
+            private void OnSelectionChanged()
+            {
+                Close();
+            }
+
+            private void OnLostFocus()
+            {
+                Close();
+            }
+
             private void CreateGUI()
             {
                 var root = rootVisualElement;
@@ -309,11 +329,6 @@ namespace jp.ootr.common.Editor
                 }
 
                 root.Add(scrollView);
-                
-                root.RegisterCallback<FocusOutEvent>(_ =>
-                {
-                    Close();
-                });
             }
         }
 
