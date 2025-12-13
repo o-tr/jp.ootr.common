@@ -12,14 +12,28 @@ namespace jp.ootr.common.Editor
     [CustomEditor(typeof(ColorSchemaApplierBase), true)]
     public class ColorSchemaApplierEditor : UnityEditor.Editor
     {
+        private static readonly Color BackgroundColor = new Color(0.22f, 0.22f, 0.22f);
+        private static readonly Color BorderColor = new Color(0.4f, 0.4f, 0.4f);
+        private static readonly Color HoverBackgroundColor = new Color(0.3f, 0.3f, 0.3f);
+        private static readonly Color SelectedBackgroundColor = new Color(0.3f, 0.5f, 0.9f, 0.3f);
+        private static readonly Color GrayColor = Color.gray;
+
+        private static void SetBorder(IStyle style, float width, Color color)
+        {
+            style.borderLeftWidth = width;
+            style.borderRightWidth = width;
+            style.borderTopWidth = width;
+            style.borderBottomWidth = width;
+            style.borderLeftColor = new StyleColor(color);
+            style.borderRightColor = new StyleColor(color);
+            style.borderTopColor = new StyleColor(color);
+            style.borderBottomColor = new StyleColor(color);
+        }
+
         private SerializedProperty _schemaNameProperty;
         private BaseClass _baseClass;
         private string[] _schemaNames;
         private Color[] _schemaColors;
-        private VisualElement _previewContainer;
-        private VisualElement _colorBox;
-        private Label _previewLabel;
-        private VisualElement _inlinePreview;
 
         public override VisualElement CreateInspectorGUI()
         {
@@ -71,16 +85,13 @@ namespace jp.ootr.common.Editor
                 return;
             }
 
-            _schemaNames = new string[namesProperty.arraySize];
-            _schemaColors = new Color[colorsProperty.arraySize];
+            var arraySize = Mathf.Min(namesProperty.arraySize, colorsProperty.arraySize);
+            _schemaNames = new string[arraySize];
+            _schemaColors = new Color[arraySize];
 
-            for (var i = 0; i < namesProperty.arraySize; i++)
+            for (var i = 0; i < arraySize; i++)
             {
                 _schemaNames[i] = namesProperty.GetArrayElementAtIndex(i).stringValue;
-            }
-
-            for (var i = 0; i < colorsProperty.arraySize; i++)
-            {
                 _schemaColors[i] = colorsProperty.GetArrayElementAtIndex(i).colorValue;
             }
         }
@@ -90,17 +101,12 @@ namespace jp.ootr.common.Editor
             var container = new VisualElement();
 
             var currentSchemaName = _schemaNameProperty.stringValue;
-            var currentIndex = 0;
-            if (_schemaNames != null)
+            var currentIndex = _schemaNames != null 
+                ? System.Array.IndexOf(_schemaNames, currentSchemaName) 
+                : -1;
+            if (currentIndex < 0)
             {
-                for (var i = 0; i < _schemaNames.Length; i++)
-                {
-                    if (_schemaNames[i] == currentSchemaName)
-                    {
-                        currentIndex = i;
-                        break;
-                    }
-                }
+                currentIndex = 0;
             }
 
             var customDropdown = new ColorSchemaDropdownField(
@@ -115,7 +121,6 @@ namespace jp.ootr.common.Editor
                 var selectedSchemaName = evt.newValue;
                 _schemaNameProperty.stringValue = selectedSchemaName;
                 serializedObject.ApplyModifiedProperties();
-                UpdatePreview(selectedSchemaName);
                 ApplyColorToComponent(selectedSchemaName);
             });
 
@@ -146,15 +151,8 @@ namespace jp.ootr.common.Editor
                 _dropdownButton.style.flexDirection = FlexDirection.Row;
                 _dropdownButton.style.alignItems = Align.Center;
                 _dropdownButton.style.height = 18;
-                _dropdownButton.style.backgroundColor = new StyleColor(new Color(0.22f, 0.22f, 0.22f));
-                _dropdownButton.style.borderLeftWidth = 1;
-                _dropdownButton.style.borderRightWidth = 1;
-                _dropdownButton.style.borderTopWidth = 1;
-                _dropdownButton.style.borderBottomWidth = 1;
-                _dropdownButton.style.borderLeftColor = new StyleColor(new Color(0.4f, 0.4f, 0.4f));
-                _dropdownButton.style.borderRightColor = new StyleColor(new Color(0.4f, 0.4f, 0.4f));
-                _dropdownButton.style.borderTopColor = new StyleColor(new Color(0.4f, 0.4f, 0.4f));
-                _dropdownButton.style.borderBottomColor = new StyleColor(new Color(0.4f, 0.4f, 0.4f));
+                _dropdownButton.style.backgroundColor = new StyleColor(BackgroundColor);
+                SetBorder(_dropdownButton.style, 1, BorderColor);
                 _dropdownButton.style.paddingLeft = 5;
                 _dropdownButton.style.paddingRight = 5;
 
@@ -175,14 +173,7 @@ namespace jp.ootr.common.Editor
                     colorBox.style.width = 16;
                     colorBox.style.height = 16;
                     colorBox.style.backgroundColor = new StyleColor(_schemaColors[_selectedIndex]);
-                    colorBox.style.borderLeftWidth = 1;
-                    colorBox.style.borderRightWidth = 1;
-                    colorBox.style.borderTopWidth = 1;
-                    colorBox.style.borderBottomWidth = 1;
-                    colorBox.style.borderLeftColor = new StyleColor(Color.gray);
-                    colorBox.style.borderRightColor = new StyleColor(Color.gray);
-                    colorBox.style.borderTopColor = new StyleColor(Color.gray);
-                    colorBox.style.borderBottomColor = new StyleColor(Color.gray);
+                    SetBorder(colorBox.style, 1, GrayColor);
                     colorBox.style.marginRight = 5;
 
                     var label = new Label(_schemaNames[_selectedIndex]);
@@ -253,15 +244,8 @@ namespace jp.ootr.common.Editor
             private void CreateGUI()
             {
                 var root = rootVisualElement;
-                root.style.backgroundColor = new StyleColor(new Color(0.22f, 0.22f, 0.22f));
-                root.style.borderLeftWidth = 1;
-                root.style.borderRightWidth = 1;
-                root.style.borderTopWidth = 1;
-                root.style.borderBottomWidth = 1;
-                root.style.borderLeftColor = new StyleColor(new Color(0.4f, 0.4f, 0.4f));
-                root.style.borderRightColor = new StyleColor(new Color(0.4f, 0.4f, 0.4f));
-                root.style.borderTopColor = new StyleColor(new Color(0.4f, 0.4f, 0.4f));
-                root.style.borderBottomColor = new StyleColor(new Color(0.4f, 0.4f, 0.4f));
+                root.style.backgroundColor = new StyleColor(BackgroundColor);
+                SetBorder(root.style, 1, BorderColor);
 
                 var scrollView = new ScrollView();
                 scrollView.style.maxHeight = 200;
@@ -280,21 +264,14 @@ namespace jp.ootr.common.Editor
 
                     if (i == _selectedIndex)
                     {
-                        item.style.backgroundColor = new StyleColor(new Color(0.3f, 0.5f, 0.9f, 0.3f));
+                        item.style.backgroundColor = new StyleColor(SelectedBackgroundColor);
                     }
 
                     var colorBox = new VisualElement();
                     colorBox.style.width = 16;
                     colorBox.style.height = 16;
                     colorBox.style.backgroundColor = new StyleColor(i < _schemaColors.Length ? _schemaColors[i] : Color.white);
-                    colorBox.style.borderLeftWidth = 1;
-                    colorBox.style.borderRightWidth = 1;
-                    colorBox.style.borderTopWidth = 1;
-                    colorBox.style.borderBottomWidth = 1;
-                    colorBox.style.borderLeftColor = new StyleColor(Color.gray);
-                    colorBox.style.borderRightColor = new StyleColor(Color.gray);
-                    colorBox.style.borderTopColor = new StyleColor(Color.gray);
-                    colorBox.style.borderBottomColor = new StyleColor(Color.gray);
+                    SetBorder(colorBox.style, 1, GrayColor);
                     colorBox.style.marginRight = 8;
 
                     var label = new Label(_schemaNames[i]);
@@ -311,14 +288,14 @@ namespace jp.ootr.common.Editor
 
                     item.RegisterCallback<MouseEnterEvent>(_ =>
                     {
-                        item.style.backgroundColor = new StyleColor(new Color(0.3f, 0.3f, 0.3f));
+                        item.style.backgroundColor = new StyleColor(HoverBackgroundColor);
                     });
 
                     item.RegisterCallback<MouseLeaveEvent>(_ =>
                     {
                         var selectedIndex = _selectedIndex;
-                        item.style.backgroundColor = i == selectedIndex 
-                            ? new StyleColor(new Color(0.3f, 0.5f, 0.9f, 0.3f))
+                        item.style.backgroundColor = index == selectedIndex 
+                            ? new StyleColor(SelectedBackgroundColor)
                             : StyleKeyword.Null;
                     });
 
@@ -352,44 +329,6 @@ namespace jp.ootr.common.Editor
             });
 
             return textField;
-        }
-
-        private void UpdatePreview(string schemaName)
-        {
-            if (_previewContainer == null) return;
-
-            _previewContainer.Clear();
-
-            Color previewColor = Color.white;
-            if (_baseClass != null && !string.IsNullOrEmpty(schemaName))
-            {
-                previewColor = ColorSchemaUtils.GetColor(_baseClass, schemaName);
-            }
-
-            var previewRow = new VisualElement();
-            previewRow.style.flexDirection = FlexDirection.Row;
-            previewRow.style.alignItems = Align.Center;
-
-            _colorBox = new VisualElement();
-            _colorBox.style.width = 40;
-            _colorBox.style.height = 40;
-            _colorBox.style.backgroundColor = new StyleColor(previewColor);
-            _colorBox.style.borderLeftWidth = 1;
-            _colorBox.style.borderRightWidth = 1;
-            _colorBox.style.borderTopWidth = 1;
-            _colorBox.style.borderBottomWidth = 1;
-            _colorBox.style.borderLeftColor = new StyleColor(Color.gray);
-            _colorBox.style.borderRightColor = new StyleColor(Color.gray);
-            _colorBox.style.borderTopColor = new StyleColor(Color.gray);
-            _colorBox.style.borderBottomColor = new StyleColor(Color.gray);
-
-            _previewLabel = new Label(schemaName);
-            _previewLabel.style.marginLeft = 10;
-            _previewLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
-
-            previewRow.Add(_colorBox);
-            previewRow.Add(_previewLabel);
-            _previewContainer.Add(previewRow);
         }
 
         private void ApplyColorToComponent(string schemaName)
