@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using jp.ootr.common.Editor;
+using UnityEngine;
 
 namespace jp.ootr.common.ColorSchema
 {
@@ -8,6 +10,7 @@ namespace jp.ootr.common.ColorSchema
 
         public void OnDrawGizmos()
         {
+            GizmoIcons.DisableGizmos();
         }
 
         public string SchemaName => schemaName;
@@ -17,3 +20,4 @@ namespace jp.ootr.common.ColorSchema
         }
     }
 }
+#endif
