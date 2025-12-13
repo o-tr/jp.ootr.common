@@ -175,6 +175,25 @@ namespace jp.ootr.common.Editor
             if (!target.colorSchemaNames.Has(schemaName, out var index)) return Color.white;
             return target.colorSchemas[index];
         }
+
+        public static BaseClass FindNearestBaseClass(Transform transform)
+        {
+            if (transform == null) return null;
+
+            var current = transform;
+            while (current != null)
+            {
+                var baseClass = current.GetComponent<BaseClass>();
+                if (baseClass != null) return baseClass;
+
+                var baseClassCommonBase = current.GetComponent<BaseClass>();
+                if (baseClassCommonBase != null) return baseClassCommonBase;
+
+                current = current.parent;
+            }
+
+            return null;
+        }
     }
 
     public static class LocalizationUtils
