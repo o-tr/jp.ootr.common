@@ -186,9 +186,6 @@ namespace jp.ootr.common.Editor
                 var baseClass = current.GetComponent<BaseClass>();
                 if (baseClass != null) return baseClass;
 
-                var baseClassCommonBase = current.GetComponent<BaseClass>();
-                if (baseClassCommonBase != null) return baseClassCommonBase;
-
                 current = current.parent;
             }
 

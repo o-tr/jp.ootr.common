@@ -205,9 +205,15 @@ namespace jp.ootr.common.Editor
                 {
                     if (index != _selectedIndex)
                     {
+                        var oldValue = _selectedIndex >= 0 && _selectedIndex < _schemaNames.Length 
+                            ? _schemaNames[_selectedIndex] 
+                            : "";
                         _selectedIndex = index;
                         UpdateSelectedDisplay();
-                        using (var changeEvent = ChangeEvent<string>.GetPooled(_schemaNames[_selectedIndex], _schemaNames[_selectedIndex]))
+                        var newValue = _selectedIndex >= 0 && _selectedIndex < _schemaNames.Length 
+                            ? _schemaNames[_selectedIndex] 
+                            : "";
+                        using (var changeEvent = ChangeEvent<string>.GetPooled(oldValue, newValue))
                         {
                             changeEvent.target = this;
                             SendEvent(changeEvent);
