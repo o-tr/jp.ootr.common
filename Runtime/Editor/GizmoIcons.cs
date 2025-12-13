@@ -7,6 +7,8 @@ namespace jp.ootr.common.Editor
     [InitializeOnLoad]
     internal class GizmoIcons
     {
+        private static bool _gizmosDisabled = false;
+
         static GizmoIcons()
         {
             EditorApplication.update += DisableGizmos;
@@ -14,11 +16,15 @@ namespace jp.ootr.common.Editor
 
         internal static void DisableGizmos()
         {
+            if (_gizmosDisabled) return;
+            
             GizmoUtility.SetIconEnabled(typeof(ColorSchemaApplierImage), false);
             GizmoUtility.SetIconEnabled(typeof(ColorSchemaApplierText), false);
             GizmoUtility.SetIconEnabled(typeof(ColorSchemaApplierRawImage), false);
             GizmoUtility.SetIconEnabled(typeof(ColorSchemaApplierTextMeshProUGUI), false);
             EditorApplication.update -= DisableGizmos;
+            
+            _gizmosDisabled = true;
         }
     }
 }
