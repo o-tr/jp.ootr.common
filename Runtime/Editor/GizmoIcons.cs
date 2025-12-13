@@ -12,7 +12,7 @@ namespace jp.ootr.common.Editor
             EditorApplication.update += DisableGizmos;
         }
 
-        private static void DisableGizmos()
+        internal static void DisableGizmos()
         {
             GizmoUtility.SetIconEnabled(typeof(ColorSchemaApplierImage), false);
             GizmoUtility.SetIconEnabled(typeof(ColorSchemaApplierText), false);
