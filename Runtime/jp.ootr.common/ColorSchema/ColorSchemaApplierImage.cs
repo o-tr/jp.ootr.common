@@ -1,8 +1,7 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEngine;
 using UnityEngine.UI;
-#if UNITY_EDITOR
 using UnityEditor;
-#endif
 
 namespace jp.ootr.common.ColorSchema
 {
@@ -13,14 +12,11 @@ namespace jp.ootr.common.ColorSchema
         {
             var image = gameObject.GetComponent<Image>();
             if (image == null) return;
-#if UNITY_EDITOR
             var so = new SerializedObject(image);
             so.Update();
             so.FindProperty("m_Color").colorValue = color;
             so.ApplyModifiedProperties();
-#else
-            image.color = color;
-#endif
         }
     }
 }
+#endif

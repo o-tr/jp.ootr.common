@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEngine;
 
 namespace jp.ootr.common.ColorSchema
 {
@@ -8,3 +9,4 @@ namespace jp.ootr.common.ColorSchema
         void ApplyColor(Color color);
     }
 }
+#endif
