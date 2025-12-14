@@ -12,7 +12,7 @@ namespace jp.ootr.common.ColorSchema
         {
             var text = gameObject.GetComponent<Text>();
             if (text == null) return;
-           var so = new SerializedObject(text);
+            var so = new SerializedObject(text);
             so.Update();
             so.FindProperty("m_Color").colorValue = color;
             so.ApplyModifiedProperties();
