@@ -136,12 +136,13 @@ namespace jp.ootr.common.Editor
             var so = new SerializedObject(_target);
             var keysProp = so.FindProperty("localizationKeys");
             var valuesProp = so.FindProperty("localizationValues");
-            if (keysProp == null || valuesProp == null || keysProp.arraySize != valuesProp.arraySize)
-                return;
 
             _logicalKeys.Clear();
             _keyToLangToValue.Clear();
             _explicitlyAddedLanguages.Clear();
+
+            if (keysProp == null || valuesProp == null || keysProp.arraySize != valuesProp.arraySize)
+                return;
 
             var keyOrder = new List<string>();
             var seen = new HashSet<string>();
@@ -485,7 +486,7 @@ namespace jp.ootr.common.Editor
             }
 
             Undo.RecordObject(_target, "Edit Localization Data");
-            so.ApplyModifiedProperties();
+            so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(_target);
         }
     }
