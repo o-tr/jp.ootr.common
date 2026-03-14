@@ -106,6 +106,31 @@ namespace jp.ootr.common.Editor
                 wnd.ReloadTable();
         }
 
+        private static readonly Dictionary<string, Localization.Language> StrToLang =
+            new Dictionary<string, Localization.Language>
+            {
+                { "en", Localization.Language.En },
+                { "fr", Localization.Language.Fr },
+                { "es", Localization.Language.Es },
+                { "it", Localization.Language.It },
+                { "ko", Localization.Language.Ko },
+                { "de", Localization.Language.De },
+                { "ja", Localization.Language.Ja },
+                { "pl", Localization.Language.Pl },
+                { "ru", Localization.Language.Ru },
+                { "pt_BR", Localization.Language.PtBR },
+                { "zh_CN", Localization.Language.ZhCn },
+                { "zh_HK", Localization.Language.ZhHk },
+                { "he", Localization.Language.He },
+                { "tok", Localization.Language.Tok },
+                { "uk", Localization.Language.Uk },
+            };
+
+        private static Localization.Language? FromStr(string langStr)
+        {
+            return StrToLang.TryGetValue(langStr, out var lang) ? lang : (Localization.Language?)null;
+        }
+
         private VisualElement GetTargetPicker()
         {
             var root = new VisualElement();
@@ -160,7 +185,7 @@ namespace jp.ootr.common.Editor
                 if (dot < 0) continue;
                 var langStr = fullKey.Substring(0, dot);
                 var logicalKey = fullKey.Substring(dot + 1);
-                var lang = LanguageUtils.FromStr(langStr);
+                var lang = FromStr(langStr);
                 if (lang == null) continue;
                 _loadedLanguages.Add(lang.Value);
 
@@ -413,8 +438,9 @@ namespace jp.ootr.common.Editor
                 var idx = rowIndex;
                 var deleteBtn = new Button(() =>
                 {
+                    var liveKey = _logicalKeys[idx];
                     _logicalKeys.RemoveAt(idx);
-                    _keyToLangToValue.Remove(logicalKey);
+                    _keyToLangToValue.Remove(liveKey);
                     ReloadTable(loadFromTarget: false);
                 }) { text = "✕" };
                 deleteBtn.style.width = 20;

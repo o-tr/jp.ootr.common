@@ -1,37 +1,10 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using VRC.SDKBase;
 
 namespace jp.ootr.common.Localization
 {
     public static class LanguageUtils
     {
-#if UNITY_EDITOR
-        private static readonly Dictionary<string, Language> StrToLang = new Dictionary<string, Language>
-        {
-            { "en", Language.En },
-            { "fr", Language.Fr },
-            { "es", Language.Es },
-            { "it", Language.It },
-            { "ko", Language.Ko },
-            { "de", Language.De },
-            { "ja", Language.Ja },
-            { "pl", Language.Pl },
-            { "ru", Language.Ru },
-            { "pt_BR", Language.PtBR },
-            { "zh_CN", Language.ZhCn },
-            { "zh_HK", Language.ZhHk },
-            { "he", Language.He },
-            { "tok", Language.Tok },
-            { "uk", Language.Uk },
-        };
-
-        public static Language? FromStr(string langStr)
-        {
-            return StrToLang.TryGetValue(langStr, out var lang) ? lang : (Language?)null;
-        }
-#endif
-
         public static Language GetCurrentLanguage()
         {
             var langStr = VRCPlayerApi.GetCurrentLanguage();
