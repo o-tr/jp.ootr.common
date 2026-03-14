@@ -34,6 +34,7 @@ namespace jp.ootr.common.Editor
         [SerializeField] private float _keyColumnWidth = DefaultKeyColumnWidth;
         [SerializeField] private List<float> _langColumnWidths = new List<float>(); // index = (int)Language
         [SerializeField] private List<Localization.Language> _explicitlyAddedLanguages = new List<Localization.Language>();
+        private HashSet<Localization.Language> _loadedLanguages = new HashSet<Localization.Language>();
 
         private DropdownField _langDropdown;
 
@@ -100,7 +101,7 @@ namespace jp.ootr.common.Editor
             wnd.titleContent = new GUIContent("Localization");
             wnd._target = target;
             if (wnd._targetField != null)
-                wnd._targetField.value = target;
+                wnd._targetField.SetValueWithoutNotify(target);
             if (wnd._tableContainer != null)
                 wnd.ReloadTable();
         }
@@ -130,6 +131,7 @@ namespace jp.ootr.common.Editor
                 _logicalKeys.Clear();
                 _keyToLangToValue.Clear();
                 _explicitlyAddedLanguages.Clear();
+                _loadedLanguages.Clear();
                 return;
             }
 
@@ -140,6 +142,7 @@ namespace jp.ootr.common.Editor
             _logicalKeys.Clear();
             _keyToLangToValue.Clear();
             _explicitlyAddedLanguages.Clear();
+            _loadedLanguages.Clear();
 
             if (keysProp == null || valuesProp == null || keysProp.arraySize != valuesProp.arraySize)
                 return;
@@ -159,6 +162,7 @@ namespace jp.ootr.common.Editor
                 var logicalKey = fullKey.Substring(dot + 1);
                 var lang = LanguageUtils.FromStr(langStr);
                 if (lang == null) continue;
+                _loadedLanguages.Add(lang.Value);
 
                 if (!_keyToLangToValue.TryGetValue(logicalKey, out var dict))
                 {
@@ -222,7 +226,6 @@ namespace jp.ootr.common.Editor
             if (!_explicitlyAddedLanguages.Contains(lang))
                 _explicitlyAddedLanguages.Add(lang);
             ReloadTable(loadFromTarget: false);
-            UpdateLangDropdownChoices();
         }
 
         private float GetLangColumnWidth(Localization.Language lang)
@@ -458,13 +461,14 @@ namespace jp.ootr.common.Editor
         {
             if (_target == null) return;
 
-            var visibleLangs = GetVisibleLanguages();
+            var saveLangs = AllLanguages
+                .Where(l => _loadedLanguages.Contains(l) || _explicitlyAddedLanguages.Contains(l))
+                .ToList();
             var pairs = new List<(string fullKey, string value)>();
             foreach (var key in _logicalKeys)
             {
-                if (!_keyToLangToValue.TryGetValue(key, out var dict))
-                    dict = new Dictionary<Localization.Language, string>();
-                foreach (var lang in visibleLangs)
+                var dict = _keyToLangToValue[key];
+                foreach (var lang in saveLangs)
                 {
                     var value = dict.TryGetValue(lang, out var v) ? v : "";
                     var fullKey = $"{LanguageUtils.ToStr(lang)}.{key}";
