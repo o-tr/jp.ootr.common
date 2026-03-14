@@ -108,7 +108,9 @@ namespace jp.ootr.common.Editor
         }
 
         private static readonly Dictionary<string, Localization.Language> StrToLang =
-            AllLanguages.ToDictionary(l => LanguageUtils.ToStr(l));
+            AllLanguages
+                .GroupBy(l => LanguageUtils.ToStr(l))
+                .ToDictionary(g => g.Key, g => g.First());
 
         private static Localization.Language? FromStr(string langStr)
         {
@@ -460,6 +462,7 @@ namespace jp.ootr.common.Editor
                     _keyToLangToValue[newKey] = _keyToLangToValue[oldKey];
                     _keyToLangToValue.Remove(oldKey);
                     _logicalKeys[idx] = newKey;
+                    keyField.SetValueWithoutNotify(newKey);
                 });
                 row.Add(keyField);
 
