@@ -14,7 +14,7 @@ namespace jp.ootr.common.Editor
     {
         [SerializeField] private StyleSheet baseStyleSheet;
 
-        private BaseClass _target;
+        [SerializeField] private BaseClass _target;
         private ObjectField _targetField;
         private VisualElement _tableContainer;
         private List<string> _logicalKeys = new List<string>();
@@ -139,13 +139,13 @@ namespace jp.ootr.common.Editor
             var keysProp = so.FindProperty("localizationKeys");
             var valuesProp = so.FindProperty("localizationValues");
 
+            if (keysProp == null || valuesProp == null || keysProp.arraySize != valuesProp.arraySize)
+                return;
+
             _logicalKeys.Clear();
             _keyToLangToValue.Clear();
             _explicitlyAddedLanguages.Clear();
             _loadedLanguages.Clear();
-
-            if (keysProp == null || valuesProp == null || keysProp.arraySize != valuesProp.arraySize)
-                return;
 
             var keyOrder = new List<string>();
             var seen = new HashSet<string>();
@@ -300,6 +300,15 @@ namespace jp.ootr.common.Editor
                 evt.StopPropagation();
             });
 
+            resizer.RegisterCallback<DetachFromPanelEvent>(_ =>
+            {
+                if (_resizingColumnIndex == columnIndex)
+                {
+                    resizer.ReleaseMouse();
+                    _resizingColumnIndex = -1;
+                }
+            });
+
             return resizer;
         }
 
@@ -401,10 +410,21 @@ namespace jp.ootr.common.Editor
                 row.style.marginBottom = 0;
                 row.style.backgroundColor = new StyleColor(rowIndex % 2 == 0 ? RowEven : RowOdd);
 
+                var idx = rowIndex;
+                var deleteBtn = new Button(() =>
+                {
+                    _logicalKeys.RemoveAt(idx);
+                    _keyToLangToValue.Remove(logicalKey);
+                    ReloadTable(loadFromTarget: false);
+                }) { text = "✕" };
+                deleteBtn.style.width = 20;
+                deleteBtn.style.minWidth = 20;
+                deleteBtn.style.flexShrink = 0;
+                row.Add(deleteBtn);
+
                 var keyField = new TextField { value = logicalKey };
                 SetCellStyle(keyField, _columnWidths[0]);
                 keyColumnCells.Add(keyField);
-                var idx = rowIndex;
                 keyField.RegisterValueChangedCallback(evt =>
                 {
                     var newKey = evt.newValue?.Trim() ?? "";
@@ -462,7 +482,8 @@ namespace jp.ootr.common.Editor
             if (_target == null) return;
 
             var saveLangs = AllLanguages
-                .Where(l => _loadedLanguages.Contains(l) || _explicitlyAddedLanguages.Contains(l))
+                .Where(l => _loadedLanguages.Contains(l) || _explicitlyAddedLanguages.Contains(l)
+                    || _keyToLangToValue.Values.Any(d => d.ContainsKey(l)))
                 .ToList();
             var pairs = new List<(string fullKey, string value)>();
             foreach (var key in _logicalKeys)

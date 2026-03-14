@@ -6,6 +6,7 @@ namespace jp.ootr.common.Localization
 {
     public static class LanguageUtils
     {
+#if UNITY_EDITOR
         private static readonly Dictionary<string, Language> StrToLang = new Dictionary<string, Language>
         {
             { "en", Language.En },
@@ -29,17 +30,32 @@ namespace jp.ootr.common.Localization
         {
             return StrToLang.TryGetValue(langStr, out var lang) ? lang : (Language?)null;
         }
+#endif
 
         public static Language GetCurrentLanguage()
         {
             var langStr = VRCPlayerApi.GetCurrentLanguage();
-            var lang = FromStr(langStr);
-            if (lang == null)
+            switch (langStr)
             {
-                Debug.LogWarning($"Unsupported language: {langStr}, fallback to en");
-                return Language.En;
+                case "en": return Language.En;
+                case "fr": return Language.Fr;
+                case "es": return Language.Es;
+                case "it": return Language.It;
+                case "ko": return Language.Ko;
+                case "de": return Language.De;
+                case "ja": return Language.Ja;
+                case "pl": return Language.Pl;
+                case "ru": return Language.Ru;
+                case "pt_BR": return Language.PtBR;
+                case "zh_CN": return Language.ZhCn;
+                case "zh_HK": return Language.ZhHk;
+                case "he": return Language.He;
+                case "tok": return Language.Tok;
+                case "uk": return Language.Uk;
+                default:
+                    Debug.LogWarning($"Unsupported language: {langStr}, fallback to en");
+                    return Language.En;
             }
-            return lang.Value;
         }
 
         public static string ToStr(this Language lang)
