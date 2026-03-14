@@ -29,7 +29,7 @@ namespace jp.ootr.common.Editor
         private const float MinColumnWidth = 60f;
         private const float MaxColumnWidth = 500f;
         private const float ResizerWidth = 7f;
-        private const float ResizerOffset = (int)ResizerWidth / 2 + 1;
+        private const float ResizerOffset = ResizerWidth / 2f + 1f;
 
         [SerializeField] private float _keyColumnWidth = DefaultKeyColumnWidth;
         [SerializeField] private List<float> _langColumnWidths = new List<float>(); // index = (int)Language
@@ -125,16 +125,23 @@ namespace jp.ootr.common.Editor
 
         private void LoadFromTarget()
         {
-            _logicalKeys.Clear();
-            _keyToLangToValue.Clear();
-            _explicitlyAddedLanguages.Clear();
-            if (_target == null) return;
+            if (_target == null)
+            {
+                _logicalKeys.Clear();
+                _keyToLangToValue.Clear();
+                _explicitlyAddedLanguages.Clear();
+                return;
+            }
 
             var so = new SerializedObject(_target);
             var keysProp = so.FindProperty("localizationKeys");
             var valuesProp = so.FindProperty("localizationValues");
             if (keysProp == null || valuesProp == null || keysProp.arraySize != valuesProp.arraySize)
                 return;
+
+            _logicalKeys.Clear();
+            _keyToLangToValue.Clear();
+            _explicitlyAddedLanguages.Clear();
 
             var keyOrder = new List<string>();
             var seen = new HashSet<string>();
@@ -150,6 +157,7 @@ namespace jp.ootr.common.Editor
                 var langStr = fullKey.Substring(0, dot);
                 var logicalKey = fullKey.Substring(dot + 1);
                 var lang = LanguageUtils.FromStr(langStr);
+                if (lang == null) continue;
 
                 if (!_keyToLangToValue.TryGetValue(logicalKey, out var dict))
                 {
@@ -161,7 +169,7 @@ namespace jp.ootr.common.Editor
                     }
                 }
 
-                dict[lang] = value;
+                dict[lang.Value] = value;
             }
 
             _logicalKeys = keyOrder;
@@ -368,7 +376,6 @@ namespace jp.ootr.common.Editor
             headerRow.style.borderBottomColor = new StyleColor(HeaderBorder);
 
             var keyHeaderCell = CreateHeaderCell("Key", 0);
-            keyColumnCells.Add(keyHeaderCell);
             headerRow.Add(keyHeaderCell);
 
             for (var c = 0; c < _visibleLangsSnapshot.Count; c++)
@@ -477,7 +484,9 @@ namespace jp.ootr.common.Editor
                 valuesProp.GetArrayElementAtIndex(i).stringValue = pairs[i].value;
             }
 
-            so.ApplyModifiedPropertiesWithoutUndo();
+            Undo.RecordObject(_target, "Edit Localization Data");
+            so.ApplyModifiedProperties();
+            EditorUtility.SetDirty(_target);
         }
     }
 }
