@@ -18,6 +18,8 @@ namespace jp.ootr.common.Editor
 
         public override VisualElement CreateInspectorGUI()
         {
+            serializedObject.Update();
+
             var root = new VisualElement();
 
             _textKeyProperty = serializedObject.FindProperty("textKey");
@@ -30,7 +32,7 @@ namespace jp.ootr.common.Editor
             _baseClass = ColorSchemaUtils.FindNearestBaseClass((target as MonoBehaviour)?.transform);
             UpdateLogicalKeys();
 
-            if (_baseClass != null && _logicalKeys != null && _logicalKeys.Count > 0)
+            if (_baseClass != null && _logicalKeys.Count > 0)
             {
                 root.Add(CreateDropdownField());
             }
@@ -39,34 +41,45 @@ namespace jp.ootr.common.Editor
                 root.Add(CreateTextField());
             }
 
+            var prop = serializedObject.GetIterator();
+            prop.NextVisible(true);
+            do
+            {
+                if (prop.name != "textKey")
+                    root.Add(new PropertyField(prop));
+            } while (prop.NextVisible(false));
+
+            serializedObject.ApplyModifiedProperties();
             return root;
         }
 
         private void UpdateLogicalKeys()
         {
-            _logicalKeys = null;
+            _logicalKeys = new List<string>();
             if (_baseClass == null) return;
 
-            var so = new SerializedObject(_baseClass);
-            so.Update();
-
-            var keysProp = so.FindProperty("localizationKeys");
-            if (keysProp == null || keysProp.arraySize == 0) return;
-
-            var seen = new HashSet<string>();
-            _logicalKeys = new List<string>();
-
-            for (var i = 0; i < keysProp.arraySize; i++)
+            using (var so = new SerializedObject(_baseClass))
             {
-                var fullKey = keysProp.GetArrayElementAtIndex(i).stringValue;
-                if (string.IsNullOrEmpty(fullKey)) continue;
+                so.Update();
 
-                var dot = fullKey.IndexOf('.');
-                if (dot < 0) continue;
+                var keysProp = so.FindProperty("localizationKeys");
+                if (keysProp == null || keysProp.arraySize == 0) return;
 
-                var logicalKey = fullKey.Substring(dot + 1);
-                if (seen.Add(logicalKey))
-                    _logicalKeys.Add(logicalKey);
+                var seen = new HashSet<string>();
+
+                for (var i = 0; i < keysProp.arraySize; i++)
+                {
+                    var fullKey = keysProp.GetArrayElementAtIndex(i).stringValue;
+                    if (string.IsNullOrEmpty(fullKey)) continue;
+
+                    var dot = fullKey.IndexOf('.');
+                    if (dot < 0) continue;
+
+                    var logicalKey = fullKey.Substring(dot + 1);
+                    if (string.IsNullOrWhiteSpace(logicalKey)) continue;
+                    if (seen.Add(logicalKey))
+                        _logicalKeys.Add(logicalKey);
+                }
             }
         }
 
