@@ -35,6 +35,7 @@ namespace jp.ootr.common.Editor
         [SerializeField] private List<float> _langColumnWidths = new List<float>(); // index = (int)Language
         [SerializeField] private List<Localization.Language> _explicitlyAddedLanguages = new List<Localization.Language>();
         private HashSet<Localization.Language> _loadedLanguages = new HashSet<Localization.Language>();
+        private bool _malformedDataOnLoad;
 
         private DropdownField _langDropdown;
 
@@ -107,24 +108,7 @@ namespace jp.ootr.common.Editor
         }
 
         private static readonly Dictionary<string, Localization.Language> StrToLang =
-            new Dictionary<string, Localization.Language>
-            {
-                { "en", Localization.Language.En },
-                { "fr", Localization.Language.Fr },
-                { "es", Localization.Language.Es },
-                { "it", Localization.Language.It },
-                { "ko", Localization.Language.Ko },
-                { "de", Localization.Language.De },
-                { "ja", Localization.Language.Ja },
-                { "pl", Localization.Language.Pl },
-                { "ru", Localization.Language.Ru },
-                { "pt_BR", Localization.Language.PtBR },
-                { "zh_CN", Localization.Language.ZhCn },
-                { "zh_HK", Localization.Language.ZhHk },
-                { "he", Localization.Language.He },
-                { "tok", Localization.Language.Tok },
-                { "uk", Localization.Language.Uk },
-            };
+            AllLanguages.ToDictionary(l => LanguageUtils.ToStr(l));
 
         private static Localization.Language? FromStr(string langStr)
         {
@@ -157,6 +141,7 @@ namespace jp.ootr.common.Editor
                 _keyToLangToValue.Clear();
                 _explicitlyAddedLanguages.Clear();
                 _loadedLanguages.Clear();
+                _malformedDataOnLoad = false;
                 return;
             }
 
@@ -165,8 +150,12 @@ namespace jp.ootr.common.Editor
             var valuesProp = so.FindProperty("localizationValues");
 
             if (keysProp == null || valuesProp == null || keysProp.arraySize != valuesProp.arraySize)
+            {
+                _malformedDataOnLoad = true;
                 return;
+            }
 
+            _malformedDataOnLoad = false;
             _logicalKeys.Clear();
             _keyToLangToValue.Clear();
             _explicitlyAddedLanguages.Clear();
@@ -517,6 +506,11 @@ namespace jp.ootr.common.Editor
         private void OnSave()
         {
             if (_target == null) return;
+            if (_malformedDataOnLoad)
+            {
+                Debug.LogError("Cannot save: localization data could not be loaded (malformed or mismatched arrays).");
+                return;
+            }
 
             var saveLangs = AllLanguages
                 .Where(l => _loadedLanguages.Contains(l) || _explicitlyAddedLanguages.Contains(l)
