@@ -396,7 +396,7 @@ namespace jp.ootr.common.Editor
             table.style.flexDirection = FlexDirection.Column;
             table.style.flexShrink = 0;
             var totalWidth = _columnWidths.Sum();
-            table.style.minWidth = totalWidth;
+            table.style.minWidth = totalWidth + 20f;
 
             var keyColumnCells = new List<VisualElement>();
             _columnCellRefs.Add(keyColumnCells);
@@ -412,6 +412,12 @@ namespace jp.ootr.common.Editor
             headerRow.style.backgroundColor = new StyleColor(HeaderBackground);
             headerRow.style.borderBottomWidth = 1;
             headerRow.style.borderBottomColor = new StyleColor(HeaderBorder);
+
+            var deletePlaceholder = new VisualElement();
+            deletePlaceholder.style.width = 20;
+            deletePlaceholder.style.minWidth = 20;
+            deletePlaceholder.style.flexShrink = 0;
+            headerRow.Add(deletePlaceholder);
 
             var keyHeaderCell = CreateHeaderCell("Key", 0);
             headerRow.Add(keyHeaderCell);
@@ -445,6 +451,11 @@ namespace jp.ootr.common.Editor
                 }) { text = "✕" };
                 deleteBtn.style.width = 20;
                 deleteBtn.style.minWidth = 20;
+                deleteBtn.style.maxWidth = 20;
+                deleteBtn.style.paddingLeft = 0;
+                deleteBtn.style.paddingRight = 0;
+                deleteBtn.style.marginLeft = 0;
+                deleteBtn.style.marginRight = 0;
                 deleteBtn.style.flexShrink = 0;
                 row.Add(deleteBtn);
 
