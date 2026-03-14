@@ -33,6 +33,9 @@ namespace jp.ootr.common.Editor
 
         [SerializeField] private float _keyColumnWidth = DefaultKeyColumnWidth;
         [SerializeField] private List<float> _langColumnWidths = new List<float>(); // index = (int)Language
+        [SerializeField] private List<Localization.Language> _explicitlyAddedLanguages = new List<Localization.Language>();
+
+        private DropdownField _langDropdown;
 
         private List<List<VisualElement>> _columnCellRefs = new List<List<VisualElement>>();
         private List<float> _columnWidths = new List<float>();
@@ -62,8 +65,13 @@ namespace jp.ootr.common.Editor
             var toolbar = new VisualElement { style = { flexDirection = FlexDirection.Row, marginBottom = 4 } };
             var addKeyBtn = new Button(OnAddKey) { text = "Add Key" };
             var saveBtn = new Button(OnSave) { text = "Save" };
+            _langDropdown = new DropdownField { style = { minWidth = 120 } };
+            UpdateLangDropdownChoices();
+            var addLangBtn = new Button(OnAddLanguage) { text = "Add" };
             toolbar.Add(addKeyBtn);
             toolbar.Add(saveBtn);
+            toolbar.Add(_langDropdown);
+            toolbar.Add(addLangBtn);
             root.Add(toolbar);
 
             _tableContainer = new ScrollView(ScrollViewMode.VerticalAndHorizontal);
@@ -139,6 +147,7 @@ namespace jp.ootr.common.Editor
         {
             _logicalKeys.Clear();
             _keyToLangToValue.Clear();
+            _explicitlyAddedLanguages.Clear();
             if (_target == null) return;
 
             var so = new SerializedObject(_target);
@@ -193,10 +202,38 @@ namespace jp.ootr.common.Editor
                         hasValue.Add(kv.Key);
                 }
             }
+
+            // 明示的に追加された言語も含める
+            foreach (var lang in _explicitlyAddedLanguages)
+                hasValue.Add(lang);
+
             // いずれのキーにも値がない場合は全言語を表示（新規入力用）
             if (hasValue.Count == 0 && _logicalKeys.Count > 0)
                 return new List<Localization.Language>(AllLanguages);
             return AllLanguages.Where(hasValue.Contains).ToList();
+        }
+
+        private void UpdateLangDropdownChoices()
+        {
+            if (_langDropdown == null) return;
+            var current = new HashSet<Localization.Language>(GetVisibleLanguages());
+            var choices = AllLanguages
+                .Where(l => !current.Contains(l))
+                .Select(l => l.ToString())
+                .ToList();
+            _langDropdown.choices = choices;
+            _langDropdown.value = choices.Count > 0 ? choices[0] : "";
+        }
+
+        private void OnAddLanguage()
+        {
+            if (_target == null || _langDropdown == null) return;
+            if (string.IsNullOrEmpty(_langDropdown.value)) return;
+            if (!Enum.TryParse<Localization.Language>(_langDropdown.value, out var lang)) return;
+            if (!_explicitlyAddedLanguages.Contains(lang))
+                _explicitlyAddedLanguages.Add(lang);
+            ReloadTable(loadFromTarget: false);
+            UpdateLangDropdownChoices();
         }
 
         private float GetLangColumnWidth(Localization.Language lang)
@@ -414,6 +451,7 @@ namespace jp.ootr.common.Editor
             }
 
             _tableContainer.Add(table);
+            UpdateLangDropdownChoices();
         }
 
         private void OnAddKey()
