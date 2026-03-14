@@ -502,6 +502,7 @@ namespace jp.ootr.common.Editor
             var valuesProp = so.FindProperty("localizationValues");
             if (keysProp == null || valuesProp == null) return;
 
+            Undo.RecordObject(_target, "Edit Localization Data");
             keysProp.arraySize = pairs.Count;
             valuesProp.arraySize = pairs.Count;
             for (var i = 0; i < pairs.Count; i++)
@@ -510,7 +511,6 @@ namespace jp.ootr.common.Editor
                 valuesProp.GetArrayElementAtIndex(i).stringValue = pairs[i].value;
             }
 
-            Undo.RecordObject(_target, "Edit Localization Data");
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(_target);
         }
