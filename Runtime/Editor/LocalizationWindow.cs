@@ -43,14 +43,17 @@ namespace jp.ootr.common.Editor
         private int _resizingColumnIndex = -1;
         private float _resizeStartX;
         private float _resizeStartWidth;
-        private EventCallback<MouseMoveEvent> _resizeMoveHandler;
-        private EventCallback<MouseUpEvent> _resizeUpHandler;
 
-        private static readonly Color HeaderBackground = new Color(0.18f, 0.18f, 0.18f);
-        private static readonly Color HeaderBorder = new Color(0.25f, 0.25f, 0.25f);
-        private static readonly Color CellBorder = new Color(0.22f, 0.22f, 0.22f);
-        private static readonly Color RowEven = new Color(0.16f, 0.16f, 0.16f);
-        private static readonly Color RowOdd = new Color(0.14f, 0.14f, 0.14f);
+        private static Color HeaderBackground => EditorGUIUtility.isProSkin
+            ? new Color(0.18f, 0.18f, 0.18f) : new Color(0.76f, 0.76f, 0.76f);
+        private static Color HeaderBorder => EditorGUIUtility.isProSkin
+            ? new Color(0.25f, 0.25f, 0.25f) : new Color(0.60f, 0.60f, 0.60f);
+        private static Color CellBorder => EditorGUIUtility.isProSkin
+            ? new Color(0.22f, 0.22f, 0.22f) : new Color(0.70f, 0.70f, 0.70f);
+        private static Color RowEven => EditorGUIUtility.isProSkin
+            ? new Color(0.16f, 0.16f, 0.16f) : new Color(0.83f, 0.83f, 0.83f);
+        private static Color RowOdd => EditorGUIUtility.isProSkin
+            ? new Color(0.14f, 0.14f, 0.14f) : new Color(0.78f, 0.78f, 0.78f);
 
         public void CreateGUI()
         {
@@ -120,29 +123,6 @@ namespace jp.ootr.common.Editor
             return root;
         }
 
-        private static Localization.Language ParseLanguage(string langStr)
-        {
-            switch (langStr)
-            {
-                case "en": return Localization.Language.En;
-                case "fr": return Localization.Language.Fr;
-                case "es": return Localization.Language.Es;
-                case "it": return Localization.Language.It;
-                case "ko": return Localization.Language.Ko;
-                case "de": return Localization.Language.De;
-                case "ja": return Localization.Language.Ja;
-                case "pl": return Localization.Language.Pl;
-                case "ru": return Localization.Language.Ru;
-                case "pt_BR": return Localization.Language.PtBR;
-                case "zh_CN": return Localization.Language.ZhCn;
-                case "zh_HK": return Localization.Language.ZhHk;
-                case "he": return Localization.Language.He;
-                case "tok": return Localization.Language.Tok;
-                case "uk": return Localization.Language.Uk;
-                default: return Localization.Language.En;
-            }
-        }
-
         private void LoadFromTarget()
         {
             _logicalKeys.Clear();
@@ -169,7 +149,7 @@ namespace jp.ootr.common.Editor
                 if (dot < 0) continue;
                 var langStr = fullKey.Substring(0, dot);
                 var logicalKey = fullKey.Substring(dot + 1);
-                var lang = ParseLanguage(langStr);
+                var lang = LanguageUtils.FromStr(langStr);
 
                 if (!_keyToLangToValue.TryGetValue(logicalKey, out var dict))
                 {
@@ -401,8 +381,7 @@ namespace jp.ootr.common.Editor
             for (var rowIndex = 0; rowIndex < _logicalKeys.Count; rowIndex++)
             {
                 var logicalKey = _logicalKeys[rowIndex];
-                if (!_keyToLangToValue.TryGetValue(logicalKey, out var langToValue))
-                    langToValue = new Dictionary<Localization.Language, string>();
+                var langToValue = _keyToLangToValue[logicalKey];
 
                 var row = new VisualElement { style = { flexDirection = FlexDirection.Row, flexShrink = 0 } };
                 row.style.marginLeft = 0;
