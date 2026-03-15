@@ -99,8 +99,8 @@ namespace jp.ootr.common.Editor
         public static void ShowWindowWithTarget(BaseClass target)
         {
             var wnd = GetWindow<LocalizationWindow>();
-            wnd.titleContent = new GUIContent("Localization");
             wnd._target = target;
+            wnd.titleContent = new GUIContent("Localization");
             if (wnd._targetField != null)
                 wnd._targetField.SetValueWithoutNotify(target);
             if (wnd._tableContainer != null)
@@ -154,6 +154,8 @@ namespace jp.ootr.common.Editor
             if (keysProp == null || valuesProp == null || keysProp.arraySize != valuesProp.arraySize)
             {
                 _malformedDataOnLoad = true;
+                _logicalKeys.Clear();
+                _keyToLangToValue.Clear();
                 return;
             }
 
@@ -237,6 +239,7 @@ namespace jp.ootr.common.Editor
         private void OnAddLanguage()
         {
             if (_target == null || _langDropdown == null) return;
+            if (_malformedDataOnLoad) return;
             if (string.IsNullOrEmpty(_langDropdown.value)) return;
             if (!Enum.TryParse<Localization.Language>(_langDropdown.value, out var lang)) return;
             if (!_explicitlyAddedLanguages.Contains(lang))
@@ -373,6 +376,12 @@ namespace jp.ootr.common.Editor
         {
             if (loadFromTarget)
                 LoadFromTarget();
+            if (_malformedDataOnLoad)
+            {
+                _tableContainer.Clear();
+                _tableContainer.Add(new Label("Localization data could not be loaded (malformed or mismatched arrays)."));
+                return;
+            }
             _tableContainer.Clear();
             _columnCellRefs.Clear();
             _columnWidths.Clear();
@@ -455,10 +464,13 @@ namespace jp.ootr.common.Editor
                 keyColumnCells.Add(keyField);
                 keyField.RegisterValueChangedCallback(evt =>
                 {
-                    var newKey = evt.newValue?.Trim() ?? "";
-                    if (string.IsNullOrEmpty(newKey) || newKey == _logicalKeys[idx]) return;
                     var oldKey = _logicalKeys[idx];
-                    if (_keyToLangToValue.ContainsKey(newKey)) return;
+                    var newKey = evt.newValue?.Trim() ?? "";
+                    if (string.IsNullOrWhiteSpace(newKey) || newKey == oldKey || _keyToLangToValue.ContainsKey(newKey))
+                    {
+                        keyField.SetValueWithoutNotify(oldKey);
+                        return;
+                    }
                     _keyToLangToValue[newKey] = _keyToLangToValue[oldKey];
                     _keyToLangToValue.Remove(oldKey);
                     _logicalKeys[idx] = newKey;
@@ -496,6 +508,7 @@ namespace jp.ootr.common.Editor
         private void OnAddKey()
         {
             if (_target == null) return;
+            if (_malformedDataOnLoad) return;
             var baseName = "new_key";
             var name = baseName;
             var c = 0;
@@ -517,7 +530,7 @@ namespace jp.ootr.common.Editor
 
             var saveLangs = AllLanguages
                 .Where(l => _loadedLanguages.Contains(l) || _explicitlyAddedLanguages.Contains(l)
-                    || _keyToLangToValue.Values.Any(d => d.ContainsKey(l)))
+                    || _keyToLangToValue.Values.Any(d => d.TryGetValue(l, out var v) && !string.IsNullOrEmpty(v)))
                 .ToList();
             var pairs = new List<(string fullKey, string value)>();
             foreach (var key in _logicalKeys)
