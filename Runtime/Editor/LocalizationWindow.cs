@@ -59,6 +59,17 @@ namespace jp.ootr.common.Editor
         private static Color RowOdd => EditorGUIUtility.isProSkin
             ? new Color(0.14f, 0.14f, 0.14f) : new Color(0.78f, 0.78f, 0.78f);
 
+        public override bool hasUnsavedChanges => _isDirty;
+
+        public override string saveChangesMessage =>
+            "You have unsaved localization changes. Save before closing?";
+
+        public override void SaveChanges()
+        {
+            OnSave();
+            base.SaveChanges();
+        }
+
         public void CreateGUI()
         {
             var root = new VisualElement();
@@ -621,7 +632,14 @@ namespace jp.ootr.common.Editor
 
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(_target);
-            AssetDatabase.SaveAssetIfDirty(_target);
+            if (!EditorUtility.IsPersistent(_target))
+            {
+                Debug.Log("[Localization] Changes saved to in-memory object. Remember to save the scene to persist them.");
+            }
+            else
+            {
+                AssetDatabase.SaveAssetIfDirty(_target);
+            }
             _isDirty = false;
         }
     }
