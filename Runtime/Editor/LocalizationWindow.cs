@@ -103,7 +103,7 @@ namespace jp.ootr.common.Editor
             var wnd = GetWindow<LocalizationWindow>();
             wnd.titleContent = new GUIContent("Localization");
 
-            if (wnd._isDirty && !EditorUtility.DisplayDialog(
+            if (wnd._isDirty && wnd._target != target && !EditorUtility.DisplayDialog(
                     "Unsaved Changes",
                     "You have unsaved localization changes. Discard them?",
                     "Discard", "Cancel"))
@@ -204,7 +204,8 @@ namespace jp.ootr.common.Editor
                 var logicalKey = fullKey.Substring(dot + 1);
                 var lang = FromStr(langStr);
                 if (lang == null) continue;
-                _loadedLanguages.Add(lang.Value);
+                if (!string.IsNullOrEmpty(value))
+                    _loadedLanguages.Add(lang.Value);
 
                 if (!_keyToLangToValue.TryGetValue(logicalKey, out var dict))
                 {
@@ -575,8 +576,11 @@ namespace jp.ootr.common.Editor
             _loadedLanguages.Clear();
             foreach (var dict in _keyToLangToValue.Values)
             {
-                foreach (var lang in dict.Keys)
-                    _loadedLanguages.Add(lang);
+                foreach (var kv in dict)
+                {
+                    if (!string.IsNullOrEmpty(kv.Value))
+                        _loadedLanguages.Add(kv.Key);
+                }
             }
 
             var saveLangs = AllLanguages
