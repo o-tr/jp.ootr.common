@@ -100,8 +100,16 @@ namespace jp.ootr.common.Editor
         public static void ShowWindowWithTarget(BaseClass target)
         {
             var wnd = GetWindow<LocalizationWindow>();
-            wnd._target = target;
             wnd.titleContent = new GUIContent("Localization");
+
+            if (wnd._isDirty && !EditorUtility.DisplayDialog(
+                    "Unsaved Changes",
+                    "You have unsaved localization changes. Discard them?",
+                    "Discard", "Cancel"))
+                return;
+
+            wnd._target = target;
+            wnd._isDirty = false;
             if (wnd._targetField != null)
                 wnd._targetField.SetValueWithoutNotify(target);
             if (wnd._tableContainer != null)
@@ -167,6 +175,8 @@ namespace jp.ootr.common.Editor
                 _malformedDataOnLoad = true;
                 _logicalKeys.Clear();
                 _keyToLangToValue.Clear();
+                _loadedLanguages.Clear();
+                _explicitlyAddedLanguages.Clear();
                 _isDirty = false;
                 return;
             }
