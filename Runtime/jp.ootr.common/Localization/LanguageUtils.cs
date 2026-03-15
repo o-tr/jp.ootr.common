@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using VRC.SDKBase;
 
 namespace jp.ootr.common.Localization
@@ -66,6 +66,7 @@ namespace jp.ootr.common.Localization
                 case Language.Uk:
                     return "uk";
                 default:
+                    Debug.LogWarning($"Unhandled Language value: {lang}, fallback to en.");
                     return "en";
             }
         }

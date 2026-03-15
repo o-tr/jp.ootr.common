@@ -34,6 +34,7 @@ namespace jp.ootr.common.Editor
         [SerializeField] private float _keyColumnWidth = DefaultKeyColumnWidth;
         [SerializeField] private List<float> _langColumnWidths = new List<float>(); // index = (int)Language
         [SerializeField] private List<Localization.Language> _explicitlyAddedLanguages = new List<Localization.Language>();
+        [SerializeField] private BaseClass _lastLoadedTarget;
         private HashSet<Localization.Language> _loadedLanguages = new HashSet<Localization.Language>();
         private bool _malformedDataOnLoad;
         private bool _isDirty;
@@ -182,9 +183,10 @@ namespace jp.ootr.common.Editor
             }
 
             _malformedDataOnLoad = false;
+            if (_target != _lastLoadedTarget)
+                _explicitlyAddedLanguages.Clear();
             _logicalKeys.Clear();
             _keyToLangToValue.Clear();
-            _explicitlyAddedLanguages.Clear();
             _loadedLanguages.Clear();
 
             var keyOrder = new List<string>();
@@ -218,6 +220,7 @@ namespace jp.ootr.common.Editor
             }
 
             _logicalKeys = keyOrder;
+            _lastLoadedTarget = _target;
             _isDirty = false;
         }
 
@@ -241,9 +244,9 @@ namespace jp.ootr.common.Editor
             foreach (var lang in _explicitlyAddedLanguages)
                 hasValue.Add(lang);
 
-            // いずれのキーにも値がない場合は全言語を表示（新規入力用）
+            // いずれのキーにも値がない場合は En のみ表示（他は Add Language で追加）
             if (hasValue.Count == 0 && _logicalKeys.Count > 0)
-                return new List<Localization.Language>(AllLanguages);
+                return new List<Localization.Language> { Localization.Language.En };
             return AllLanguages.Where(hasValue.Contains).ToList();
         }
 
@@ -565,6 +568,26 @@ namespace jp.ootr.common.Editor
                 return;
             }
 
+            if (_loadedLanguages.Count == 0)
+            {
+                var soPre = new SerializedObject(_target);
+                var keysPropPre = soPre.FindProperty("localizationKeys");
+                if (keysPropPre != null)
+                {
+                    for (var i = 0; i < keysPropPre.arraySize; i++)
+                    {
+                        var fullKey = keysPropPre.GetArrayElementAtIndex(i).stringValue;
+                        if (string.IsNullOrEmpty(fullKey)) continue;
+                        var dot = fullKey.IndexOf('.');
+                        if (dot < 0) continue;
+                        var langStr = fullKey.Substring(0, dot);
+                        var lang = FromStr(langStr);
+                        if (lang != null)
+                            _loadedLanguages.Add(lang.Value);
+                    }
+                }
+            }
+
             var saveLangs = AllLanguages
                 .Where(l => _loadedLanguages.Contains(l) || _explicitlyAddedLanguages.Contains(l)
                     || _keyToLangToValue.Values.Any(d => d.TryGetValue(l, out var v) && !string.IsNullOrEmpty(v)))
@@ -576,8 +599,15 @@ namespace jp.ootr.common.Editor
                 foreach (var lang in saveLangs)
                 {
                     var value = dict.TryGetValue(lang, out var v) ? v : "";
-                    var fullKey = $"{LanguageUtils.ToStr(lang)}.{key}";
-                    pairs.Add((fullKey, value));
+                    var langPrefix = LanguageUtils.ToStr(lang);
+                    if (langPrefix == "en" && lang != Localization.Language.En)
+                    {
+                        Debug.LogError($"ToStr returned 'en' for unexpected language {lang}; skipping to avoid data corruption.");
+                    }
+                    else
+                    {
+                        pairs.Add(($"{langPrefix}.{key}", value));
+                    }
                 }
             }
 
