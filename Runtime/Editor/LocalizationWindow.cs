@@ -256,7 +256,7 @@ namespace jp.ootr.common.Editor
             var current = new HashSet<Localization.Language>(GetVisibleLanguages());
             var choices = AllLanguages
                 .Where(l => !current.Contains(l))
-                .Select(l => l.ToString())
+                .Select(l => LanguageUtils.ToStr(l))
                 .ToList();
             _langDropdown.choices = choices;
             _langDropdown.value = choices.Count > 0 ? choices[0] : "";
@@ -267,9 +267,10 @@ namespace jp.ootr.common.Editor
             if (_target == null || _langDropdown == null) return;
             if (_malformedDataOnLoad) return;
             if (string.IsNullOrEmpty(_langDropdown.value)) return;
-            if (!Enum.TryParse<Localization.Language>(_langDropdown.value, out var lang)) return;
-            if (!_explicitlyAddedLanguages.Contains(lang))
-                _explicitlyAddedLanguages.Add(lang);
+            var lang = FromStr(_langDropdown.value);
+            if (lang == null) return;
+            if (!_explicitlyAddedLanguages.Contains(lang.Value))
+                _explicitlyAddedLanguages.Add(lang.Value);
             _isDirty = true;
             ReloadTable(loadFromTarget: false);
         }
@@ -568,24 +569,11 @@ namespace jp.ootr.common.Editor
                 return;
             }
 
-            if (_loadedLanguages.Count == 0)
+            _loadedLanguages.Clear();
+            foreach (var dict in _keyToLangToValue.Values)
             {
-                var soPre = new SerializedObject(_target);
-                var keysPropPre = soPre.FindProperty("localizationKeys");
-                if (keysPropPre != null)
-                {
-                    for (var i = 0; i < keysPropPre.arraySize; i++)
-                    {
-                        var fullKey = keysPropPre.GetArrayElementAtIndex(i).stringValue;
-                        if (string.IsNullOrEmpty(fullKey)) continue;
-                        var dot = fullKey.IndexOf('.');
-                        if (dot < 0) continue;
-                        var langStr = fullKey.Substring(0, dot);
-                        var lang = FromStr(langStr);
-                        if (lang != null)
-                            _loadedLanguages.Add(lang.Value);
-                    }
-                }
+                foreach (var lang in dict.Keys)
+                    _loadedLanguages.Add(lang);
             }
 
             var saveLangs = AllLanguages
@@ -627,6 +615,7 @@ namespace jp.ootr.common.Editor
 
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(_target);
+            AssetDatabase.SaveAssets();
             _isDirty = false;
         }
     }
