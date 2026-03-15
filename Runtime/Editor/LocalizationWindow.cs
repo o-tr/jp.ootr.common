@@ -36,6 +36,7 @@ namespace jp.ootr.common.Editor
         [SerializeField] private List<Localization.Language> _explicitlyAddedLanguages = new List<Localization.Language>();
         private HashSet<Localization.Language> _loadedLanguages = new HashSet<Localization.Language>();
         private bool _malformedDataOnLoad;
+        private bool _isDirty;
 
         private DropdownField _langDropdown;
 
@@ -128,6 +129,15 @@ namespace jp.ootr.common.Editor
             };
             _targetField.RegisterValueChangedCallback(evt =>
             {
+                if (_isDirty && !EditorUtility.DisplayDialog(
+                        "Unsaved Changes",
+                        "You have unsaved localization changes. Discard them?",
+                        "Discard", "Cancel"))
+                {
+                    _targetField.SetValueWithoutNotify(_target);
+                    return;
+                }
+                _isDirty = false;
                 _target = (BaseClass)evt.newValue;
                 ReloadTable();
             });
@@ -144,6 +154,7 @@ namespace jp.ootr.common.Editor
                 _explicitlyAddedLanguages.Clear();
                 _loadedLanguages.Clear();
                 _malformedDataOnLoad = false;
+                _isDirty = false;
                 return;
             }
 
@@ -156,6 +167,7 @@ namespace jp.ootr.common.Editor
                 _malformedDataOnLoad = true;
                 _logicalKeys.Clear();
                 _keyToLangToValue.Clear();
+                _isDirty = false;
                 return;
             }
 
@@ -196,6 +208,7 @@ namespace jp.ootr.common.Editor
             }
 
             _logicalKeys = keyOrder;
+            _isDirty = false;
         }
 
         /// <summary>
@@ -244,6 +257,7 @@ namespace jp.ootr.common.Editor
             if (!Enum.TryParse<Localization.Language>(_langDropdown.value, out var lang)) return;
             if (!_explicitlyAddedLanguages.Contains(lang))
                 _explicitlyAddedLanguages.Add(lang);
+            _isDirty = true;
             ReloadTable(loadFromTarget: false);
         }
 
@@ -447,6 +461,7 @@ namespace jp.ootr.common.Editor
                     var liveKey = _logicalKeys[idx];
                     _logicalKeys.RemoveAt(idx);
                     _keyToLangToValue.Remove(liveKey);
+                    _isDirty = true;
                     ReloadTable(loadFromTarget: false);
                 }) { text = "✕" };
                 deleteBtn.style.width = 20;
@@ -462,10 +477,10 @@ namespace jp.ootr.common.Editor
                 var keyField = new TextField { value = logicalKey };
                 SetCellStyle(keyField, _columnWidths[0]);
                 keyColumnCells.Add(keyField);
-                keyField.RegisterValueChangedCallback(evt =>
+                void ApplyOrRevertKeyRename()
                 {
                     var oldKey = _logicalKeys[idx];
-                    var newKey = evt.newValue?.Trim() ?? "";
+                    var newKey = keyField.value?.Trim() ?? "";
                     if (string.IsNullOrWhiteSpace(newKey) || newKey == oldKey || _keyToLangToValue.ContainsKey(newKey))
                     {
                         keyField.SetValueWithoutNotify(oldKey);
@@ -475,6 +490,16 @@ namespace jp.ootr.common.Editor
                     _keyToLangToValue.Remove(oldKey);
                     _logicalKeys[idx] = newKey;
                     keyField.SetValueWithoutNotify(newKey);
+                    _isDirty = true;
+                }
+                keyField.RegisterCallback<FocusOutEvent>(evt => ApplyOrRevertKeyRename());
+                keyField.RegisterCallback<KeyDownEvent>(evt =>
+                {
+                    if (evt.keyCode == KeyCode.Return || evt.keyCode == KeyCode.KeypadEnter)
+                    {
+                        ApplyOrRevertKeyRename();
+                        evt.PreventDefault();
+                    }
                 });
                 row.Add(keyField);
 
@@ -494,6 +519,7 @@ namespace jp.ootr.common.Editor
                             _keyToLangToValue[key] = d;
                         }
                         d[lang1] = evt.newValue;
+                        _isDirty = true;
                     });
                     row.Add(tf);
                 }
@@ -516,6 +542,7 @@ namespace jp.ootr.common.Editor
                 name = $"{baseName}_{++c}";
             _logicalKeys.Add(name);
             _keyToLangToValue[name] = new Dictionary<Localization.Language, string>();
+            _isDirty = true;
             ReloadTable(loadFromTarget: false);
         }
 
@@ -560,6 +587,7 @@ namespace jp.ootr.common.Editor
 
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(_target);
+            _isDirty = false;
         }
     }
 }
