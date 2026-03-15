@@ -584,8 +584,7 @@ namespace jp.ootr.common.Editor
             }
 
             var saveLangs = AllLanguages
-                .Where(l => _loadedLanguages.Contains(l) || _explicitlyAddedLanguages.Contains(l)
-                    || _keyToLangToValue.Values.Any(d => d.TryGetValue(l, out var v) && !string.IsNullOrEmpty(v)))
+                .Where(l => _loadedLanguages.Contains(l) || _explicitlyAddedLanguages.Contains(l))
                 .ToList();
             var pairs = new List<(string fullKey, string value)>();
             foreach (var key in _logicalKeys)
@@ -622,7 +621,7 @@ namespace jp.ootr.common.Editor
 
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(_target);
-            AssetDatabase.SaveAssets();
+            AssetDatabase.SaveAssetIfDirty(_target);
             _isDirty = false;
         }
     }

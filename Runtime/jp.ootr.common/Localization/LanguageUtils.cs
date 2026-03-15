@@ -66,7 +66,7 @@ namespace jp.ootr.common.Localization
                 case Language.Uk:
                     return "uk";
                 default:
-                    Debug.LogWarning($"Unhandled Language value: {lang}, fallback to en.");
+                    Debug.LogWarning($"ToStr: unknown Language value {lang}, falling back to \"en\"");
                     return "en";
             }
         }
