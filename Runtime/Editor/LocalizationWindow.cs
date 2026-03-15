@@ -59,11 +59,6 @@ namespace jp.ootr.common.Editor
         private static Color RowOdd => EditorGUIUtility.isProSkin
             ? new Color(0.14f, 0.14f, 0.14f) : new Color(0.78f, 0.78f, 0.78f);
 
-        public override bool hasUnsavedChanges => _isDirty;
-
-        public override string saveChangesMessage =>
-            "You have unsaved localization changes. Save before closing?";
-
         public override void SaveChanges()
         {
             OnSave();
@@ -122,6 +117,7 @@ namespace jp.ootr.common.Editor
 
             wnd._target = target;
             wnd._isDirty = false;
+            wnd.hasUnsavedChanges = false;
             if (wnd._targetField != null)
                 wnd._targetField.SetValueWithoutNotify(target);
             if (wnd._tableContainer != null)
@@ -158,6 +154,7 @@ namespace jp.ootr.common.Editor
                     return;
                 }
                 _isDirty = false;
+                hasUnsavedChanges = false;
                 _target = (BaseClass)evt.newValue;
                 ReloadTable();
             });
@@ -190,6 +187,7 @@ namespace jp.ootr.common.Editor
                 _loadedLanguages.Clear();
                 _explicitlyAddedLanguages.Clear();
                 _isDirty = false;
+                hasUnsavedChanges = false;
                 return;
             }
 
@@ -234,6 +232,7 @@ namespace jp.ootr.common.Editor
             _logicalKeys = keyOrder;
             _lastLoadedTarget = _target;
             _isDirty = false;
+            hasUnsavedChanges = false;
         }
 
         /// <summary>
@@ -287,6 +286,8 @@ namespace jp.ootr.common.Editor
             if (!_explicitlyAddedLanguages.Contains(lang.Value))
                 _explicitlyAddedLanguages.Add(lang.Value);
             _isDirty = true;
+            hasUnsavedChanges = true;
+            saveChangesMessage = "You have unsaved localization changes. Save before closing?";
             ReloadTable(loadFromTarget: false);
         }
 
@@ -491,6 +492,8 @@ namespace jp.ootr.common.Editor
                     _logicalKeys.RemoveAt(idx);
                     _keyToLangToValue.Remove(liveKey);
                     _isDirty = true;
+                    hasUnsavedChanges = true;
+                    saveChangesMessage = "You have unsaved localization changes. Save before closing?";
                     ReloadTable(loadFromTarget: false);
                 }) { text = "✕" };
                 deleteBtn.style.width = 20;
@@ -520,6 +523,8 @@ namespace jp.ootr.common.Editor
                     _logicalKeys[idx] = newKey;
                     keyField.SetValueWithoutNotify(newKey);
                     _isDirty = true;
+                    hasUnsavedChanges = true;
+                    saveChangesMessage = "You have unsaved localization changes. Save before closing?";
                 }
                 keyField.RegisterCallback<FocusOutEvent>(evt => ApplyOrRevertKeyRename());
                 keyField.RegisterCallback<KeyDownEvent>(evt =>
@@ -549,6 +554,8 @@ namespace jp.ootr.common.Editor
                         }
                         d[lang1] = evt.newValue;
                         _isDirty = true;
+                        hasUnsavedChanges = true;
+                        saveChangesMessage = "You have unsaved localization changes. Save before closing?";
                     });
                     row.Add(tf);
                 }
@@ -572,6 +579,8 @@ namespace jp.ootr.common.Editor
             _logicalKeys.Add(name);
             _keyToLangToValue[name] = new Dictionary<Localization.Language, string>();
             _isDirty = true;
+            hasUnsavedChanges = true;
+            saveChangesMessage = "You have unsaved localization changes. Save before closing?";
             ReloadTable(loadFromTarget: false);
         }
 
@@ -641,6 +650,7 @@ namespace jp.ootr.common.Editor
                 AssetDatabase.SaveAssetIfDirty(_target);
             }
             _isDirty = false;
+            hasUnsavedChanges = false;
         }
     }
 }
