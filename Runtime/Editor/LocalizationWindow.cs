@@ -258,8 +258,11 @@ namespace jp.ootr.common.Editor
                 .Where(l => !current.Contains(l))
                 .Select(l => LanguageUtils.ToStr(l))
                 .ToList();
+            var previousValue = _langDropdown.value;
             _langDropdown.choices = choices;
-            _langDropdown.value = choices.Count > 0 ? choices[0] : "";
+            _langDropdown.value = (choices.Count > 0 && choices.Contains(previousValue))
+                ? previousValue
+                : (choices.Count > 0 ? choices[0] : "");
         }
 
         private void OnAddLanguage()
@@ -452,7 +455,7 @@ namespace jp.ootr.common.Editor
 
             for (var c = 0; c < _visibleLangsSnapshot.Count; c++)
             {
-                var headerCell = CreateHeaderCell(_visibleLangsSnapshot[c].ToString(), c + 1);
+                var headerCell = CreateHeaderCell(LanguageUtils.ToStr(_visibleLangsSnapshot[c]), c + 1);
                 headerRow.Add(headerCell);
             }
             table.Add(headerRow);
