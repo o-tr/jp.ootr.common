@@ -39,7 +39,7 @@ namespace jp.ootr.common.Editor
         private HashSet<Localization.Language> _loadedLanguages = new HashSet<Localization.Language>();
         private HashSet<Localization.Language> _originallyLoadedLanguages = new HashSet<Localization.Language>();
         private bool _malformedDataOnLoad;
-        private bool _isDirty;
+        [SerializeField] private bool _isDirty;
         private int _tableGeneration;
 
         private DropdownField _langDropdown;
@@ -66,6 +66,22 @@ namespace jp.ootr.common.Editor
         {
             OnSave();
             base.SaveChanges();
+        }
+
+        private void OnEnable()
+        {
+            Undo.undoRedoPerformed += OnUndoRedo;
+        }
+
+        private void OnDisable()
+        {
+            Undo.undoRedoPerformed -= OnUndoRedo;
+        }
+
+        private void OnUndoRedo()
+        {
+            if (_target != null && _tableContainer != null)
+                ReloadTable(loadFromTarget: true);
         }
 
         public void CreateGUI()
