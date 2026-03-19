@@ -488,9 +488,9 @@ namespace jp.ootr.common.Editor
                 var idx = rowIndex;
                 var deleteBtn = new Button(() =>
                 {
-                    var liveKey = _logicalKeys[idx];
+                    if (idx >= _logicalKeys.Count || _logicalKeys[idx] != logicalKey) return;
                     _logicalKeys.RemoveAt(idx);
-                    _keyToLangToValue.Remove(liveKey);
+                    _keyToLangToValue.Remove(logicalKey);
                     _isDirty = true;
                     hasUnsavedChanges = true;
                     saveChangesMessage = "You have unsaved localization changes. Save before closing?";
@@ -511,6 +511,7 @@ namespace jp.ootr.common.Editor
                 keyColumnCells.Add(keyField);
                 void ApplyOrRevertKeyRename()
                 {
+                    if (idx >= _logicalKeys.Count || _logicalKeys[idx] != logicalKey) return;
                     var oldKey = _logicalKeys[idx];
                     var newKey = keyField.value?.Trim() ?? "";
                     if (string.IsNullOrWhiteSpace(newKey) || newKey == oldKey || _keyToLangToValue.ContainsKey(newKey))
@@ -521,6 +522,7 @@ namespace jp.ootr.common.Editor
                     _keyToLangToValue[newKey] = _keyToLangToValue[oldKey];
                     _keyToLangToValue.Remove(oldKey);
                     _logicalKeys[idx] = newKey;
+                    logicalKey = newKey;
                     keyField.SetValueWithoutNotify(newKey);
                     _isDirty = true;
                     hasUnsavedChanges = true;
@@ -546,6 +548,7 @@ namespace jp.ootr.common.Editor
                     _columnCellRefs[c + 1].Add(tf);
                     tf.RegisterValueChangedCallback(evt =>
                     {
+                        if (idx >= _logicalKeys.Count || _logicalKeys[idx] != logicalKey) return;
                         var key = _logicalKeys[idx];
                         if (!_keyToLangToValue.TryGetValue(key, out var d))
                         {
