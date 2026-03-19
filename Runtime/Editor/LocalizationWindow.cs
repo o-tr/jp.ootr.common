@@ -661,13 +661,20 @@ namespace jp.ootr.common.Editor
                 return;
             }
 
+            foreach (var dict in _keyToLangToValue.Values)
+            {
+                var emptyKeys = dict.Where(kv => string.IsNullOrEmpty(kv.Value))
+                    .Select(kv => kv.Key).ToList();
+                foreach (var k in emptyKeys)
+                    dict.Remove(k);
+            }
+
             _loadedLanguages.Clear();
             foreach (var dict in _keyToLangToValue.Values)
             {
                 foreach (var kv in dict)
                 {
-                    if (!string.IsNullOrEmpty(kv.Value))
-                        _loadedLanguages.Add(kv.Key);
+                    _loadedLanguages.Add(kv.Key);
                 }
             }
 
