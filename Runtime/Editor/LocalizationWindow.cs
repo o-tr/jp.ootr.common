@@ -182,64 +182,71 @@ namespace jp.ootr.common.Editor
                 return;
             }
 
-            using var so = new SerializedObject(_target);
-            var keysProp = so.FindProperty("localizationKeys");
-            var valuesProp = so.FindProperty("localizationValues");
-
-            if (keysProp == null || valuesProp == null || keysProp.arraySize != valuesProp.arraySize)
+            var so = new SerializedObject(_target);
+            try
             {
-                _malformedDataOnLoad = true;
+                var keysProp = so.FindProperty("localizationKeys");
+                var valuesProp = so.FindProperty("localizationValues");
+
+                if (keysProp == null || valuesProp == null || keysProp.arraySize != valuesProp.arraySize)
+                {
+                    _malformedDataOnLoad = true;
+                    _logicalKeys.Clear();
+                    _keyToLangToValue.Clear();
+                    _loadedLanguages.Clear();
+                    _explicitlyAddedLanguages.Clear();
+                    _isDirty = false;
+                    hasUnsavedChanges = false;
+                    return;
+                }
+
+                _malformedDataOnLoad = false;
+                if (_target != _lastLoadedTarget)
+                    _explicitlyAddedLanguages.Clear();
                 _logicalKeys.Clear();
                 _keyToLangToValue.Clear();
                 _loadedLanguages.Clear();
-                _explicitlyAddedLanguages.Clear();
-                _isDirty = false;
-                hasUnsavedChanges = false;
-                return;
-            }
 
-            _malformedDataOnLoad = false;
-            if (_target != _lastLoadedTarget)
-                _explicitlyAddedLanguages.Clear();
-            _logicalKeys.Clear();
-            _keyToLangToValue.Clear();
-            _loadedLanguages.Clear();
+                var keyOrder = new List<string>();
+                var seen = new HashSet<string>();
 
-            var keyOrder = new List<string>();
-            var seen = new HashSet<string>();
-
-            for (var i = 0; i < keysProp.arraySize; i++)
-            {
-                var fullKey = keysProp.GetArrayElementAtIndex(i).stringValue;
-                var value = valuesProp.GetArrayElementAtIndex(i).stringValue ?? "";
-                if (string.IsNullOrEmpty(fullKey)) continue;
-
-                var dot = fullKey.IndexOf('.');
-                if (dot < 0) continue;
-                var langStr = fullKey.Substring(0, dot);
-                var logicalKey = fullKey.Substring(dot + 1);
-                var lang = FromStr(langStr);
-                if (lang == null) continue;
-                if (!string.IsNullOrEmpty(value))
-                    _loadedLanguages.Add(lang.Value);
-
-                if (!_keyToLangToValue.TryGetValue(logicalKey, out var dict))
+                for (var i = 0; i < keysProp.arraySize; i++)
                 {
-                    _keyToLangToValue[logicalKey] = dict = new Dictionary<Localization.Language, string>();
-                    if (!seen.Contains(logicalKey))
+                    var fullKey = keysProp.GetArrayElementAtIndex(i).stringValue;
+                    var value = valuesProp.GetArrayElementAtIndex(i).stringValue ?? "";
+                    if (string.IsNullOrEmpty(fullKey)) continue;
+
+                    var dot = fullKey.IndexOf('.');
+                    if (dot < 0) continue;
+                    var langStr = fullKey.Substring(0, dot);
+                    var logicalKey = fullKey.Substring(dot + 1);
+                    var lang = FromStr(langStr);
+                    if (lang == null) continue;
+                    if (!string.IsNullOrEmpty(value))
+                        _loadedLanguages.Add(lang.Value);
+
+                    if (!_keyToLangToValue.TryGetValue(logicalKey, out var dict))
                     {
-                        seen.Add(logicalKey);
-                        keyOrder.Add(logicalKey);
+                        _keyToLangToValue[logicalKey] = dict = new Dictionary<Localization.Language, string>();
+                        if (!seen.Contains(logicalKey))
+                        {
+                            seen.Add(logicalKey);
+                            keyOrder.Add(logicalKey);
+                        }
                     }
+
+                    dict[lang.Value] = value;
                 }
 
-                dict[lang.Value] = value;
+                _logicalKeys = keyOrder;
+                _lastLoadedTarget = _target;
+                _isDirty = false;
+                hasUnsavedChanges = false;
             }
-
-            _logicalKeys = keyOrder;
-            _lastLoadedTarget = _target;
-            _isDirty = false;
-            hasUnsavedChanges = false;
+            finally
+            {
+                so.Dispose();
+            }
         }
 
         /// <summary>
@@ -603,8 +610,10 @@ namespace jp.ootr.common.Editor
             ReloadTable(loadFromTarget: false);
             _tableContainer.schedule.Execute(() =>
             {
-                var last = _tableContainer.contentContainer.Children().LastOrDefault();
-                if (last != null) _tableContainer.ScrollTo(last);
+                var tableEl = _tableContainer.contentContainer.Children().LastOrDefault();
+                if (tableEl == null) return;
+                var lastRow = tableEl.Children().LastOrDefault();
+                if (lastRow != null && _tableContainer is ScrollView sv) sv.ScrollTo(lastRow);
             });
         }
 
@@ -649,20 +658,28 @@ namespace jp.ootr.common.Editor
                 }
             }
 
-            Undo.RecordObject(_target, "Edit Localization Data");
-            using var so = new SerializedObject(_target);
-            var keysProp = so.FindProperty("localizationKeys");
-            var valuesProp = so.FindProperty("localizationValues");
-            if (keysProp == null || valuesProp == null) return;
-            keysProp.arraySize = pairs.Count;
-            valuesProp.arraySize = pairs.Count;
-            for (var i = 0; i < pairs.Count; i++)
+            var so = new SerializedObject(_target);
+            try
             {
-                keysProp.GetArrayElementAtIndex(i).stringValue = pairs[i].fullKey;
-                valuesProp.GetArrayElementAtIndex(i).stringValue = pairs[i].value;
-            }
+                var keysProp = so.FindProperty("localizationKeys");
+                var valuesProp = so.FindProperty("localizationValues");
+                if (keysProp == null || valuesProp == null) return;
 
-            so.ApplyModifiedPropertiesWithoutUndo();
+                Undo.RecordObject(_target, "Edit Localization Data");
+                keysProp.arraySize = pairs.Count;
+                valuesProp.arraySize = pairs.Count;
+                for (var i = 0; i < pairs.Count; i++)
+                {
+                    keysProp.GetArrayElementAtIndex(i).stringValue = pairs[i].fullKey;
+                    valuesProp.GetArrayElementAtIndex(i).stringValue = pairs[i].value;
+                }
+
+                so.ApplyModifiedPropertiesWithoutUndo();
+            }
+            finally
+            {
+                so.Dispose();
+            }
             EditorUtility.SetDirty(_target);
             if (!EditorUtility.IsPersistent(_target))
             {
