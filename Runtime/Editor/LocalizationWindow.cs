@@ -716,6 +716,9 @@ namespace jp.ootr.common.Editor
             }
             _isDirty = false;
             hasUnsavedChanges = false;
+            _originallyLoadedLanguages = new HashSet<Localization.Language>(_loadedLanguages);
+            _explicitlyAddedLanguages.RemoveAll(l => !_loadedLanguages.Contains(l));
+            ReloadTable(loadFromTarget: false);
         }
     }
 }
