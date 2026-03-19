@@ -109,7 +109,14 @@ namespace jp.ootr.common.Editor
             var wnd = GetWindow<LocalizationWindow>();
             wnd.titleContent = new GUIContent("Localization");
 
-            if (wnd._isDirty && wnd._target != target && !EditorUtility.DisplayDialog(
+            if (wnd._target == target)
+            {
+                wnd.Show();
+                wnd.Focus();
+                return;
+            }
+
+            if (wnd._isDirty && !EditorUtility.DisplayDialog(
                     "Unsaved Changes",
                     "You have unsaved localization changes. Discard them?",
                     "Discard", "Cancel"))
@@ -514,8 +521,14 @@ namespace jp.ootr.common.Editor
                     if (idx >= _logicalKeys.Count || _logicalKeys[idx] != logicalKey) return;
                     var oldKey = _logicalKeys[idx];
                     var newKey = keyField.value?.Trim() ?? "";
-                    if (string.IsNullOrWhiteSpace(newKey) || newKey == oldKey || _keyToLangToValue.ContainsKey(newKey))
+                    if (string.IsNullOrWhiteSpace(newKey) || newKey == oldKey)
                     {
+                        keyField.SetValueWithoutNotify(oldKey);
+                        return;
+                    }
+                    if (_keyToLangToValue.ContainsKey(newKey))
+                    {
+                        Debug.LogWarning($"[Localization] Cannot rename '{oldKey}' to '{newKey}': a key with that name already exists.");
                         keyField.SetValueWithoutNotify(oldKey);
                         return;
                     }
@@ -633,7 +646,6 @@ namespace jp.ootr.common.Editor
             var valuesProp = so.FindProperty("localizationValues");
             if (keysProp == null || valuesProp == null) return;
 
-            Undo.RecordObject(_target, "Edit Localization Data");
             keysProp.arraySize = pairs.Count;
             valuesProp.arraySize = pairs.Count;
             for (var i = 0; i < pairs.Count; i++)
@@ -642,7 +654,7 @@ namespace jp.ootr.common.Editor
                 valuesProp.GetArrayElementAtIndex(i).stringValue = pairs[i].value;
             }
 
-            so.ApplyModifiedPropertiesWithoutUndo();
+            so.ApplyModifiedProperties();
             EditorUtility.SetDirty(_target);
             if (!EditorUtility.IsPersistent(_target))
             {
