@@ -39,6 +39,7 @@ namespace jp.ootr.common.Editor
         private HashSet<Localization.Language> _loadedLanguages = new HashSet<Localization.Language>();
         private bool _malformedDataOnLoad;
         private bool _isDirty;
+        private int _tableGeneration;
 
         private DropdownField _langDropdown;
 
@@ -354,7 +355,7 @@ namespace jp.ootr.common.Editor
                 if (evt.button != 0) return;
                 _resizingColumnIndex = columnIndex;
                 _resizeStartX = evt.mousePosition.x;
-                _resizeStartWidth = _columnWidths[columnIndex];
+                _resizeStartWidth = columnIndex < _columnWidths.Count ? _columnWidths[columnIndex] : 0f;
                 resizer.CaptureMouse();
                 evt.StopPropagation();
             });
@@ -414,6 +415,7 @@ namespace jp.ootr.common.Editor
 
         private void ApplyColumnWidth(int columnIndex, float width)
         {
+            if (columnIndex >= _columnWidths.Count) return;
             _columnWidths[columnIndex] = width;
             if (columnIndex == 0)
                 _keyColumnWidth = width;
@@ -437,6 +439,7 @@ namespace jp.ootr.common.Editor
         /// <param name="loadFromTarget">true のとき SerializedObject から再読み込み。Add Key 時は false でメモリ上のデータのみでテーブル再描画。</param>
         private void ReloadTable(bool loadFromTarget = true)
         {
+            _tableGeneration++;
             if (loadFromTarget)
                 LoadFromTarget();
             if (_malformedDataOnLoad)
@@ -493,6 +496,7 @@ namespace jp.ootr.common.Editor
             }
             _table.Add(headerRow);
 
+            var gen = _tableGeneration;
             for (var rowIndex = 0; rowIndex < _logicalKeys.Count; rowIndex++)
             {
                 var logicalKey = _logicalKeys[rowIndex];
@@ -508,6 +512,7 @@ namespace jp.ootr.common.Editor
                 var idx = rowIndex;
                 var deleteBtn = new Button(() =>
                 {
+                    if (gen != _tableGeneration) return;
                     if (idx >= _logicalKeys.Count || _logicalKeys[idx] != logicalKey) return;
                     if (!EditorUtility.DisplayDialog("Delete Key",
                             $"Delete localization key '{logicalKey}' and all its translations?",
@@ -534,6 +539,7 @@ namespace jp.ootr.common.Editor
                 keyColumnCells.Add(keyField);
                 void ApplyOrRevertKeyRename()
                 {
+                    if (gen != _tableGeneration) return;
                     if (idx >= _logicalKeys.Count || _logicalKeys[idx] != logicalKey) return;
                     var oldKey = _logicalKeys[idx];
                     var newKey = keyField.value?.Trim() ?? "";
@@ -578,6 +584,7 @@ namespace jp.ootr.common.Editor
                     _columnCellRefs[c + 1].Add(tf);
                     tf.RegisterValueChangedCallback(evt =>
                     {
+                        if (gen != _tableGeneration) return;
                         if (idx >= _logicalKeys.Count || _logicalKeys[idx] != logicalKey) return;
                         var key = _logicalKeys[idx];
                         if (!_keyToLangToValue.TryGetValue(key, out var d))
@@ -652,7 +659,6 @@ namespace jp.ootr.common.Editor
                 foreach (var lang in saveLangs)
                 {
                     var value = dict.TryGetValue(lang, out var v) ? v : "";
-                    if (string.IsNullOrEmpty(value) && !_loadedLanguages.Contains(lang)) continue;
                     var langPrefix = LanguageUtils.ToStr(lang);
                     if (langPrefix == "en" && lang != Localization.Language.En)
                     {
