@@ -79,7 +79,6 @@ namespace jp.ootr.common.Editor
             var addKeyBtn = new Button(OnAddKey) { text = "Add Key" };
             var saveBtn = new Button(OnSave) { text = "Save" };
             _langDropdown = new DropdownField { style = { minWidth = 120 } };
-            UpdateLangDropdownChoices();
             var addLangBtn = new Button(OnAddLanguage) { text = "Add" };
             toolbar.Add(addKeyBtn);
             toolbar.Add(saveBtn);
@@ -562,6 +561,7 @@ namespace jp.ootr.common.Editor
                     if (evt.keyCode == KeyCode.Return || evt.keyCode == KeyCode.KeypadEnter)
                     {
                         ApplyOrRevertKeyRename();
+                        keyField.Blur();
                         evt.PreventDefault();
                     }
                 });
