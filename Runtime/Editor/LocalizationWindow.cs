@@ -182,7 +182,7 @@ namespace jp.ootr.common.Editor
                 return;
             }
 
-            var so = new SerializedObject(_target);
+            using var so = new SerializedObject(_target);
             var keysProp = so.FindProperty("localizationKeys");
             var valuesProp = so.FindProperty("localizationValues");
 
@@ -496,6 +496,9 @@ namespace jp.ootr.common.Editor
                 var deleteBtn = new Button(() =>
                 {
                     if (idx >= _logicalKeys.Count || _logicalKeys[idx] != logicalKey) return;
+                    if (!EditorUtility.DisplayDialog("Delete Key",
+                            $"Delete localization key '{logicalKey}' and all its translations?",
+                            "Delete", "Cancel")) return;
                     _logicalKeys.RemoveAt(idx);
                     _keyToLangToValue.Remove(logicalKey);
                     _isDirty = true;
@@ -598,6 +601,11 @@ namespace jp.ootr.common.Editor
             hasUnsavedChanges = true;
             saveChangesMessage = "You have unsaved localization changes. Save before closing?";
             ReloadTable(loadFromTarget: false);
+            _tableContainer.schedule.Execute(() =>
+            {
+                var last = _tableContainer.contentContainer.Children().LastOrDefault();
+                if (last != null) _tableContainer.ScrollTo(last);
+            });
         }
 
         private void OnSave()
@@ -641,11 +649,11 @@ namespace jp.ootr.common.Editor
                 }
             }
 
-            var so = new SerializedObject(_target);
+            Undo.RecordObject(_target, "Edit Localization Data");
+            using var so = new SerializedObject(_target);
             var keysProp = so.FindProperty("localizationKeys");
             var valuesProp = so.FindProperty("localizationValues");
             if (keysProp == null || valuesProp == null) return;
-
             keysProp.arraySize = pairs.Count;
             valuesProp.arraySize = pairs.Count;
             for (var i = 0; i < pairs.Count; i++)
@@ -654,7 +662,7 @@ namespace jp.ootr.common.Editor
                 valuesProp.GetArrayElementAtIndex(i).stringValue = pairs[i].value;
             }
 
-            so.ApplyModifiedProperties();
+            so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(_target);
             if (!EditorUtility.IsPersistent(_target))
             {
