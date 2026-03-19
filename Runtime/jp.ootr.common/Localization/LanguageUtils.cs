@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using VRC.SDKBase;
 
 namespace jp.ootr.common.Localization
@@ -10,36 +10,21 @@ namespace jp.ootr.common.Localization
             var langStr = VRCPlayerApi.GetCurrentLanguage();
             switch (langStr)
             {
-                case "en":
-                    return Language.En;
-                case "fr":
-                    return Language.Fr;
-                case "es":
-                    return Language.Es;
-                case "it":
-                    return Language.It;
-                case "ko":
-                    return Language.Ko;
-                case "de":
-                    return Language.De;
-                case "ja":
-                    return Language.Ja;
-                case "pl":
-                    return Language.Pl;
-                case "ru":
-                    return Language.Ru;
-                case "pt_BR":
-                    return Language.PtBR;
-                case "zh_CN":
-                    return Language.ZhCn;
-                case "zh_HK":
-                    return Language.ZhHk;
-                case "he":
-                    return Language.He;
-                case "tok":
-                    return Language.Tok;
-                case "uk":
-                    return Language.Uk;
+                case "en": return Language.En;
+                case "fr": return Language.Fr;
+                case "es": return Language.Es;
+                case "it": return Language.It;
+                case "ko": return Language.Ko;
+                case "de": return Language.De;
+                case "ja": return Language.Ja;
+                case "pl": return Language.Pl;
+                case "ru": return Language.Ru;
+                case "pt_BR": return Language.PtBR;
+                case "zh_CN": return Language.ZhCn;
+                case "zh_HK": return Language.ZhHk;
+                case "he": return Language.He;
+                case "tok": return Language.Tok;
+                case "uk": return Language.Uk;
                 default:
                     Debug.LogWarning($"Unsupported language: {langStr}, fallback to en");
                     return Language.En;
@@ -81,6 +66,7 @@ namespace jp.ootr.common.Localization
                 case Language.Uk:
                     return "uk";
                 default:
+                    Debug.LogWarning($"ToStr: unknown Language value {lang}, falling back to \"en\"");
                     return "en";
             }
         }

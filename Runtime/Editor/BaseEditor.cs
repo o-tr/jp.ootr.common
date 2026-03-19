@@ -1,4 +1,4 @@
-﻿#if UNITY_EDITOR
+#if UNITY_EDITOR
 using System;
 using jp.ootr.common.ColorSchema;
 using jp.ootr.common.Localization;
@@ -102,6 +102,18 @@ namespace jp.ootr.common.Editor
                 value = false
             };
 
+            var openLocalizationBtn = new Button(() =>
+            {
+                var bc = target as BaseClass;
+                if (bc != null)
+                    LocalizationWindow.ShowWindowWithTarget(bc);
+                else
+                    Debug.LogWarning("Target is not BaseClass.");
+            })
+            {
+                text = "Open Localization Window"
+            };
+            foldout.Add(openLocalizationBtn);
             foldout.Add(new IMGUIContainer(base.OnInspectorGUI));
             Root.Add(foldout);
         }

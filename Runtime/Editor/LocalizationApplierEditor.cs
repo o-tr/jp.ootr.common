@@ -49,7 +49,6 @@ namespace jp.ootr.common.Editor
                     root.Add(new PropertyField(prop));
             } while (prop.NextVisible(false));
 
-            serializedObject.ApplyModifiedProperties();
             return root;
         }
 
