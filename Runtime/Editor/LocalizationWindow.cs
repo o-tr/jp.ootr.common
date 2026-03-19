@@ -94,6 +94,8 @@ namespace jp.ootr.common.Editor
 
             if (_target != null)
                 ReloadTable();
+            else
+                hasUnsavedChanges = false;
 
             rootVisualElement.Add(root);
         }
@@ -427,6 +429,9 @@ namespace jp.ootr.common.Editor
                 c.style.minWidth = width;
                 c.style.maxWidth = width;
             }
+
+            if (_tableContainer?.contentContainer?.Children().FirstOrDefault() is VisualElement table)
+                table.style.minWidth = _columnWidths.Sum() + 20f;
         }
 
         /// <param name="loadFromTarget">true のとき SerializedObject から再読み込み。Add Key 時は false でメモリ上のデータのみでテーブル再描画。</param>
@@ -646,6 +651,7 @@ namespace jp.ootr.common.Editor
                 foreach (var lang in saveLangs)
                 {
                     var value = dict.TryGetValue(lang, out var v) ? v : "";
+                    if (string.IsNullOrEmpty(value) && !_loadedLanguages.Contains(lang)) continue;
                     var langPrefix = LanguageUtils.ToStr(lang);
                     if (langPrefix == "en" && lang != Localization.Language.En)
                     {
