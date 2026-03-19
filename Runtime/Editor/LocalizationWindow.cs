@@ -37,6 +37,7 @@ namespace jp.ootr.common.Editor
         [SerializeField] private List<Localization.Language> _explicitlyAddedLanguages = new List<Localization.Language>();
         [SerializeField] private BaseClass _lastLoadedTarget;
         private HashSet<Localization.Language> _loadedLanguages = new HashSet<Localization.Language>();
+        private HashSet<Localization.Language> _originallyLoadedLanguages = new HashSet<Localization.Language>();
         private bool _malformedDataOnLoad;
         private bool _isDirty;
         private int _tableGeneration;
@@ -180,6 +181,7 @@ namespace jp.ootr.common.Editor
                 _keyToLangToValue.Clear();
                 _explicitlyAddedLanguages.Clear();
                 _loadedLanguages.Clear();
+                _originallyLoadedLanguages.Clear();
                 _malformedDataOnLoad = false;
                 _isDirty = false;
                 return;
@@ -197,6 +199,7 @@ namespace jp.ootr.common.Editor
                     _logicalKeys.Clear();
                     _keyToLangToValue.Clear();
                     _loadedLanguages.Clear();
+                    _originallyLoadedLanguages.Clear();
                     _explicitlyAddedLanguages.Clear();
                     _isDirty = false;
                     hasUnsavedChanges = false;
@@ -242,6 +245,7 @@ namespace jp.ootr.common.Editor
                 }
 
                 _logicalKeys = keyOrder;
+                _originallyLoadedLanguages = new HashSet<Localization.Language>(_loadedLanguages);
                 _lastLoadedTarget = _target;
                 _isDirty = false;
                 hasUnsavedChanges = false;
@@ -268,8 +272,10 @@ namespace jp.ootr.common.Editor
                 }
             }
 
-            // 明示的に追加された言語も含める
+            // 明示的に追加された言語・ロード時に存在した言語も含める
             foreach (var lang in _explicitlyAddedLanguages)
+                hasValue.Add(lang);
+            foreach (var lang in _originallyLoadedLanguages)
                 hasValue.Add(lang);
 
             // いずれのキーにも値がない場合は En のみ表示（他は Add Language で追加）
@@ -650,7 +656,9 @@ namespace jp.ootr.common.Editor
             }
 
             var saveLangs = AllLanguages
-                .Where(l => _loadedLanguages.Contains(l) || _explicitlyAddedLanguages.Contains(l))
+                .Where(l => _loadedLanguages.Contains(l)
+                          || _explicitlyAddedLanguages.Contains(l)
+                          || _originallyLoadedLanguages.Contains(l))
                 .ToList();
             var pairs = new List<(string fullKey, string value)>();
             foreach (var key in _logicalKeys)
