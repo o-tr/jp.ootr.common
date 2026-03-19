@@ -17,6 +17,7 @@ namespace jp.ootr.common.Editor
         [SerializeField] private BaseClass _target;
         private ObjectField _targetField;
         private VisualElement _tableContainer;
+        private VisualElement _table;
         private List<string> _logicalKeys = new List<string>();
         private Dictionary<string, Dictionary<Localization.Language, string>> _keyToLangToValue =
             new Dictionary<string, Dictionary<Localization.Language, string>>();
@@ -429,8 +430,8 @@ namespace jp.ootr.common.Editor
                 c.style.maxWidth = width;
             }
 
-            if (_tableContainer?.contentContainer?.Children().FirstOrDefault() is VisualElement table)
-                table.style.minWidth = _columnWidths.Sum() + 20f;
+            if (_table != null)
+                _table.style.minWidth = _columnWidths.Sum() + 20f;
         }
 
         /// <param name="loadFromTarget">true のとき SerializedObject から再読み込み。Add Key 時は false でメモリ上のデータのみでテーブル再描画。</param>
@@ -441,6 +442,7 @@ namespace jp.ootr.common.Editor
             if (_malformedDataOnLoad)
             {
                 _tableContainer.Clear();
+                _table = null;
                 _tableContainer.Add(new Label("Localization data could not be loaded (malformed or mismatched arrays)."));
                 return;
             }
@@ -454,11 +456,11 @@ namespace jp.ootr.common.Editor
             for (var i = 0; i < _visibleLangsSnapshot.Count; i++)
                 _columnWidths.Add(GetLangColumnWidth(_visibleLangsSnapshot[i]));
 
-            var table = new VisualElement();
-            table.style.flexDirection = FlexDirection.Column;
-            table.style.flexShrink = 0;
+            _table = new VisualElement();
+            _table.style.flexDirection = FlexDirection.Column;
+            _table.style.flexShrink = 0;
             var totalWidth = _columnWidths.Sum();
-            table.style.minWidth = totalWidth + 20f;
+            _table.style.minWidth = totalWidth + 20f;
 
             var keyColumnCells = new List<VisualElement>();
             _columnCellRefs.Add(keyColumnCells);
@@ -489,7 +491,7 @@ namespace jp.ootr.common.Editor
                 var headerCell = CreateHeaderCell(LanguageUtils.ToStr(_visibleLangsSnapshot[c]), c + 1);
                 headerRow.Add(headerCell);
             }
-            table.Add(headerRow);
+            _table.Add(headerRow);
 
             for (var rowIndex = 0; rowIndex < _logicalKeys.Count; rowIndex++)
             {
@@ -591,10 +593,10 @@ namespace jp.ootr.common.Editor
                     row.Add(tf);
                 }
 
-                table.Add(row);
+                _table.Add(row);
             }
 
-            _tableContainer.Add(table);
+            _tableContainer.Add(_table);
             UpdateLangDropdownChoices();
         }
 
@@ -615,9 +617,8 @@ namespace jp.ootr.common.Editor
             ReloadTable(loadFromTarget: false);
             _tableContainer.schedule.Execute(() =>
             {
-                var tableEl = _tableContainer.contentContainer.Children().LastOrDefault();
-                if (tableEl == null) return;
-                var lastRow = tableEl.Children().LastOrDefault();
+                if (_table == null) return;
+                var lastRow = _table.Children().LastOrDefault();
                 if (lastRow != null && _tableContainer is ScrollView sv) sv.ScrollTo(lastRow);
             });
         }
@@ -669,7 +670,11 @@ namespace jp.ootr.common.Editor
             {
                 var keysProp = so.FindProperty("localizationKeys");
                 var valuesProp = so.FindProperty("localizationValues");
-                if (keysProp == null || valuesProp == null) return;
+                if (keysProp == null || valuesProp == null)
+                {
+                    Debug.LogError("[Localization] Cannot save: 'localizationKeys' or 'localizationValues' property not found on target.");
+                    return;
+                }
 
                 Undo.RecordObject(_target, "Edit Localization Data");
                 keysProp.arraySize = pairs.Count;
