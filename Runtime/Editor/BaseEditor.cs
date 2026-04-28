@@ -25,7 +25,7 @@ namespace jp.ootr.common.Editor
         public virtual void OnEnable()
         {
             Root = new VisualElement();
-            Root.styleSheets.Add(styleSheet);
+            if (styleSheet != null) Root.styleSheets.Add(styleSheet);
             Root.AddToClassList("root");
             InfoBlock = new VisualElement();
             InfoBlock.AddToClassList("infoBlock");
@@ -81,10 +81,15 @@ namespace jp.ootr.common.Editor
 
         private void ShowUtilities()
         {
+            UtilitiesBlock.Clear();
             {
                 var colorPresetApplier = new Button(() =>
                 {
-                    ColorPresetApplier.ShowWindowWithTarget(target as BaseClass);
+                    var bc = target as BaseClass;
+                    if (bc != null)
+                        ColorPresetApplier.ShowWindowWithTarget(bc);
+                    else
+                        Debug.LogWarning("Target is not BaseClass.");
                 })
                 {
                     text = "ColorPresetApplier"
@@ -154,18 +159,26 @@ namespace jp.ootr.common.Editor
 
         public void OnProcessScene(Scene scene, BuildReport report)
         {
-            var classes = ComponentUtils.GetAllComponents<BaseClass>();
+            var rootObjects = scene.GetRootGameObjects();
 
-            foreach (var c in classes)
+            foreach (var rootObject in rootObjects)
             {
-                ColorSchemaUtils.ApplyColorSchemas(c);
-                LocalizationUtils.SetLocalizationReferences(c);
+                var baseClasses = rootObject.GetComponentsInChildren<BaseClass>(true);
+                foreach (var c in baseClasses)
+                {
+                    ColorSchemaUtils.ApplyColorSchemas(c);
+                    LocalizationUtils.SetLocalizationReferences(c);
+                }
             }
 
-            var editorOnlyComponents = Object.FindObjectsOfType<EditorOnlyMonoBehaviour>(true);
-            foreach (var component in editorOnlyComponents)
+            foreach (var rootObject in rootObjects)
             {
-                Object.DestroyImmediate(component);
+                var editorOnlyComponents = rootObject.GetComponentsInChildren<EditorOnlyMonoBehaviour>(true);
+                foreach (var component in editorOnlyComponents)
+                {
+                    if (component == null) continue;
+                    Object.DestroyImmediate(component);
+                }
             }
         }
     }
@@ -174,15 +187,22 @@ namespace jp.ootr.common.Editor
     {
         public static void ApplyColorSchemas(BaseClass target)
         {
-            if (target.colorSchemas.Length == 0 || target.colorSchemaNames.Length == 0) return;
+            if (target == null) return;
+            if (target.colorSchemas == null || target.colorSchemaNames == null ||
+                target.colorSchemas.Length == 0 || target.colorSchemaNames.Length == 0) return;
             var appliers = target.GetComponentsInChildren<ColorSchemaApplierBase>(true);
-            foreach (var applier in appliers) applier.ApplyColor(target.GetColor(applier.SchemaName));
+            foreach (var applier in appliers)
+            {
+                if (applier == null) continue;
+                applier.ApplyColor(target.GetColor(applier.SchemaName));
+            }
         }
 
         public static Color GetColor(this BaseClass target, string schemaName)
         {
-            if (target == null) return Color.white;
-            if (!target.colorSchemaNames.Has(schemaName, out var index)) return Color.white;
+            if (target == null || target.colorSchemas == null || target.colorSchemaNames == null) return Color.white;
+            if (string.IsNullOrEmpty(schemaName) || !target.colorSchemaNames.Has(schemaName, out var index)) return Color.white;
+            if (index < 0 || index >= target.colorSchemas.Length) return Color.white;
             return target.colorSchemas[index];
         }
 
@@ -207,15 +227,18 @@ namespace jp.ootr.common.Editor
     {
         public static void SetLocalizationReferences(BaseClass target)
         {
+            if (target == null) return;
             var targets = target.GetComponentsInChildren<LocalizationApplierTextMeshPro>(true);
             var baseClassSo = new SerializedObject(target);
             baseClassSo.Update();
             var localizationTargetKeys = baseClassSo.FindProperty(nameof(BaseClass.localizationTargetKeys));
             var localizationTargets = baseClassSo.FindProperty(nameof(BaseClass.localizationTargets));
+            if (localizationTargetKeys == null || localizationTargets == null) return;
             localizationTargetKeys.arraySize = targets.Length;
             localizationTargets.arraySize = targets.Length;
             for (var i = 0; i < targets.Length; i++)
             {
+                if (targets[i] == null) continue;
                 localizationTargetKeys.GetArrayElementAtIndex(i).stringValue = targets[i].TextKey;
                 localizationTargets.GetArrayElementAtIndex(i).objectReferenceValue = targets[i].TextMeshProUGUI;
             }
