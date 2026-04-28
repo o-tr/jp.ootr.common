@@ -160,8 +160,12 @@ namespace jp.ootr.common.Editor
             {
                 ColorSchemaUtils.ApplyColorSchemas(c);
                 LocalizationUtils.SetLocalizationReferences(c);
-                ColorSchemaUtils.DestroyColorAppliers(c);
-                LocalizationUtils.DestroyLocalizations(c);
+            }
+
+            var editorOnlyComponents = Object.FindObjectsOfType<EditorOnlyMonoBehaviour>(true);
+            foreach (var component in editorOnlyComponents)
+            {
+                Object.DestroyImmediate(component);
             }
         }
     }
@@ -173,12 +177,6 @@ namespace jp.ootr.common.Editor
             if (target.colorSchemas.Length == 0 || target.colorSchemaNames.Length == 0) return;
             var appliers = target.GetComponentsInChildren<ColorSchemaApplierBase>(true);
             foreach (var applier in appliers) applier.ApplyColor(target.GetColor(applier.SchemaName));
-        }
-
-        public static void DestroyColorAppliers(BaseClass target)
-        {
-            var appliers = target.GetComponentsInChildren<ColorSchemaApplierBase>(true);
-            foreach (var applier in appliers) Object.DestroyImmediate(applier);
         }
 
         public static Color GetColor(this BaseClass target, string schemaName)
@@ -225,11 +223,6 @@ namespace jp.ootr.common.Editor
             baseClassSo.ApplyModifiedProperties();
         }
 
-        public static void DestroyLocalizations(BaseClass target)
-        {
-            var appliers = target.GetComponentsInChildren<LocalizationApplierTextMeshPro>(true);
-            foreach (var applier in appliers) Object.DestroyImmediate(applier);
-        }
     }
 }
 #endif
