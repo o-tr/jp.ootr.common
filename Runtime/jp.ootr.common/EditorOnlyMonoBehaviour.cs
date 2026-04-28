@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace jp.ootr.common
 {
-    public class EditorOnlyMonoBehaviour : MonoBehaviour
+    public abstract class EditorOnlyMonoBehaviour : MonoBehaviour
     {
     }
 }
