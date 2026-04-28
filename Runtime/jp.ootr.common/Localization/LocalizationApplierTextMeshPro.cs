@@ -9,12 +9,11 @@ namespace jp.ootr.common.Localization
     {
         [SerializeField] protected string textKey;
         public string TextKey => textKey;
-        public TextMeshProUGUI TextMeshProUGUI { get; private set; }
+        private TextMeshProUGUI _textMeshProUGUI;
 
-        private void Awake()
-        {
-            TextMeshProUGUI = GetComponent<TextMeshProUGUI>();
-        }
+        public TextMeshProUGUI TextMeshProUGUI => _textMeshProUGUI != null
+            ? _textMeshProUGUI
+            : (_textMeshProUGUI = GetComponent<TextMeshProUGUI>());
     }
 }
 #endif
