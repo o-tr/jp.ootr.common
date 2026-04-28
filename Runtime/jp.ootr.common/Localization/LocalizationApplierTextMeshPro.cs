@@ -9,7 +9,12 @@ namespace jp.ootr.common.Localization
     {
         [SerializeField] protected string textKey;
         public string TextKey => textKey;
-        public TextMeshProUGUI TextMeshProUGUI => gameObject.GetComponent<TextMeshProUGUI>();
+        public TextMeshProUGUI TextMeshProUGUI { get; private set; }
+
+        private void Awake()
+        {
+            TextMeshProUGUI = GetComponent<TextMeshProUGUI>();
+        }
     }
 }
 #endif

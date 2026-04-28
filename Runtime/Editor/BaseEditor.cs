@@ -176,13 +176,16 @@ namespace jp.ootr.common.Editor
                 }
             }
 
-            foreach (var rootObject in rootObjects)
+            if (report != null)
             {
-                var editorOnlyComponents = rootObject.GetComponentsInChildren<EditorOnlyMonoBehaviour>(true);
-                foreach (var component in editorOnlyComponents)
+                foreach (var rootObject in rootObjects)
                 {
-                    if (component == null) continue;
-                    Object.DestroyImmediate(component);
+                    var editorOnlyComponents = rootObject.GetComponentsInChildren<EditorOnlyMonoBehaviour>(true);
+                    foreach (var component in editorOnlyComponents)
+                    {
+                        if (component == null) continue;
+                        Object.DestroyImmediate(component);
+                    }
                 }
             }
         }
