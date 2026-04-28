@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using System;
+using System.Collections.Generic;
 using jp.ootr.common.ColorSchema;
 using jp.ootr.common.Localization;
 using UnityEditor;
@@ -8,6 +9,7 @@ using UnityEditor.Build.Reporting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
+using UnityEditor.UIElements;
 using VRC.SDKBase.Editor.BuildPipeline;
 using Object = UnityEngine.Object;
 
@@ -38,6 +40,7 @@ namespace jp.ootr.common.Editor
 
         public override VisualElement CreateInspectorGUI()
         {
+            Root.Unbind();
             Root.Clear();
             ShowScriptName();
             Root.Add(ShowLogLevelPicker());
@@ -49,6 +52,7 @@ namespace jp.ootr.common.Editor
             ShowUtilities();
 
             ShowDebug();
+            Root.Bind(serializedObject);
             return Root;
         }
 
@@ -129,6 +133,7 @@ namespace jp.ootr.common.Editor
     {
         static PlayModeNotifier()
         {
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
 
             var classes = ComponentUtils.GetAllComponents<BaseClass>();
@@ -229,18 +234,23 @@ namespace jp.ootr.common.Editor
         {
             if (target == null) return;
             var targets = target.GetComponentsInChildren<LocalizationApplierTextMeshPro>(true);
+            var filteredTargets = new List<LocalizationApplierTextMeshPro>();
+            foreach (var t in targets)
+            {
+                if (t != null) filteredTargets.Add(t);
+            }
+
             var baseClassSo = new SerializedObject(target);
             baseClassSo.Update();
             var localizationTargetKeys = baseClassSo.FindProperty(nameof(BaseClass.localizationTargetKeys));
             var localizationTargets = baseClassSo.FindProperty(nameof(BaseClass.localizationTargets));
             if (localizationTargetKeys == null || localizationTargets == null) return;
-            localizationTargetKeys.arraySize = targets.Length;
-            localizationTargets.arraySize = targets.Length;
-            for (var i = 0; i < targets.Length; i++)
+            localizationTargetKeys.arraySize = filteredTargets.Count;
+            localizationTargets.arraySize = filteredTargets.Count;
+            for (var i = 0; i < filteredTargets.Count; i++)
             {
-                if (targets[i] == null) continue;
-                localizationTargetKeys.GetArrayElementAtIndex(i).stringValue = targets[i].TextKey;
-                localizationTargets.GetArrayElementAtIndex(i).objectReferenceValue = targets[i].TextMeshProUGUI;
+                localizationTargetKeys.GetArrayElementAtIndex(i).stringValue = filteredTargets[i].TextKey;
+                localizationTargets.GetArrayElementAtIndex(i).objectReferenceValue = filteredTargets[i].TextMeshProUGUI;
             }
 
             baseClassSo.ApplyModifiedProperties();
