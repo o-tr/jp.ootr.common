@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace jp.ootr.common.ColorSchema
 {
-    public class ColorSchemaApplierBase : MonoBehaviour, IColorSchemaApplier
+    public class ColorSchemaApplierBase : EditorOnlyMonoBehaviour, IColorSchemaApplier
     {
         [SerializeField] protected string schemaName;
 
